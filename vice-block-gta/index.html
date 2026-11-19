@@ -31,11 +31,12 @@
       height: 100%;
       top: 0;
       left: 0;
+      z-index: 1;
     }
-    canvas {
+    #game-container canvas {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
     }
 
     /* ROBLOX TOPBAR HUD */
@@ -789,17 +790,35 @@
     window.addEventListener('pointerdown', () => Sound.init(), { once: true });
     window.addEventListener('keydown', () => Sound.init(), { once: true });
 
-    // --- THREE.JS SETUP ---
+    // --- THREE.JS SETUP (Safe viewport dimensions for mobile apps) ---
+    const getW = () => Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 360);
+    const getH = () => Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, 640);
+
     const container = document.getElementById('game-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x130e22);
-    scene.fog = new THREE.FogExp2(0x130e22, 0.0045);
+    scene.fog = new THREE.Fog(0x130e22, 60, 600);
 
-    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.2, 1200);
-    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    const camera = new THREE.PerspectiveCamera(65, getW() / getH(), 0.1, 1500);
+    camera.position.set(0, 7.5, -12);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false });
+    renderer.setSize(getW(), getH());
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     container.appendChild(renderer.domElement);
+
+    function updateViewportSize() {
+      const w = getW();
+      const h = getH();
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', updateViewportSize);
+    window.addEventListener('load', updateViewportSize);
+    setTimeout(updateViewportSize, 100);
+    setTimeout(updateViewportSize, 400);
+    setTimeout(updateViewportSize, 1000);
 
     // --- LIGHTS ---
     const hemiLight = new THREE.HemisphereLight(0xff7fa5, 0x1f1838, 0.9);
@@ -1852,20 +1871,20 @@
     // --- INITIALIZE GAME WORLD ---
     buildCity();
 
-    // Spawn Player
+    // Spawn Player on wide open Central Boulevard (zero building obstruction!)
     const player = new RobloxCharacter(true);
-    player.group.position.set(-50, 0, -30);
+    player.group.position.set(0, 0, 0);
 
-    // SPAWN VEHICLES
-    // 1. Starter Sports Car
-    const cheetah = new RobloxVehicle({ x: -45, z: -25, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
-    // 2. Sanchez Dirt Bike
-    const dirtBike = new RobloxVehicle({ x: -48, z: 140, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
+    // SPAWN VEHICLES (right next to player on Central Boulevard)
+    // 1. Starter Sports Car (Right side of road)
+    const cheetah = new RobloxVehicle({ x: 5, z: 0, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
+    // 2. Sanchez Dirt Bike (Left side of road)
+    const dirtBike = new RobloxVehicle({ x: -5, z: 0, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
     // 3. Stunt Airplane (Parked on Airport Runway!)
-    const stuntPlane = new RobloxVehicle({ x: 0, z: 220, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
+    const stuntPlane = new RobloxVehicle({ x: 0, z: 240, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
     // 4. Police Cruisers
     const copCar1 = new RobloxVehicle({ x: 45, z: 45, type: 'cop', name: 'Police Cruiser' });
-    const copCar2 = new RobloxVehicle({ x: 0, z: 0, type: 'cop', name: 'Police Cruiser' });
+    const copCar2 = new RobloxVehicle({ x: 110, z: 0, type: 'cop', name: 'Police Cruiser' });
 
     // Spawn Police AI Chase Units
     new PoliceAI(50, 100);
@@ -2213,9 +2232,9 @@
         setWantedLevel(0);
         updateHealthUI();
         document.getElementById('cash-val').innerText = State.cash.toLocaleString();
-        player.group.position.set(-50, 0, -30);
+        player.group.position.set(0, 0, 0);
         death.style.display = 'none';
-        showToast("Respawned at Burger Shot (-$200 Hospital Bill)");
+        showToast("Respawned on Central Boulevard (-$200 Hospital Bill)");
       }, 2500);
     }
 
@@ -2489,14 +2508,8 @@
 
     animate();
 
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // PWA Service Worker
-    if ('serviceWorker' in navigator) {
+    // Service Worker ONLY on web browsers, NOT inside native app wrapper (prevents blank screen in APK)
+    if ('serviceWorker' in navigator && !window.Capacitor && !window.androidBridge && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
