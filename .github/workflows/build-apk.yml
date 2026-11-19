@@ -17,35 +17,50 @@ jobs:
         with:
           node-version: 20
 
-      - name: Set up Java 17
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
-      - name: Package Game with Capacitor & Build APK
+      - name: Build Android APK
         run: |
+          # 1. Create clean package.json & capacitor configuration (avoids CLI prompts)
+          cat << 'EOF' > package.json
+          {
+            "name": "vice-blocks",
+            "version": "1.0.0",
+            "private": true
+          }
+          EOF
+
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.viceblocks.game",
+            "appName": "Vice Blocks",
+            "webDir": "www"
+          }
+          EOF
+
+          # 2. Populate www web assets
           mkdir -p www
-          # Copy game assets from repository or download live files
           if [ -d "vice-block-gta" ]; then
             cp -r vice-block-gta/* www/
           elif [ -f "index.html" ]; then
             cp -r * www/ || true
           fi
-          
-          # Ensure essential files are present
-          [ ! -f "www/index.html" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/index.html -o www/index.html
-          [ ! -f "www/three.min.js" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
-          [ ! -f "www/manifest.json" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
-          [ ! -f "www/icon-192.png" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
 
-          # Initialize Capacitor
-          npm init -y
+          # Ensure required web assets exist
+          [ ! -f "www/index.html" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/index.html -o www/index.html
+          [ ! -f "www/three.min.js" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
+          [ ! -f "www/manifest.json" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
+          [ ! -f "www/icon-192.png" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
+
+          # 3. Install Capacitor & Add Android Project
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Vice Blocks" "com.viceblocks.game" --web-dir www
           npx cap add android
 
-          # Build native APK
+          # 4. Compile the native APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
