@@ -60,7 +60,7 @@ jobs:
           [ ! -f "www/manifest.json" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
           [ ! -f "www/icon-192.png" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
 
-          # 3. Install Capacitor, Add Platform & Sync Assets
+          # 3. Install Capacitor & Add Android Project
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap add android || true
           npx cap sync android
@@ -74,7 +74,17 @@ jobs:
           }
           EOF
 
-          # 5. Compile the native APK
+          # 5. Lock App to Horizontal Landscape Mode in AndroidManifest
+          python3 -c "
+          with open('android/app/src/main/AndroidManifest.xml', 'r') as f:
+              c = f.read()
+          if 'android:screenOrientation' not in c:
+              c = c.replace('<activity', '<activity android:screenOrientation=\"sensorLandscape\"')
+              with open('android/app/src/main/AndroidManifest.xml', 'w') as f:
+                  f.write(c)
+          "
+
+          # 6. Compile the native APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
