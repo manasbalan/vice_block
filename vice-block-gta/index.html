@@ -146,19 +146,20 @@
       margin-left: 6px;
     }
 
-    /* MINIMAP / RADAR */
+    /* MINIMAP / RADAR (Positioned Top-Left so bottom screen is 100% free for thumbs) */
     #minimap-wrapper {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 150px;
-      height: 150px;
+      top: 75px;
+      left: 15px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       border: 3px solid #ff2a85;
       box-shadow: 0 0 15px rgba(255, 42, 133, 0.5), inset 0 0 10px rgba(0,0,0,0.8);
       background: rgba(15, 12, 28, 0.9);
       overflow: hidden;
-      z-index: 100;
+      z-index: 95;
+      pointer-events: none;
     }
     #minimap {
       width: 100%;
@@ -168,27 +169,27 @@
     /* SPEEDOMETER & CAR HUD */
     #car-hud {
       position: absolute;
-      bottom: 25px;
-      right: 25px;
+      top: 75px;
+      right: 15px;
       background: rgba(18, 16, 28, 0.9);
       border: 2px solid #00f3ff;
       border-radius: 12px;
-      padding: 12px 18px;
+      padding: 8px 14px;
       color: #fff;
       display: none;
       flex-direction: column;
       align-items: center;
-      z-index: 100;
+      z-index: 95;
       box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
     }
     #car-speed {
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 900;
       color: #00f3ff;
       text-shadow: 0 0 10px #00f3ff;
     }
     #car-hud small {
-      font-size: 11px;
+      font-size: 10px;
       color: #aaa;
       letter-spacing: 1px;
     }
@@ -196,20 +197,21 @@
     /* INTERACTION PROMPT */
     #prompt-box {
       position: absolute;
-      bottom: 180px;
+      bottom: 140px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 42, 133, 0.92);
+      background: rgba(255, 42, 133, 0.95);
       color: #fff;
       font-weight: bold;
       padding: 8px 20px;
       border-radius: 20px;
-      font-size: 14px;
+      font-size: 13px;
       box-shadow: 0 0 15px rgba(255, 42, 133, 0.6);
       display: none;
       z-index: 100;
       pointer-events: none;
       animation: bouncePrompt 0.8s infinite alternate;
+      white-space: nowrap;
     }
     @keyframes bouncePrompt {
       0% { transform: translateX(-50%) translateY(0); }
@@ -222,88 +224,168 @@
       top: 135px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       border-left: 5px solid #00ff88;
       color: #fff;
-      padding: 10px 20px;
+      padding: 8px 18px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 12px;
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: 150;
       pointer-events: none;
+      white-space: nowrap;
     }
 
-    /* CONTROLS OVERLAY & BUTTONS (Mobile / Touch Friendly) */
-    #mobile-controls {
+    /* VIRTUAL JOYSTICK (LEFT THUMB - 360 ANALOG FOR PHONES) */
+    #joystick-zone {
       position: absolute;
-      bottom: 20px;
+      bottom: 0;
+      left: 0;
+      width: 48vw;
+      height: 60vh;
+      z-index: 120;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #joystick-base {
+      position: absolute;
+      bottom: 35px;
+      left: 35px;
+      width: 125px;
+      height: 125px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 243, 255, 0.15) 0%, rgba(20, 15, 35, 0.7) 70%);
+      border: 2px solid rgba(0, 243, 255, 0.6);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      transition: border-color 0.2s;
+    }
+    #joystick-knob {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00f3ff, #ff2a85);
+      border: 2px solid #fff;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.8);
+      transform: translate(0px, 0px);
+      pointer-events: none;
+    }
+
+    /* MOBILE ACTION BUTTONS (RIGHT THUMB - MULTI-TOUCH) */
+    #mobile-actions {
+      position: absolute;
+      bottom: 25px;
       right: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      z-index: 110;
+      align-items: flex-end;
+      gap: 12px;
+      z-index: 120;
+      touch-action: none;
+      user-select: none;
+    }
+    .action-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
     }
     .action-btn {
       width: 58px;
       height: 58px;
       border-radius: 50%;
-      background: rgba(255, 42, 133, 0.8);
+      background: rgba(255, 42, 133, 0.85);
       border: 2px solid #fff;
       color: #fff;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 800;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
       cursor: pointer;
       user-select: none;
-      touch-action: manipulation;
+      touch-action: none;
     }
-    .action-btn:active {
-      transform: scale(0.92);
+    .action-btn:active, .action-btn.active {
       background: #00f3ff;
+      color: #000;
+      transform: scale(0.92);
+    }
+    #btn-punch {
+      width: 68px;
+      height: 68px;
+      background: #ff2a85;
+      box-shadow: 0 0 15px rgba(255, 42, 133, 0.7);
+      font-size: 28px;
+    }
+    .pedal-btn {
+      width: 66px;
+      height: 62px;
+      border-radius: 14px;
+      background: rgba(22, 18, 38, 0.9);
+      border: 2px solid #00f3ff;
+      color: #00f3ff;
+      font-size: 13px;
+      font-weight: 900;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+    }
+    .pedal-btn:active, .pedal-btn.active {
+      background: #00f3ff;
+      color: #000;
+      transform: scale(0.92);
+    }
+    #btn-gas {
+      border-color: #00ff88;
+      color: #00ff88;
+    }
+    #btn-gas.active {
+      background: #00ff88;
       color: #000;
     }
 
-    /* MOBILE D-PAD FOR ANDROID TOUCH */
-    #mobile-dpad {
-      position: absolute;
-      bottom: 20px;
-      left: 185px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      z-index: 120;
-      user-select: none;
-      touch-action: none;
-    }
-    .dpad-middle {
-      display: flex;
-      gap: 24px;
-    }
-    .dpad-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(25, 20, 45, 0.8);
-      border: 2px solid #00f3ff;
-      color: #00f3ff;
-      font-size: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      touch-action: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-    .dpad-btn:active, .dpad-btn.pressed {
-      background: #00f3ff;
-      color: #000;
-      transform: scale(0.92);
+    /* MOBILE SCREEN RESPONSIVE STYLES */
+    @media (max-width: 768px) {
+      #minimap-wrapper {
+        width: 85px;
+        height: 85px;
+        top: 65px;
+        left: 10px;
+      }
+      #mission-banner {
+        font-size: 11px;
+        padding: 6px 14px;
+        top: 60px;
+        max-width: 65%;
+        left: 60%;
+      }
+      #top-bar {
+        padding: 4px 8px;
+        gap: 6px;
+      }
+      .health-container {
+        min-width: 110px;
+      }
+      .wanted-box {
+        font-size: 16px;
+      }
+      .cash-box {
+        font-size: 16px;
+      }
+      #help-overlay {
+        display: none; /* Hide PC keyboard labels on mobile */
+      }
     }
 
     /* QUICK HELP PANEL */
@@ -447,21 +529,28 @@
   <!-- TOAST -->
   <div id="toast">Notification text</div>
 
-  <!-- MOBILE D-PAD (FOR ANDROID / TOUCH PHONES) -->
-  <div id="mobile-dpad">
-    <div class="dpad-btn" id="dpad-up">▲</div>
-    <div class="dpad-middle">
-      <div class="dpad-btn" id="dpad-left">◄</div>
-      <div class="dpad-btn" id="dpad-right">►</div>
+  <!-- VIRTUAL JOYSTICK FOR PHONES (LEFT THUMB) -->
+  <div id="joystick-zone">
+    <div id="joystick-base">
+      <div id="joystick-knob"></div>
     </div>
-    <div class="dpad-btn" id="dpad-down">▼</div>
   </div>
 
-  <!-- MOBILE / ON-SCREEN ACTIONS -->
-  <div id="mobile-controls">
-    <div class="action-btn" id="btn-enter" title="Enter/Exit Car">🚗</div>
-    <div class="action-btn" id="btn-punch" title="Punch/Rob">👊</div>
-    <div class="action-btn" id="btn-jump" title="Jump/Handbrake">⤴</div>
+  <!-- MULTI-TOUCH MOBILE ACTION BUTTONS (RIGHT THUMB) -->
+  <div id="mobile-actions">
+    <div class="action-row" id="car-pedals" style="display:none;">
+      <div class="pedal-btn" id="btn-reverse">REV<br>▼</div>
+      <div class="pedal-btn" id="btn-gas">GAS<br>▲</div>
+      <div class="action-btn" id="btn-handbrake" title="Drift">💨</div>
+      <div class="action-btn" id="btn-horn" title="Horn">🎺</div>
+    </div>
+    <div class="action-row" id="foot-actions">
+      <div class="action-btn" id="btn-punch" title="Punch / Rob">👊</div>
+      <div class="action-btn" id="btn-jump" title="Jump">⤴</div>
+    </div>
+    <div class="action-row">
+      <div class="action-btn" id="btn-enter" title="Enter / Exit Vehicle">🚗</div>
+    </div>
   </div>
 
   <!-- DEATH / BUSTED SCREEN -->
@@ -1133,11 +1222,15 @@
 
           this.speed = THREE.MathUtils.clamp(this.speed, -this.maxSpeed * 0.4, this.maxSpeed);
 
-          // Steering only when moving
-          if (Math.abs(this.speed) > 0.5) {
+          // Steering when moving
+          if (Math.abs(this.speed) > 0.2) {
             const dir = this.speed >= 0 ? 1 : -1;
-            if (input.left) this.group.rotation.y += this.turnSpeed * dt * dir;
-            if (input.right) this.group.rotation.y -= this.turnSpeed * dt * dir;
+            if (typeof joyVector !== 'undefined' && joyTouchId !== null && Math.abs(joyVector.x) > 0.12) {
+              this.group.rotation.y -= joyVector.x * this.turnSpeed * dt * dir;
+            } else {
+              if (input.left) this.group.rotation.y += this.turnSpeed * dt * dir;
+              if (input.right) this.group.rotation.y -= this.turnSpeed * dt * dir;
+            }
           }
 
           // Move along vehicle forward vector
@@ -1284,30 +1377,126 @@
       if (code === 'Space') { keys.jump = false; keys.handbrake = false; }
     });
 
-    // Mobile / Touch Action Button handlers
-    document.getElementById('btn-enter').addEventListener('click', toggleVehicle);
-    document.getElementById('btn-punch').addEventListener('click', handleAction);
-    document.getElementById('btn-jump').addEventListener('click', () => {
-      keys.jump = true;
-      setTimeout(() => keys.jump = false, 300);
+    // --- MULTI-TOUCH VIRTUAL JOYSTICK (LEFT THUMB) ---
+    const joyZone = document.getElementById('joystick-zone');
+    const joyBase = document.getElementById('joystick-base');
+    const joyKnob = document.getElementById('joystick-knob');
+    let joyTouchId = null;
+    let joyOrigin = { x: 0, y: 0 };
+    let joyVector = { x: 0, y: 0 };
+
+    joyZone.addEventListener('pointerdown', (e) => {
+      if (joyTouchId !== null) return;
+      joyTouchId = e.pointerId;
+      try { joyZone.setPointerCapture(e.pointerId); } catch(err){}
+      
+      const rect = joyZone.getBoundingClientRect();
+      const touchX = e.clientX;
+      const touchY = e.clientY;
+      
+      joyBase.style.bottom = 'auto';
+      joyBase.style.left = `${Math.max(10, touchX - rect.left - 62)}px`;
+      joyBase.style.top = `${Math.max(10, touchY - rect.top - 62)}px`;
+      joyOrigin = { x: touchX, y: touchY };
+      joyVector = { x: 0, y: 0 };
+      updateJoystick(touchX, touchY);
+      Sound.init();
     });
 
-    // Mobile D-Pad Touch Bindings
-    function bindDpad(btnId, keyName) {
-      const el = document.getElementById(btnId);
-      if (!el) return;
-      const start = (e) => { e.preventDefault(); keys[keyName] = true; el.classList.add('pressed'); Sound.init(); };
-      const stop = (e) => { e.preventDefault(); keys[keyName] = false; el.classList.remove('pressed'); };
-      el.addEventListener('touchstart', start, { passive: false });
-      el.addEventListener('touchend', stop, { passive: false });
-      el.addEventListener('mousedown', start);
-      el.addEventListener('mouseup', stop);
-      el.addEventListener('mouseleave', stop);
+    joyZone.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== joyTouchId) return;
+      updateJoystick(e.clientX, e.clientY);
+    });
+
+    const resetJoystick = (e) => {
+      if (e.pointerId !== joyTouchId) return;
+      joyTouchId = null;
+      joyVector = { x: 0, y: 0 };
+      joyKnob.style.transform = 'translate(0px, 0px)';
+      joyBase.style.top = 'auto';
+      joyBase.style.bottom = '35px';
+      joyBase.style.left = '35px';
+      
+      if (!keysFromPedals.forward) keys.forward = false;
+      if (!keysFromPedals.backward) keys.backward = false;
+      keys.left = false;
+      keys.right = false;
+    };
+
+    joyZone.addEventListener('pointerup', resetJoystick);
+    joyZone.addEventListener('pointercancel', resetJoystick);
+
+    function updateJoystick(curX, curY) {
+      let dx = curX - joyOrigin.x;
+      let dy = curY - joyOrigin.y;
+      const maxDist = 55;
+      const dist = Math.hypot(dx, dy);
+      if (dist > maxDist) {
+        dx = (dx / dist) * maxDist;
+        dy = (dy / dist) * maxDist;
+      }
+      joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+      
+      joyVector.x = dx / maxDist;
+      joyVector.y = dy / maxDist;
+
+      // Map to keys for vehicles and fallback
+      keys.forward = joyVector.y < -0.25 || keysFromPedals.forward;
+      keys.backward = joyVector.y > 0.25 || keysFromPedals.backward;
+      keys.left = joyVector.x < -0.22;
+      keys.right = joyVector.x > 0.22;
     }
-    bindDpad('dpad-up', 'forward');
-    bindDpad('dpad-down', 'backward');
-    bindDpad('dpad-left', 'left');
-    bindDpad('dpad-right', 'right');
+
+    // --- MULTI-TOUCH MOBILE ACTION BUTTONS ---
+    const keysFromPedals = { forward: false, backward: false };
+
+    function bindPointerBtn(id, onDown, onUp) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        try { el.setPointerCapture(e.pointerId); } catch(err){}
+        el.classList.add('active');
+        Sound.init();
+        if (onDown) onDown();
+      });
+      const release = (e) => {
+        el.classList.remove('active');
+        if (onUp) onUp();
+      };
+      el.addEventListener('pointerup', release);
+      el.addEventListener('pointercancel', release);
+    }
+
+    // Enter/Exit Car
+    bindPointerBtn('btn-enter', () => toggleVehicle());
+
+    // Punch / Rob
+    bindPointerBtn('btn-punch', () => handleAction());
+
+    // Jump
+    bindPointerBtn('btn-jump', () => {
+      keys.jump = true;
+      setTimeout(() => keys.jump = false, 350);
+    });
+
+    // In-Car Pedals
+    bindPointerBtn('btn-gas', 
+      () => { keys.forward = true; keysFromPedals.forward = true; },
+      () => { keysFromPedals.forward = false; if (joyVector.y >= -0.25) keys.forward = false; }
+    );
+
+    bindPointerBtn('btn-reverse', 
+      () => { keys.backward = true; keysFromPedals.backward = true; },
+      () => { keysFromPedals.backward = false; if (joyVector.y <= 0.25) keys.backward = false; }
+    );
+
+    bindPointerBtn('btn-handbrake', 
+      () => { keys.handbrake = true; },
+      () => { keys.handbrake = false; }
+    );
+
+    bindPointerBtn('btn-horn', () => Sound.playHorn());
 
     // Character Switcher
     document.getElementById('char-switch').addEventListener('click', () => {
@@ -1334,6 +1523,8 @@
         player.group.position.y = 0;
         player.group.visible = true;
         document.getElementById('car-hud').style.display = 'none';
+        document.getElementById('car-pedals').style.display = 'none';
+        document.getElementById('foot-actions').style.display = 'flex';
         showToast("Exited vehicle");
       } else {
         // Find nearest vehicle within 5 meters
@@ -1352,6 +1543,8 @@
           State.inVehicle = true;
           State.currentVehicle = nearest;
           document.getElementById('car-hud').style.display = 'flex';
+          document.getElementById('car-pedals').style.display = 'flex';
+          document.getElementById('foot-actions').style.display = 'none';
           showToast(nearest.isPolice ? "Highjacked Police Cruiser!" : "Entered Vehicle!");
           Sound.playHorn();
 
@@ -1631,17 +1824,24 @@
       if (!State.inVehicle) {
         let moveX = 0;
         let moveZ = 0;
-        if (keys.forward) moveZ += 1;
-        if (keys.backward) moveZ -= 1;
-        if (keys.left) moveX += 1;
-        if (keys.right) moveX -= 1;
 
-        if (moveX !== 0 || moveZ !== 0) {
+        if (joyTouchId !== null && (joyVector.x !== 0 || joyVector.y !== 0)) {
+          moveX = joyVector.x;
+          moveZ = -joyVector.y; // Dragging up (-y) moves forward (+Z)
+        } else {
+          if (keys.forward) moveZ += 1;
+          if (keys.backward) moveZ -= 1;
+          if (keys.left) moveX += 1;
+          if (keys.right) moveX -= 1;
+        }
+
+        const inputMag = Math.hypot(moveX, moveZ);
+        if (inputMag > 0.12) {
           isMoving = true;
           const moveAngle = Math.atan2(moveX, moveZ);
           player.group.rotation.y = moveAngle;
 
-          const speed = player.speed;
+          const speed = player.speed * Math.min(1.0, inputMag);
           const nextX = player.group.position.x + Math.sin(moveAngle) * speed * dt;
           const nextZ = player.group.position.z + Math.cos(moveAngle) * speed * dt;
 
