@@ -38,7 +38,11 @@ jobs:
           {
             "appId": "com.viceblocks.game",
             "appName": "Vice Blocks",
-            "webDir": "www"
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https",
+              "cleartext": true
+            }
           }
           EOF
 
@@ -56,9 +60,10 @@ jobs:
           [ ! -f "www/manifest.json" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
           [ ! -f "www/icon-192.png" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
 
-          # 3. Install Capacitor & Add Android Project
+          # 3. Install Capacitor, Add Platform & Sync Assets
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap add android
+          npx cap add android || true
+          npx cap sync android
 
           # 4. Fix Kotlin stdlib duplicate classes in Android Gradle
           cat << 'EOF' >> android/app/build.gradle
