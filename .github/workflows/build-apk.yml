@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # 1. Create clean package.json & capacitor configuration (avoids CLI prompts)
+          # 1. Create clean package.json & capacitor configuration
           cat << 'EOF' > package.json
           {
             "name": "vice-blocks",
@@ -60,7 +60,16 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap add android
 
-          # 4. Compile the native APK
+          # 4. Fix Kotlin stdlib duplicate classes in Android Gradle
+          cat << 'EOF' >> android/app/build.gradle
+
+          configurations.all {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
+
+          # 5. Compile the native APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
