@@ -1,0 +1,56 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Package Game with Capacitor into Android App
+        run: |
+          mkdir -p www
+          if [ -f "vice-block-gta/index.html" ]; then
+            cp -r vice-block-gta/* www/
+          elif [ -f "index.html" ]; then
+            cp -r * www/ || true
+          else
+            curl -s https://polite-stardust-bdc2e1.netlify.app/index.html -o www/index.html
+            curl -s https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
+            curl -s https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
+            curl -s https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
+          fi
+
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Vice Blocks" "com.viceblocks.game" --web-dir www
+          npx cap add android
+
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK Download
+        uses: actions/upload-artifact@v4
+        with:
+          name: ViceBlocks-Android-APK
+          path: android/app/build/outputs/apk/debug/*.apk
