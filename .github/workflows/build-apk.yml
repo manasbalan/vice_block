@@ -23,28 +23,29 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Package Game with Capacitor into Android App
+      - name: Package Game with Capacitor & Build APK
         run: |
           mkdir -p www
-          if [ -f "vice-block-gta/index.html" ]; then
+          # Copy game assets from repository or download live files
+          if [ -d "vice-block-gta" ]; then
             cp -r vice-block-gta/* www/
           elif [ -f "index.html" ]; then
             cp -r * www/ || true
-          else
-            curl -s https://polite-stardust-bdc2e1.netlify.app/index.html -o www/index.html
-            curl -s https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
-            curl -s https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
-            curl -s https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
           fi
+          
+          # Ensure essential files are present
+          [ ! -f "www/index.html" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/index.html -o www/index.html
+          [ ! -f "www/three.min.js" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
+          [ ! -f "www/manifest.json" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
+          [ ! -f "www/icon-192.png" ] && curl -s https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
 
+          # Initialize Capacitor
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Vice Blocks" "com.viceblocks.game" --web-dir www
           npx cap add android
 
+          # Build native APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
