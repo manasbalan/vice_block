@@ -181,12 +181,12 @@
       width: 100%;
     }
 
-    /* ROBLOX TOPBAR HUD */
+    /* ROBLOX TOPBAR HUD - HIGH UP & UNOBTRUSIVE */
     #top-bar {
       position: absolute;
-      top: calc(8px + env(safe-area-inset-top));
+      top: calc(4px + env(safe-area-inset-top));
       left: calc(8px + env(safe-area-inset-left));
-      right: calc(8px + env(safe-area-inset-right));
+      right: calc(14px + env(safe-area-inset-right));
       display: flex;
       align-items: center;
       gap: 8px;
@@ -194,10 +194,11 @@
       z-index: 200;
     }
     .hud-card {
-      background: rgba(25, 27, 29, 0.85);
-      border-radius: 10px;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
-      padding: 6px 12px;
+      background: rgba(18, 14, 28, 0.55);
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      padding: 4px 8px;
       color: #fff;
       pointer-events: auto;
       font-weight: 800;
@@ -205,14 +206,15 @@
       align-items: center;
     }
     
-    /* ROBLOX TILTED LOGO MENU BUTTON */
+    /* ROBLOX TILTED LOGO MENU BUTTON (HIGH UP & SLEEK) */
     #menu-toggle {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       border: 0;
-      border-radius: 10px;
-      background: rgba(25, 27, 29, 0.85);
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
+      border-radius: 8px;
+      background: rgba(18, 14, 28, 0.55);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       pointer-events: auto;
       cursor: pointer;
       display: flex;
@@ -220,8 +222,8 @@
       justify-content: center;
     }
     #menu-toggle .logo {
-      width: 20px;
-      height: 20px;
+      width: 17px;
+      height: 17px;
       background: #fff;
       transform: rotate(15deg);
       border-radius: 3px;
@@ -230,26 +232,27 @@
     #menu-toggle .logo::after {
       content: '';
       position: absolute;
-      width: 6px;
-      height: 6px;
-      left: 7px;
-      top: 7px;
-      background: #191b1d;
+      width: 5px;
+      height: 5px;
+      left: 6px;
+      top: 6px;
+      background: #120e1c;
     }
     #menu-toggle[aria-expanded="true"] {
       background: #0074e0;
     }
 
-    /* HEALTH BAR */
+    /* HEALTH BAR (COMPACT & HIGH UP) */
     .health-container {
-      flex: 1 1 120px;
-      max-width: 180px;
+      flex: 0 1 135px;
+      max-width: 135px;
+      padding: 4px 8px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .health-label {
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.5px;
       color: #fff;
       display: flex;
@@ -257,30 +260,35 @@
     }
     .health-bar-bg {
       width: 100%;
-      height: 12px;
-      background: #393b3d;
-      border-radius: 4px;
-      border: 2px solid #111;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
       overflow: hidden;
     }
     .health-bar-fill {
       width: 100%;
       height: 100%;
       background: #00b06f;
-      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
       transition: width 0.2s ease;
     }
 
-    /* WANTED STARS */
+    /* WANTED STARS (NO BLACK BACKGROUND - FLOATS CLEANLY) */
     .wanted-box {
       display: flex;
       gap: 3px;
-      font-size: 18px;
-      color: #555;
+      font-size: 19px;
+      color: rgba(255, 255, 255, 0.3);
+      text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
     }
     .wanted-star.active {
       color: #ffd700;
-      text-shadow: 0 0 10px #ff0055, 0 0 20px #ffcc00;
+      text-shadow: 0 0 10px #ff0055, 0 0 20px #ffcc00, 1px 1px 2px #000;
       animation: starPulse 0.6s infinite alternate;
     }
     @keyframes starPulse {
@@ -288,33 +296,42 @@
       100% { transform: scale(1.25); filter: drop-shadow(0 0 12px #00f3ff); }
     }
 
-    /* CASH COUNTER */
+    /* CASH COUNTER (NO BLACK BACKGROUND - CLASSIC GREEN GTA FONT) */
     .cash-box {
-      font-size: 18px;
-      color: #02b757;
-      text-shadow: 0 2px 0 #000;
-      letter-spacing: 0.5px;
+      font-family: 'Pricedown', Impact, sans-serif;
+      font-size: 28px;
+      color: #00ff88;
+      text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 3px 6px rgba(0,0,0,0.85);
+      letter-spacing: 1.2px;
       margin-left: auto;
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      pointer-events: none;
     }
 
-    /* MISSION OBJECTIVE BANNER */
+    /* MISSION OBJECTIVE BANNER (COMPACT, TRANSLUCENT & SLEEK) */
     #mission-banner {
       position: absolute;
-      top: calc(64px + env(safe-area-inset-top));
+      top: calc(44px + env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(25, 27, 29, 0.88);
-      border-radius: 10px;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
-      padding: 8px 18px;
+      background: rgba(15, 12, 28, 0.55);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0, 243, 255, 0.22);
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      padding: 4px 14px;
       color: #fff;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
       text-align: center;
       z-index: 100;
-      pointer-events: none;
-      max-width: 90%;
+      pointer-events: auto;
+      max-width: 460px;
       white-space: nowrap;
+      cursor: pointer;
     }
     #mission-banner span.tag {
       background: #0074e0;
@@ -334,10 +351,10 @@
     /* MINIMAP RADAR (TOP-LEFT) */
     #minimap-wrapper {
       position: absolute;
-      top: calc(64px + env(safe-area-inset-top));
-      left: calc(10px + env(safe-area-inset-left));
-      width: 105px;
-      height: 105px;
+      top: calc(48px + env(safe-area-inset-top));
+      left: calc(8px + env(safe-area-inset-left));
+      width: 94px;
+      height: 94px;
       border-radius: 12px;
       border: 3px solid #fff;
       box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
@@ -441,32 +458,33 @@
       pointer-events: none;
     }
 
-    /* RIGHT THUMB MULTI-TOUCH BUTTONS */
+    /* RIGHT THUMB MULTI-TOUCH BUTTONS (ERGONOMIC 2-TIER CLUSTER) */
     #mobile-actions {
       position: absolute;
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      right: calc(15px + env(safe-area-inset-right));
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      right: calc(14px + env(safe-area-inset-right));
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 10px;
+      gap: 8px;
       z-index: 120;
       touch-action: none;
     }
     .action-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
     }
     .action-btn {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      background: rgba(25, 27, 29, 0.75);
-      border: 3px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
+      background: rgba(20, 16, 32, 0.48);
+      backdrop-filter: blur(4px);
+      border: 2px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
       color: #fff;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 800;
       display: flex;
       justify-content: center;
@@ -474,20 +492,25 @@
       cursor: pointer;
       user-select: none;
       touch-action: none;
+      transition: transform 0.1s ease, background 0.15s ease;
     }
     .action-btn:active, .action-btn.active {
-      background: #fff;
-      color: #111;
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+      background: rgba(0, 116, 224, 0.85);
+      transform: scale(0.92);
     }
-    #btn-punch {
-      width: 66px;
-      height: 66px;
-      background: rgba(226, 35, 26, 0.88);
-      border-color: #fff;
-      box-shadow: 0 5px 0 #7a120d;
-      font-size: 26px;
+    .action-btn.sm {
+      width: 44px;
+      height: 44px;
+      font-size: 17px;
+      border-width: 1.5px;
+    }
+    .action-btn.primary-action {
+      width: 62px;
+      height: 62px;
+      font-size: 24px;
+      background: rgba(220, 38, 38, 0.65);
+      border: 2.5px solid #ff4444;
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.5);
     }
     .pedal-btn {
       width: 64px;
@@ -620,25 +643,33 @@
       box-shadow: 0 0 6px #ff007f;
     }
 
-    /* TOPBAR CHEAT BUTTON */
+    /* CHEATS BUTTON (PLACED BELOW NEXT TO JOYSTICK) */
     #btn-cheats {
-      background: linear-gradient(90deg, #ff007f, #b300ff);
-      border: 1.5px solid #00f3ff;
-      border-radius: 8px;
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      left: calc(130px + env(safe-area-inset-left));
+      background: linear-gradient(135deg, rgba(255, 0, 127, 0.75), rgba(121, 40, 202, 0.75));
+      backdrop-filter: blur(4px);
+      border: 1.5px solid rgba(255, 255, 255, 0.65);
+      border-radius: 20px;
+      padding: 6px 14px;
       color: #fff;
-      font-size: 11px;
-      font-weight: 900;
+      font-family: 'Pricedown', Impact, sans-serif;
+      font-size: 13px;
       letter-spacing: 1px;
-      padding: 5px 10px;
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.45);
       cursor: pointer;
+      z-index: 150;
       pointer-events: auto;
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
+      user-select: none;
+      transition: transform 0.1s ease, filter 0.15s ease;
       display: flex;
       align-items: center;
       gap: 4px;
     }
     #btn-cheats:active {
-      transform: scale(0.96);
+      transform: scale(0.92);
+      filter: brightness(1.2);
     }
 
     /* WEAPON AMMO BADGE */
@@ -1095,7 +1126,7 @@
   <!-- AIMING CROSSHAIR -->
   <div id="crosshair"><div class="crosshair-center"></div></div>
 
-  <!-- TOP BAR -->
+  <!-- TOP BAR (CLEAN, HIGH UP, NO BLACK BOXES ON STARS OR CASH) -->
   <div id="top-bar">
     <button id="menu-toggle" aria-label="Open menu" aria-expanded="false" title="Roblox Menu">
       <div class="logo"></div>
@@ -1111,8 +1142,8 @@
       </div>
     </div>
 
-    <!-- WANTED STARS -->
-    <div class="hud-card wanted-box" id="wanted-stars">
+    <!-- WANTED STARS (CLEAN FLOATING, NO BLACK BACKGROUND) -->
+    <div class="wanted-box" id="wanted-stars">
       <span class="wanted-star">★</span>
       <span class="wanted-star">★</span>
       <span class="wanted-star">★</span>
@@ -1120,14 +1151,14 @@
       <span class="wanted-star">★</span>
     </div>
 
-    <!-- CASH -->
-    <div class="hud-card cash-box">
+    <!-- CASH (CLEAN FLOATING GREEN GTA FONT, NO BLACK BACKGROUND) -->
+    <div class="cash-box">
       $<span id="cash-val">500</span>
     </div>
-
-    <!-- ONE-TAP CHEAT CODES BUTTON -->
-    <button id="btn-cheats" title="Cheat Codes">⚡ CHEATS</button>
   </div>
+
+  <!-- ONE-TAP CHEAT CODES BUTTON (MOVED BELOW NEAR JOYSTICK) -->
+  <button id="btn-cheats" title="Cheat Codes">⚡ CHEATS</button>
 
   <!-- CHEAT CODES MODAL (ONE-TAP MOBILE BUTTONS) -->
   <div id="cheat-modal">
@@ -1264,41 +1295,45 @@
     </div>
   </div>
 
-  <!-- MULTI-TOUCH BUTTONS FOR PHONES (RIGHT THUMB) -->
+  <!-- MULTI-TOUCH BUTTONS FOR PHONES (ERGONOMIC RIGHT THUMB CLUSTER) -->
   <div id="mobile-actions">
     <!-- Plane & Fighter Jet Flight Controls -->
-    <div class="action-row" id="plane-controls" style="display:none;">
-      <button class="action-btn" id="btn-plane-fire" title="Fire Jet Missiles" style="width:62px;height:62px;background:#e11d48;border-color:#fffa65;font-size:20px;box-shadow:0 0 14px #e11d48;">🚀<span style="font-size:8px;display:block;">MISSILE</span></button>
+    <div class="action-row" id="plane-controls" style="display:none;gap:8px;">
+      <button class="action-btn sm" id="btn-plane-fire" title="Fire Jet Missiles" style="background:#e11d48;border-color:#fffa65;font-size:18px;">🚀</button>
       <button class="pedal-btn" id="btn-pitch-down">▼<br>DIVE</button>
       <button class="pedal-btn" id="btn-pitch-up">▲<br>CLIMB</button>
       <button class="pedal-btn" id="btn-plane-gas">⚡<br>THRUST</button>
     </div>
 
     <!-- Tank Cannon Controls -->
-    <div class="action-row" id="tank-controls" style="display:none;">
-      <button class="action-btn" id="btn-tank-fire" title="Fire Cannon" style="width:68px;height:68px;background:#dc2626;border-color:#fffa65;font-size:24px;box-shadow:0 0 15px #dc2626;">💣<span style="font-size:9px;display:block;margin-top:-2px;">CANNON</span></button>
+    <div class="action-row" id="tank-controls" style="display:none;gap:8px;">
+      <button class="action-btn sm" id="btn-tank-fire" title="Fire Cannon" style="width:58px;height:58px;background:#dc2626;border-color:#fffa65;font-size:20px;">💣<span style="font-size:8px;display:block;">FIRE</span></button>
     </div>
 
     <!-- Ground Vehicle Pedals -->
-    <div class="action-row" id="car-pedals" style="display:none;">
-      <button class="action-btn" id="btn-horn" title="Horn">🎺</button>
-      <button class="action-btn" id="btn-handbrake" title="Drift">💨</button>
+    <div class="action-row" id="car-pedals" style="display:none;gap:8px;">
+      <button class="action-btn sm" id="btn-horn" title="Horn">🎺</button>
+      <button class="action-btn sm" id="btn-handbrake" title="Drift">💨</button>
       <button class="pedal-btn" id="btn-reverse">🛑<br>REV</button>
       <button class="pedal-btn" id="btn-gas">⚡<br>GAS</button>
     </div>
 
-    <!-- On Foot Buttons (Clean, Phone-friendly) -->
-    <div class="action-row" id="foot-actions">
-      <button class="action-btn" id="btn-weapon-swap" title="Switch Weapon" style="position:relative;">👊<span id="weapon-ammo-badge"></span></button>
-      <button class="action-btn" id="btn-aim" title="Aim Target">🎯</button>
-      <button class="action-btn" id="btn-sprint" title="Sprint">🏃</button>
-      <button class="action-btn" id="btn-jump" title="Jump">⤴</button>
-      <button class="action-btn" id="btn-punch" title="Attack / Fire">👊</button>
+    <!-- On Foot Controls Cluster (Clean 2-Tier Ergonomic Arc - Keeps Screen Clear) -->
+    <div id="foot-actions" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <div class="action-row" style="gap:8px;">
+        <button class="action-btn sm" id="btn-weapon-swap" title="Switch Weapon" style="position:relative;">👊<span id="weapon-ammo-badge"></span></button>
+        <button class="action-btn sm" id="btn-aim" title="Aim Target">🎯</button>
+        <button class="action-btn sm" id="btn-sprint" title="Sprint">🏃</button>
+      </div>
+      <div class="action-row" style="gap:8px;">
+        <button class="action-btn" id="btn-jump" title="Jump">⤴</button>
+        <button class="action-btn primary-action" id="btn-punch" title="Attack / Fire">👊</button>
+      </div>
     </div>
 
-    <!-- Universal Enter/Exit button -->
-    <div class="action-row">
-      <button class="action-btn" id="btn-enter" title="Enter / Exit Vehicle" style="border-color:#00f3ff;box-shadow:0 0 15px rgba(0,243,255,0.4);">🚗</button>
+    <!-- Universal Enter / Exit Vehicle button -->
+    <div class="action-row" style="margin-top:-2px;">
+      <button class="action-btn sm" id="btn-enter" title="Enter / Exit Vehicle" style="border-color:#00f3ff;box-shadow:0 0 12px rgba(0,243,255,0.4);">🚗</button>
     </div>
   </div>
 
@@ -1656,7 +1691,7 @@
     scene.background = new THREE.Color(0x7ec0ee);
     scene.fog = new THREE.Fog(0x7ec0ee, 350, 1800);
 
-    const camera = new THREE.PerspectiveCamera(65, getW() / getH(), 0.1, 1800);
+    const camera = new THREE.PerspectiveCamera(70, getW() / getH(), 0.1, 1800);
     camera.position.set(0, 6, -14);
     camera.lookAt(0, 1.8, 0); // ← CRITICAL: set initial lookAt before first frame
 
@@ -2453,6 +2488,7 @@
         this.speed = 3.5 + Math.random() * 2.0;
         this.health = 35;
         this.isDead = false;
+        this.hasBeenRobbed = false;
         this.animTime = Math.random() * 10;
         this.state = 'walk'; // 'walk', 'panic', 'enter_building'
         this.panicTimer = 0;
@@ -2586,10 +2622,14 @@
         if (this.health <= 0) {
           this.die();
         } else {
-          // Drop a small cash tip when hit (Robbery)
-          addCash(25);
-          showToast("Robbed Civilian! +$25 Cash");
-          onPersonRobbed();
+          // Drop cash and trigger developer message when robbed
+          if (!this.hasBeenRobbed) {
+            this.hasBeenRobbed = true;
+            addCash(25);
+            Sound.playCash();
+            showToast("💰 Robbed Civilian! +$25 Cash");
+            onPersonRobbed();
+          }
         }
       }
 
@@ -2601,11 +2641,9 @@
         showToast("Civilian Defeated! +$100 Cash Dropped!");
         Sound.playCash();
 
-        // First Kill or Robbery Roast Check
+        // First Kill Easter Egg Check ONLY (No developer message on subsequent kills)
         if (!State.hasKilledFirstPerson) {
           onPersonKilled('civilian');
-        } else {
-          onPersonRobbed();
         }
 
         if (State.wantedLevel === 0) {
@@ -2617,6 +2655,7 @@
         setTimeout(() => {
           this.isDead = false;
           this.health = 35;
+          this.hasBeenRobbed = false;
           this.group.rotation.x = 0;
           this.group.position.y = 0;
           this.group.position.x = -40 + Math.random() * 80;
@@ -3810,6 +3849,7 @@
         this.punchTime = 0;
 
         this.buildModel();
+        this.group.scale.set(0.78, 0.78, 0.78);
         scene.add(this.group);
       }
 
@@ -5379,6 +5419,24 @@
 
       // 3. UPDATE LIVING NPCS
       npcs.forEach(npc => npc.update(dt));
+
+      // Hold-up / Robbery via Aiming at Civilians
+      if (State.isAiming && !State.inVehicle && player) {
+        const pPos = player.group.position;
+        npcs.forEach(npc => {
+          if (npc.isDead || npc.hasBeenRobbed) return;
+          const d = Math.hypot(pPos.x - npc.group.position.x, pPos.z - npc.group.position.z);
+          if (d < 4.8) {
+            npc.hasBeenRobbed = true;
+            npc.state = 'panic';
+            npc.panicTimer = 12;
+            addCash(50);
+            Sound.playCash();
+            showToast("💰 HELD UP & ROBBED CIVILIAN! +$50 Cash!");
+            onPersonRobbed();
+          }
+        });
+      }
       if (_frameCount === 1) console.log('[F1] step: after npcs.update');
 
       // 4. UPDATE POLICE UNITS (Foot Cops, Squad Cruisers & Police Chopper)
@@ -5517,8 +5575,8 @@
             camDist = v.isPlane ? 34 : (v.isTank ? 22 : 17);
             camHeightBase = v.isPlane ? 12 : (v.isTank ? 8.5 : 6.0);
           } else {
-            camDist = 12.0;
-            camHeightBase = 4.4;
+            camDist = 15.0;
+            camHeightBase = 5.2;
           }
 
           const horizDist = camDist * Math.cos(camOrbitPitch);
