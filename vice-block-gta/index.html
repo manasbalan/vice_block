@@ -3192,7 +3192,7 @@
         this.driver.group.rotation.y = this.group.rotation.y;
 
         // SOLID COLLISIONS (Buildings, other vehicles, pedestrians)
-        this.checkSolidCollisions();
+        this.checkSolidCollisions(dt);
 
         // Siren flash
         if (this.isPolice && (this.driver || State.wantedLevel > 0)) {
@@ -3262,12 +3262,13 @@
 
         // Check ground crash only if flying low
         if (this.altitude < 4.0) {
-          this.checkSolidCollisions();
+          this.checkSolidCollisions(dt);
         }
       }
 
-      checkSolidCollisions() {
+      checkSolidCollisions(dt = 0.016) {
         const myPos = this.group.position;
+        const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.group.rotation.y);
 
         // 1. Solid Building Collisions
         solidBoxes.forEach(b => {
@@ -5034,6 +5035,15 @@
           activateCheckpoint('bank', 'Vice National Bank', 55, -35);
           setMission(4, "Escape 4-Star Heat & Return to Ocean View Safehouse to Save!", -55, -112);
         }
+        // Developer roast dialog when robbing the bank!
+        setTimeout(() => {
+          showNarrativeDialog(
+            "Game Dev",
+            "Valla panikum poda daridravasi",
+            null,
+            10000
+          );
+        }, 400);
       } else if (z.action === 'police_station') {
         setWantedLevel(3);
         showToast("🚨 INFILTRATED VCPD POLICE HQ! 3-STAR SWAT RESPONSE!");
