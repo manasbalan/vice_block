@@ -22,21 +22,84 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #0f0c1a;
+      background: #5cb8ff;
       overscroll-behavior: none;
     }
     #game-container {
-      position: absolute;
+      position: fixed;
       width: 100%;
       height: 100%;
       top: 0;
       left: 0;
       z-index: 1;
+      overflow: hidden;
     }
     #game-container canvas {
       display: block;
-      width: 100% !important;
-      height: 100% !important;
+      touch-action: none;
+    }
+
+    /* ROTATE DEVICE OVERLAY FOR WIDESCREEN LANDSCAPE */
+    #rotate-prompt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 12, 26, 0.94);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      padding: 24px;
+    }
+    @media screen and (orientation: portrait) and (max-width: 900px) {
+      #rotate-prompt { display: flex; }
+    }
+    .rotate-card {
+      background: #191b1d;
+      border: 2px solid #00f3ff;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 320px;
+      box-shadow: 0 10px 30px rgba(0, 243, 255, 0.25);
+    }
+    .rotate-icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+      animation: rotateIcon 1.5s infinite alternate ease-in-out;
+    }
+    @keyframes rotateIcon {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(90deg) scale(1.1); }
+    }
+    .rotate-card h3 {
+      font-size: 19px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: #00f3ff;
+      letter-spacing: 0.5px;
+    }
+    .rotate-card p {
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .rotate-card button {
+      background: #0074e0;
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
     }
 
     /* ROBLOX TOPBAR HUD */
@@ -461,7 +524,7 @@
     /* KEYBOARD HINTS (DESKTOP ONLY) */
     #help-overlay {
       position: absolute;
-      top: calc(8px + env(safe-area-inset-top));
+      bottom: calc(16px + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
       background: rgba(25, 27, 29, 0.85);
@@ -481,7 +544,190 @@
       padding: 1px 4px;
       border-radius: 3px;
     }
-    @media (max-width: 768px) {
+
+    /* GTA VICE CITY STYLE MAIN MENU SCREEN */
+    #main-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(32, 10, 56, 0.82) 0%, rgba(10, 5, 24, 0.94) 100%);
+      backdrop-filter: blur(6px);
+      z-index: 5000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 16px;
+      user-select: none;
+      transition: opacity 0.35s ease, visibility 0.35s;
+    }
+    #main-menu-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .gta-logo-box {
+      margin-bottom: 20px;
+    }
+    .gta-logo-title {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(42px, 8.5vw, 84px);
+      letter-spacing: 5px;
+      color: #ff007f;
+      text-shadow: 0 0 20px #ff007f, 3px 3px 0 #00ffff, 0 0 50px rgba(255, 0, 127, 0.8);
+      text-transform: uppercase;
+      line-height: 1.0;
+      margin: 0;
+    }
+    .gta-logo-sub {
+      font-size: clamp(11px, 2.4vw, 17px);
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #00ffff;
+      text-shadow: 0 0 14px #00ffff;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+    .gta-menu-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(340px, 92vw);
+    }
+    .gta-menu-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid #ff007f;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.25);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .gta-menu-btn:hover, .gta-menu-btn:active {
+      background: #ff007f;
+      color: #fff;
+      border-color: #00ffff;
+      box-shadow: 0 0 25px #ff007f, 0 0 35px #00ffff;
+      transform: scale(1.03);
+    }
+    .gta-menu-btn.primary {
+      background: linear-gradient(90deg, #ff007f, #b300ff);
+      border-color: #00ffff;
+    }
+    .gta-menu-btn.cyan {
+      border-color: #00ffff;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+    }
+    .gta-menu-btn.cyan:hover {
+      background: #00ffff;
+      color: #111;
+    }
+    .menu-info-pill {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #a8d5ff;
+      margin-top: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* CONTROLS MODAL INSIDE MENU */
+    #controls-modal {
+      display: none;
+      background: rgba(18, 12, 34, 0.95);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 420px;
+      width: 90vw;
+      margin-top: 12px;
+      text-align: left;
+      font-size: 12px;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+    }
+    #controls-modal h3 {
+      color: #ff007f;
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    #controls-modal table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #controls-modal td {
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #controls-modal td:first-child {
+      color: #00ffff;
+      font-weight: 900;
+      width: 45%;
+    }
+
+    /* CHECKPOINT REACHED BANNER */
+    #checkpoint-banner {
+      position: fixed;
+      top: 55px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-40px);
+      background: linear-gradient(90deg, #ff007f, #00f3ff);
+      border: 2px solid #fff;
+      border-radius: 30px;
+      padding: 8px 24px;
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      z-index: 2000;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.8), 0 0 35px rgba(0, 243, 255, 0.8);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+    #checkpoint-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* SWIPE CAMERA HINT PILL */
+    #swipe-hint {
+      position: fixed;
+      bottom: calc(75px + env(safe-area-inset-bottom));
+      right: 20px;
+      background: rgba(15, 12, 28, 0.7);
+      border: 1px solid rgba(0, 243, 255, 0.4);
+      color: #00ffff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.85;
+      transition: opacity 0.5s;
+    }
+
+    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
       #help-overlay { display: none; }
       #minimap-wrapper { width: 85px; height: 85px; }
       #mission-banner { font-size: 11px; max-width: 60%; left: 60%; }
@@ -490,6 +736,47 @@
 </head>
 <body>
   <div id="game-container"></div>
+
+  <!-- CHECKPOINT UNLOCKED BANNER -->
+  <div id="checkpoint-banner">🏁 CHECKPOINT UNLOCKED: OCEAN VIEW SAFEHOUSE</div>
+
+  <!-- SWIPE TO LOOK AROUND HINT -->
+  <div id="swipe-hint">👁️ Drag / Swipe Screen to Look Around (360°)</div>
+
+  <!-- GTA VICE CITY STYLE MAIN MENU SCREEN -->
+  <div id="main-menu-overlay">
+    <div class="gta-logo-box">
+      <h1 class="gta-logo-title">VICE BLOCKS</h1>
+      <div class="gta-logo-sub">GRAND THEFT AUTO: MIAMI 1986</div>
+    </div>
+
+    <div class="gta-menu-box">
+      <button class="gta-menu-btn primary" id="btn-start-game">▶ START GAME</button>
+      <button class="gta-menu-btn cyan" id="btn-menu-char">👤 CHARACTER: LUCIA</button>
+      <button class="gta-menu-btn" id="btn-menu-checkpoint">🏁 SPAWN AT SAFEHOUSE</button>
+      <button class="gta-menu-btn" id="btn-menu-controls">🎮 CONTROLS & HOW TO PLAY</button>
+      <button class="gta-menu-btn" id="btn-menu-audio">📻 RADIO: VICE FM (ON)</button>
+    </div>
+
+    <!-- CONTROLS INFO PANEL -->
+    <div id="controls-modal">
+      <h3>🎮 HOW TO PLAY VICE BLOCKS</h3>
+      <table>
+        <tr><td>MOVE / DRIVE / FLY</td><td>W, A, S, D / Virtual Joystick</td></tr>
+        <tr><td>ORBIT CAMERA (360°)</td><td>Swipe Screen or Drag Mouse anywhere</td></tr>
+        <tr><td>ENTER / STEAL VEHICLE</td><td>[E] Key or 🚗 Touch Button</td></tr>
+        <tr><td>PUNCH / ROB / EAT</td><td>[F] Key or 👊 Touch Button</td></tr>
+        <tr><td>JUMP / CLIMB PLANE</td><td>[SPACE] or ⤴ / CLIMB Button</td></tr>
+        <tr><td>RADIO TOGGLE</td><td>[R] Key</td></tr>
+        <tr><td>PAUSE / MENU</td><td>[ESC] or [M] or Topbar Logo</td></tr>
+      </table>
+      <div style="margin-top:10px;text-align:center;">
+        <button class="gta-menu-btn cyan" id="btn-close-controls" style="padding:6px 14px;font-size:12px;margin:auto;">CLOSE GUIDE</button>
+      </div>
+    </div>
+
+    <div class="menu-info-pill">🌴 100% OFFLINE • OPEN WORLD • LIVING NPCS • FLYABLE PLANES 🌴</div>
+  </div>
 
   <!-- TOP BAR -->
   <div id="top-bar">
@@ -609,6 +896,16 @@
     <div id="death-desc">Wasted in Vice City! -$200 Hospital/Bail Bill</div>
   </div>
 
+  <!-- ROTATE DEVICE OVERLAY (FOR PHONES IN PORTRAIT) -->
+  <div id="rotate-prompt">
+    <div class="rotate-card">
+      <div class="rotate-icon">📱 ↷ 🖥️</div>
+      <h3>ROTATE TO LANDSCAPE</h3>
+      <p>Vice Blocks is designed for widescreen gameplay. Turn your device horizontally to play!</p>
+      <button id="btn-force-landscape">PLAY IN HORIZONTAL MODE</button>
+    </div>
+  </div>
+
   <!-- THREE.JS (Local file for 100% offline low-spec reliability) -->
   <script src="three.min.js"></script>
 
@@ -634,8 +931,17 @@
       inVehicle: false,
       currentVehicle: null,
       currentMission: 1,
-      radioPlaying: true
+      radioPlaying: true,
+      inMenu: true,
+      activeCheckpoint: { id: 'safehouse', name: "Ocean View Safehouse", x: -55, z: -112 }
     };
+
+    try {
+      const savedCp = localStorage.getItem('vice_blocks_checkpoint');
+      if (savedCp) {
+        State.activeCheckpoint = JSON.parse(savedCp);
+      }
+    } catch(e){}
 
     // --- PROCEDURAL AUDIO ENGINE ---
     class SoundEngine {
@@ -790,84 +1096,113 @@
     window.addEventListener('pointerdown', () => Sound.init(), { once: true });
     window.addEventListener('keydown', () => Sound.init(), { once: true });
 
-    // --- THREE.JS SETUP (Safe viewport dimensions for mobile apps) ---
-    const getW = () => Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 360);
-    const getH = () => Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, 640);
+    // --- THREE.JS SETUP (Optimized for Landscape Mobile & Desktop) ---
+    const getW = () => Math.max(window.innerWidth || document.documentElement.clientWidth || 0, 480);
+    const getH = () => Math.max(window.innerHeight || document.documentElement.clientHeight || 0, 270);
 
     const container = document.getElementById('game-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x130e22);
-    scene.fog = new THREE.Fog(0x130e22, 60, 600);
+    scene.background = new THREE.Color(0x4cb8ff);
+    scene.fog = new THREE.Fog(0x4cb8ff, 180, 1100);
 
-    const camera = new THREE.PerspectiveCamera(65, getW() / getH(), 0.1, 1500);
-    camera.position.set(0, 7.5, -12);
+    const camera = new THREE.PerspectiveCamera(65, getW() / getH(), 0.1, 1800);
+    camera.position.set(0, 6, -14);
+    camera.lookAt(0, 1.8, 0); // ← CRITICAL: set initial lookAt before first frame
 
     const renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(getW(), getH());
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setClearColor(0x4cb8ff, 1); // explicit clear color, no sRGBEncoding
+    renderer.shadowMap.enabled = false;
+
+    // Make canvas fill container properly
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
 
     function updateViewportSize() {
-      const w = getW();
-      const h = getH();
+      const w = Math.max(window.innerWidth || document.documentElement.clientWidth || 0, 480);
+      const h = Math.max(window.innerHeight || document.documentElement.clientHeight || 0, 270);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     }
     window.addEventListener('resize', updateViewportSize);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateViewportSize, 100);
+      setTimeout(updateViewportSize, 300);
+    });
     window.addEventListener('load', updateViewportSize);
     setTimeout(updateViewportSize, 100);
     setTimeout(updateViewportSize, 400);
     setTimeout(updateViewportSize, 1000);
 
-    // --- LIGHTS ---
-    const hemiLight = new THREE.HemisphereLight(0xff7fa5, 0x1f1838, 0.9);
+    // Landscape orientation button trigger
+    const forceLandscapeBtn = document.getElementById('btn-force-landscape');
+    if (forceLandscapeBtn) {
+      forceLandscapeBtn.addEventListener('click', () => {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+          }
+        } catch(e){}
+        const prompt = document.getElementById('rotate-prompt');
+        if (prompt) prompt.style.display = 'none';
+        setTimeout(updateViewportSize, 200);
+      });
+    }
+
+    // --- VIBRANT TROPICAL LIGHTS ---
+    const hemiLight = new THREE.HemisphereLight(0xbae6fd, 0x4ade80, 0.9);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffc578, 0.95);
-    dirLight.position.set(80, 140, 60);
+    const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.25);
+    dirLight.position.set(120, 240, 100);
     scene.add(dirLight);
 
-    const ambientLight = new THREE.AmbientLight(0x403060, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75); // Bright white fill so no surface is pitch black!
     scene.add(ambientLight);
 
-    // --- MATERIALS ---
+    // --- MATERIALS (Crisp & High-Visibility) ---
     const M = {
-      road: new THREE.MeshLambertMaterial({ color: 0x222228 }),
+      road: new THREE.MeshLambertMaterial({ color: 0x373b44 }),
       roadLine: new THREE.MeshBasicMaterial({ color: 0xffd700 }),
-      runway: new THREE.MeshLambertMaterial({ color: 0x1a1a20 }),
+      runway: new THREE.MeshLambertMaterial({ color: 0x24272e }),
       runwayStripe: new THREE.MeshBasicMaterial({ color: 0xffffff }),
-      grass: new THREE.MeshLambertMaterial({ color: 0x245538 }),
-      sand: new THREE.MeshLambertMaterial({ color: 0xdeb887 }),
-      water: new THREE.MeshLambertMaterial({ color: 0x127bba, transparent: true, opacity: 0.85 }),
-      wallDark: new THREE.MeshLambertMaterial({ color: 0x2c263d }),
-      wallBank: new THREE.MeshLambertMaterial({ color: 0x3d4b66 }),
-      wallBurger: new THREE.MeshLambertMaterial({ color: 0x8a3028 }),
-      wallGas: new THREE.MeshLambertMaterial({ color: 0xb57022 }),
-      wallPolice: new THREE.MeshLambertMaterial({ color: 0x23314f }),
-      wallClub: new THREE.MeshLambertMaterial({ color: 0x481e59 }),
-      wallHangar: new THREE.MeshLambertMaterial({ color: 0x454552 }),
-      floorTile: new THREE.MeshLambertMaterial({ color: 0xdedede }),
-      floorVault: new THREE.MeshLambertMaterial({ color: 0xffcc00 }),
-      glass: new THREE.MeshBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.75 }),
-      goldBar: new THREE.MeshLambertMaterial({ color: 0xffd700 }),
+      grass: new THREE.MeshLambertMaterial({ color: 0x22c55e }),
+      sand: new THREE.MeshLambertMaterial({ color: 0xfde047 }),
+      water: new THREE.MeshLambertMaterial({ color: 0x0284c7, transparent: true, opacity: 0.88 }),
+      wallDark: new THREE.MeshLambertMaterial({ color: 0x475569 }),
+      wallBank: new THREE.MeshLambertMaterial({ color: 0x334155 }),
+      wallBurger: new THREE.MeshLambertMaterial({ color: 0xef4444 }),
+      wallGas: new THREE.MeshLambertMaterial({ color: 0xf59e0b }),
+      wallPolice: new THREE.MeshLambertMaterial({ color: 0x1d4ed8 }),
+      wallClub: new THREE.MeshLambertMaterial({ color: 0xa855f7 }),
+      wallHangar: new THREE.MeshLambertMaterial({ color: 0x64748b }),
+      floorTile: new THREE.MeshLambertMaterial({ color: 0xf1f5f9 }),
+      floorVault: new THREE.MeshLambertMaterial({ color: 0xfacc15 }),
+      glass: new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75 }),
+      goldBar: new THREE.MeshLambertMaterial({ color: 0xfacc15 }),
       neonCyan: new THREE.MeshBasicMaterial({ color: 0x00f3ff }),
       neonPink: new THREE.MeshBasicMaterial({ color: 0xff0066 }),
-      neonGreen: new THREE.MeshBasicMaterial({ color: 0x02b757 }),
-      neonYellow: new THREE.MeshBasicMaterial({ color: 0xffcc00 }),
-      wheel: new THREE.MeshLambertMaterial({ color: 0x141416 }),
-      skin: new THREE.MeshLambertMaterial({ color: 0xffcc99 }),
-      shirtPink: new THREE.MeshLambertMaterial({ color: 0xff3388 }),
-      shirtTeal: new THREE.MeshLambertMaterial({ color: 0x11aabb }),
-      shirtCop: new THREE.MeshLambertMaterial({ color: 0x1f2f54 }),
-      denim: new THREE.MeshLambertMaterial({ color: 0x2b3859 }),
-      carPink: new THREE.MeshLambertMaterial({ color: 0xff2a85 }),
-      carBlue: new THREE.MeshLambertMaterial({ color: 0x0099ff }),
-      carYellow: new THREE.MeshLambertMaterial({ color: 0xffa500 }),
-      copBlack: new THREE.MeshLambertMaterial({ color: 0x121215 }),
-      copWhite: new THREE.MeshLambertMaterial({ color: 0xf5f5fa }),
-      bikeRed: new THREE.MeshLambertMaterial({ color: 0xdd2222 }),
-      planeYellow: new THREE.MeshLambertMaterial({ color: 0xffbb00 })
+      neonGreen: new THREE.MeshBasicMaterial({ color: 0x22c55e }),
+      neonYellow: new THREE.MeshBasicMaterial({ color: 0xfacc15 }),
+      wheel: new THREE.MeshLambertMaterial({ color: 0x111827 }),
+      skin: new THREE.MeshLambertMaterial({ color: 0xffd1a4 }),
+      shirtPink: new THREE.MeshLambertMaterial({ color: 0xf43f5e }),
+      shirtTeal: new THREE.MeshLambertMaterial({ color: 0x06b6d4 }),
+      shirtCop: new THREE.MeshLambertMaterial({ color: 0x1e3a8a }),
+      denim: new THREE.MeshLambertMaterial({ color: 0x3b82f6 }),
+      carPink: new THREE.MeshLambertMaterial({ color: 0xf43f5e }),
+      carBlue: new THREE.MeshLambertMaterial({ color: 0x0ea5e9 }),
+      carYellow: new THREE.MeshLambertMaterial({ color: 0xeab308 }),
+      copBlack: new THREE.MeshLambertMaterial({ color: 0x111827 }),
+      copWhite: new THREE.MeshLambertMaterial({ color: 0xf8fafc }),
+      bikeRed: new THREE.MeshLambertMaterial({ color: 0xdc2626 }),
+      planeYellow: new THREE.MeshLambertMaterial({ color: 0xf59e0b })
     };
 
     // --- SOLID COLLISION BOXES ---
@@ -928,6 +1263,9 @@
 
       // 8. Downtown Filler Skyscrapers
       buildSkyscrapers();
+
+      // 9. GTA Highway Gantries, Billboards & Airport Arch
+      buildGTASignboards();
     }
 
     function createRoadSegment(x, z, w, h, isVertical) {
@@ -1073,7 +1411,162 @@
       return new THREE.Mesh(signGeo, signMat);
     }
 
+    function createSignCanvasMaterial(line1, bgColor, fgColor, line2 = null) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, 512, 128);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(4, 4, 504, 120);
+
+      ctx.fillStyle = fgColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (line2) {
+        ctx.font = 'bold 28px sans-serif';
+        ctx.fillText(line1, 256, 42);
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = '#fffa65';
+        ctx.fillText(line2, 256, 88);
+      } else {
+        ctx.font = 'bold 30px sans-serif';
+        ctx.fillText(line1, 256, 64);
+      }
+
+      const tex = new THREE.CanvasTexture(canvas);
+      return new THREE.MeshBasicMaterial({ map: tex, transparent: false });
+    }
+
+    function createHighwayGantry(x, z, w, textLeft, textRight) {
+      const gantryGroup = new THREE.Group();
+      const trussMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
+      const signMatLeft = createSignCanvasMaterial(textLeft, '#006a4e', '#ffffff');
+      const signMatRight = createSignCanvasMaterial(textRight, '#006a4e', '#ffffff');
+
+      // Left & Right Pillars
+      const p1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 13, 1.2), trussMat);
+      p1.position.set(-w / 2, 6.5, 0);
+      const p2 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 13, 1.2), trussMat);
+      p2.position.set(w / 2, 6.5, 0);
+
+      // Overhead Crossbar Truss
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(w, 1.4, 1.4), trussMat);
+      bar.position.set(0, 12, 0);
+      gantryGroup.add(p1, p2, bar);
+
+      // Left Overhead Signboard
+      const s1 = new THREE.Mesh(new THREE.BoxGeometry(w * 0.44, 4.2, 0.5), signMatLeft);
+      s1.position.set(-w * 0.24, 11.2, 0.8);
+      // Right Overhead Signboard
+      const s2 = new THREE.Mesh(new THREE.BoxGeometry(w * 0.44, 4.2, 0.5), signMatRight);
+      s2.position.set(w * 0.24, 11.2, 0.8);
+      gantryGroup.add(s1, s2);
+
+      gantryGroup.position.set(x, 0, z);
+      scene.add(gantryGroup);
+      addBoxCollider(x - w / 2 - 1.2, x - w / 2 + 1.2, z - 1.2, z + 1.2, 'gantry_pole');
+      addBoxCollider(x + w / 2 - 1.2, x + w / 2 + 1.2, z - 1.2, z + 1.2, 'gantry_pole');
+    }
+
+    function createBillboard(x, y, z, rotY, title, subtitle, bgColor, textColor) {
+      const bGroup = new THREE.Group();
+      const poleMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, y, 8), poleMat);
+      pole.position.set(0, y / 2, 0);
+      bGroup.add(pole);
+
+      const signMat = createSignCanvasMaterial(title, bgColor, textColor, subtitle);
+      const board = new THREE.Mesh(new THREE.BoxGeometry(24, 8, 0.8), signMat);
+      board.position.set(0, y, 0);
+      bGroup.add(board);
+
+      bGroup.position.set(x, 0, z);
+      bGroup.rotation.y = rotY;
+      scene.add(bGroup);
+      addBoxCollider(x - 1, x + 1, z - 1, z + 1, 'billboard_pole');
+    }
+
+    function buildAirportGrandArch() {
+      const arch = new THREE.Group();
+      const concreteMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
+      // Huge Gateway Pillars
+      const p1 = new THREE.Mesh(new THREE.BoxGeometry(4, 18, 4), concreteMat);
+      p1.position.set(-20, 9, 0);
+      const p2 = new THREE.Mesh(new THREE.BoxGeometry(4, 18, 4), concreteMat);
+      p2.position.set(20, 9, 0);
+
+      // Overhead Span
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(44, 4, 4), concreteMat);
+      beam.position.set(0, 16, 0);
+      arch.add(p1, p2, beam);
+
+      // Airport Signboard
+      const signMat = createSignCanvasMaterial("✈ ESCOBAR INTL AIRPORT ✈", "#0f172a", "#00f3ff", "RUNWAY 18L-36R • RESTRICTED AIRSPACE");
+      const sign = new THREE.Mesh(new THREE.BoxGeometry(38, 4.2, 0.6), signMat);
+      sign.position.set(0, 16, 2.2);
+      arch.add(sign);
+
+      // Flashing runway hazard beacons
+      const b1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4), M.neonPink);
+      b1.position.set(-20, 18.7, 0);
+      const b2 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4), M.neonGreen);
+      b2.position.set(20, 18.7, 0);
+      arch.add(b1, b2);
+
+      arch.position.set(0, 0, 185);
+      scene.add(arch);
+      addBoxCollider(-22, -18, 183, 187, 'airport_gate_left');
+      addBoxCollider(18, 22, 183, 187, 'airport_gate_right');
+    }
+
+    function buildGTASignboards() {
+      // 1. Highway Overhead Gantries
+      createHighwayGantry(0, 0, 26, "⬆ SOUTH BEACH / AIRPORT", "➡ BURGER SHOT / OCEAN DR");
+      createHighwayGantry(-100, 80, 26, "⬆ CLUB MALIBU & LSIA", "⬅ VCPD HQ / BANK");
+
+      // 2. Giant GTA Style Billboards
+      createBillboard(-34, 16, -40, 0, "BURGER SHOT 🍔", "TASTE THE GREASE! 100% BEEF", "#b91c1c", "#fffa65");
+      createBillboard(34, 16, -50, 0, "VICE NATIONAL BANK 💰", "LOW INTEREST • VAULT LOANS", "#065f46", "#fef08a");
+      createBillboard(-34, 16, 140, 0, "CLUB MALIBU 🌴", "LIVE DJ TONIGHT • SYNTHWAVE", "#701a75", "#38bdf8");
+      createBillboard(34, 16, 190, 0, "ESCOBAR AVIATION ✈", "STUNT PLANES • HANGAR STORAGE", "#075985", "#fde047");
+
+      // 3. Grand Airport Archway
+      buildAirportGrandArch();
+    }
+
     function buildAllOpenBuildings() {
+      // 0. OCEAN VIEW SAFEHOUSE (Player's Home & Starting Checkpoint)
+      buildWalkInBuilding({
+        id: 'safehouse',
+        x: -55, z: -130, w: 28, h: 12, d: 24,
+        wallMat: M.wallClub,
+        name: "OCEAN VIEW SAFEHOUSE",
+        purpose: "REST & SAVE CHECKPOINT",
+        signCol: 0xff007f,
+        doorWidth: 8,
+        zoneAction: 'safehouse_save'
+      });
+      // Interior Bed (Save Point)
+      const bed = new THREE.Mesh(new THREE.BoxGeometry(6, 1.8, 8), M.shirtPink);
+      bed.position.set(-62, 0.9, -135);
+      scene.add(bed);
+      // Wardrobe / Closet
+      const wardrobe = new THREE.Mesh(new THREE.BoxGeometry(7, 8, 2.5), M.wallDark);
+      wardrobe.position.set(-48, 4.0, -138);
+      scene.add(wardrobe);
+      // Health Kit on bedside table
+      const medkit = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 1.5), M.neonGreen);
+      medkit.position.set(-57, 1.2, -135);
+      scene.add(medkit);
+      // Driveway slab outside Safehouse
+      const driveway = new THREE.Mesh(new THREE.PlaneGeometry(28, 16), M.road);
+      driveway.rotation.x = -Math.PI / 2;
+      driveway.position.set(-55, 0.07, -112);
+      scene.add(driveway);
+
       // 1. BURGER SHOT (Walk inside to restore full health!)
       const burger = buildWalkInBuilding({
         id: 'burger_shot',
@@ -1192,7 +1685,7 @@
         purpose: "AIRCRAFT STORAGE",
         signCol: 0xffaa00,
         doorWidth: 26,
-        zoneAction: null
+        zoneAction: 'hangar_storage'
       });
 
       // 4. Airport Control Tower
@@ -1613,20 +2106,22 @@
         }
         this.speed = THREE.MathUtils.clamp(this.speed, 0, this.maxSpeed);
 
-        // Lift off into sky if speed > 16
-        if (this.speed > 16) {
-          if (input.jump || keys.forward) {
-            this.altitude = Math.min(130, this.altitude + 14 * dt);
-            this.pitch = THREE.MathUtils.lerp(this.pitch, -0.25, 0.08);
-          } else if (input.backward) {
-            this.altitude = Math.max(0.5, this.altitude - 14 * dt);
-            this.pitch = THREE.MathUtils.lerp(this.pitch, 0.25, 0.08);
+        // Lift off into sky if speed > 14
+        if (this.speed > 14) {
+          if (input.jump) {
+            // Climb / Pitch Up
+            this.altitude = Math.min(220, this.altitude + 18 * dt);
+            this.pitch = THREE.MathUtils.lerp(this.pitch, -0.28, 0.08);
+          } else if (input.backward || keys.handbrake) {
+            // Dive / Pitch Down
+            this.altitude = Math.max(0.5, this.altitude - 16 * dt);
+            this.pitch = THREE.MathUtils.lerp(this.pitch, 0.28, 0.08);
           } else {
             this.pitch = THREE.MathUtils.lerp(this.pitch, 0, 0.05);
           }
           this.isFlying = this.altitude > 2.0;
         } else {
-          // Descend to runway
+          // Descend to runway if slow
           this.altitude = Math.max(0.5, this.altitude - 12 * dt);
           this.isFlying = false;
         }
@@ -1869,20 +2364,28 @@
     }
 
     // --- INITIALIZE GAME WORLD ---
-    buildCity();
+    try {
+      buildCity();
+    } catch(e) {
+      console.error('[ViceBlocks] buildCity() ERROR:', e);
+      document.body.insertAdjacentHTML('beforeend', `<div style="position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#c00;color:#fff;padding:20px;border-radius:8px;z-index:99999;font-size:14px;max-width:90vw">buildCity ERROR:<br>${e.message}</div>`);
+    }
 
-    // Spawn Player on wide open Central Boulevard (zero building obstruction!)
+    // Spawn Player at their Safehouse Home porch on Ocean Beach
     const player = new RobloxCharacter(true);
-    player.group.position.set(0, 0, 0);
+    const startCp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -112 };
+    player.group.position.set(startCp.x, 0, startCp.z);
 
-    // SPAWN VEHICLES (right next to player on Central Boulevard)
-    // 1. Starter Sports Car (Right side of road)
-    const cheetah = new RobloxVehicle({ x: 5, z: 0, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
-    // 2. Sanchez Dirt Bike (Left side of road)
-    const dirtBike = new RobloxVehicle({ x: -5, z: 0, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
-    // 3. Stunt Airplane (Parked on Airport Runway!)
-    const stuntPlane = new RobloxVehicle({ x: 0, z: 240, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
-    // 4. Police Cruisers
+    // SPAWN VEHICLES
+    // 1. Starter Sports Car (Parked outside Ocean View Safehouse Driveway)
+    const cheetah = new RobloxVehicle({ x: -48, z: -112, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
+    // 2. Sanchez Dirt Bike (Parked outside Safehouse Garage)
+    const dirtBike = new RobloxVehicle({ x: -62, z: -112, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
+    // 3. Yellow Stunt Airplane (Parked on Airport Runway!)
+    const stuntPlane = new RobloxVehicle({ x: 0, z: 230, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
+    // 4. Blue Aerobatic Stunt Jet (Inside Open Airport Hangar!)
+    const stuntJet = new RobloxVehicle({ x: -55, z: 270, type: 'plane', colorMat: M.carBlue, name: 'Aerobatic Stunt Jet' });
+    // 5. Police Cruisers
     const copCar1 = new RobloxVehicle({ x: 45, z: 45, type: 'cop', name: 'Police Cruiser' });
     const copCar2 = new RobloxVehicle({ x: 110, z: 0, type: 'cop', name: 'Police Cruiser' });
 
@@ -2043,15 +2546,149 @@
       () => { keys.backward = false; }
     );
 
-    // --- ROBLOX MENU MODAL LOGIC ---
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+    // --- FREE CAMERA SWIPE / ORBIT SYSTEM (360° VIEW ON FOOT & DRIVING) ---
+    let camDragPointerId = null;
+    let camDragLastX = 0;
+    let camDragLastY = 0;
+    let camOrbitYaw = 0;
+    let camOrbitPitch = 0.14;
+    let camTargetYaw = 0;
+    let camTargetPitch = 0.14;
+    let lastCameraInteractionTime = 0;
 
-    menuToggle.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    window.addEventListener('pointerdown', (e) => {
+      if (State.inMenu) return;
+
+      // Ignore interactive buttons, menus, and joystick
+      if (e.target.closest('#joystick-zone, #mobile-actions, #top-bar, #mobile-menu, #rotate-prompt, #main-menu-overlay, button, .action-btn, .pedal-btn')) {
+        return;
+      }
+
+      // If mobile left-bottom area, leave for movement joystick
+      if (e.clientX < window.innerWidth * 0.42 && e.clientY > window.innerHeight * 0.45) {
+        return;
+      }
+
+      if (camDragPointerId === null) {
+        camDragPointerId = e.pointerId;
+        camDragLastX = e.clientX;
+        camDragLastY = e.clientY;
+        lastCameraInteractionTime = performance.now();
+        // Hide swipe hint once user starts swiping
+        const hint = document.getElementById('swipe-hint');
+        if (hint) hint.style.opacity = '0';
+      }
     });
 
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== camDragPointerId) return;
+      const dx = e.clientX - camDragLastX;
+      const dy = e.clientY - camDragLastY;
+      camDragLastX = e.clientX;
+      camDragLastY = e.clientY;
+      lastCameraInteractionTime = performance.now();
+
+      const sens = 0.0055;
+      camTargetYaw -= dx * sens;
+      camTargetPitch += dy * sens;
+
+      // Keep pitch in bounds (don't flip upside down or go below ground)
+      camTargetPitch = Math.max(-0.25, Math.min(1.15, camTargetPitch));
+    });
+
+    const endCamDrag = (e) => {
+      if (e.pointerId === camDragPointerId) {
+        camDragPointerId = null;
+      }
+    };
+    window.addEventListener('pointerup', endCamDrag);
+    window.addEventListener('pointercancel', endCamDrag);
+
+    // --- GTA MAIN MENU & ROBLOX MENU LOGIC ---
+    const mainMenuOverlay = document.getElementById('main-menu-overlay');
+    const btnStartGame = document.getElementById('btn-start-game');
+    const btnMenuChar = document.getElementById('btn-menu-char');
+    const btnMenuCheckpoint = document.getElementById('btn-menu-checkpoint');
+    const btnMenuControls = document.getElementById('btn-menu-controls');
+    const btnMenuAudio = document.getElementById('btn-menu-audio');
+    const controlsModal = document.getElementById('controls-modal');
+    const btnCloseControls = document.getElementById('btn-close-controls');
+
+    function startGameplay() {
+      State.inMenu = false;
+      mainMenuOverlay.classList.add('hidden');
+      Sound.init();
+      showToast(`WELCOME TO VICE CITY! VISIT BURGER SHOT OR GRAB YOUR RIDE!`);
+    }
+
+    if (btnStartGame) btnStartGame.addEventListener('click', startGameplay);
+
+    if (btnMenuChar) {
+      btnMenuChar.addEventListener('click', () => {
+        const isLucia = State.character === 'Lucia';
+        State.character = isLucia ? 'Jason' : 'Lucia';
+        player.setGender(!isLucia);
+        document.getElementById('char-name').innerText = State.character.toUpperCase();
+        btnMenuChar.innerText = `👤 CHARACTER: ${State.character.toUpperCase()}`;
+        document.getElementById('btn-menu-swap').innerText = `SWAP CHARACTER (${isLucia ? 'LUCIA' : 'JASON'})`;
+        showToast(`Swapped Character to ${State.character}!`);
+      });
+    }
+
+    if (btnMenuCheckpoint) {
+      btnMenuCheckpoint.addEventListener('click', () => {
+        const cp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -112 };
+        if (State.inVehicle) toggleVehicle();
+        player.group.position.set(cp.x, 0, cp.z);
+        showToast(`Spawned at ${cp.name}`);
+        startGameplay();
+      });
+    }
+
+    if (btnMenuControls && controlsModal) {
+      btnMenuControls.addEventListener('click', () => {
+        controlsModal.style.display = controlsModal.style.display === 'block' ? 'none' : 'block';
+      });
+    }
+    if (btnCloseControls && controlsModal) {
+      btnCloseControls.addEventListener('click', () => {
+        controlsModal.style.display = 'none';
+      });
+    }
+
+    if (btnMenuAudio) {
+      btnMenuAudio.addEventListener('click', () => {
+        State.radioPlaying = !State.radioPlaying;
+        btnMenuAudio.innerText = `📻 RADIO: VICE FM (${State.radioPlaying ? 'ON' : 'OFF'})`;
+        showToast(State.radioPlaying ? "Radio: Vice FM [ON]" : "Radio [OFF]");
+      });
+    }
+
+    // Toggle menu anytime with ESC, M, or Roblox topbar logo
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        State.inMenu = !State.inMenu;
+        if (State.inMenu) {
+          mainMenuOverlay.classList.remove('hidden');
+        } else {
+          mainMenuOverlay.classList.add('hidden');
+        }
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' || e.code === 'KeyM') {
+        State.inMenu = !State.inMenu;
+        if (State.inMenu) {
+          mainMenuOverlay.classList.remove('hidden');
+        } else {
+          mainMenuOverlay.classList.add('hidden');
+        }
+      }
+    });
+
+    const mobileMenu = document.getElementById('mobile-menu');
     document.getElementById('btn-menu-close').addEventListener('click', () => {
       mobileMenu.classList.remove('open');
       menuToggle.setAttribute('aria-expanded', 'false');
@@ -2063,6 +2700,7 @@
       player.setGender(!isLucia);
       document.getElementById('char-name').innerText = State.character.toUpperCase();
       document.getElementById('btn-menu-swap').innerText = `SWAP CHARACTER (${isLucia ? 'LUCIA' : 'JASON'})`;
+      if (btnMenuChar) btnMenuChar.innerText = `👤 CHARACTER: ${State.character.toUpperCase()}`;
       showToast(`Swapped to ${State.character}!`);
     });
 
@@ -2127,8 +2765,12 @@
           if (nearest.isPlane) {
             document.getElementById('plane-controls').style.display = 'flex';
             document.getElementById('car-pedals').style.display = 'none';
-            showToast("HIJACKED STUNT AIRPLANE! 3-STAR AIRPORT SECURITY BREACH!");
+            showToast("✈ HIJACKED STUNT AIRPLANE! 3-STAR AIRPORT SECURITY BREACH!");
             setWantedLevel(3);
+            if (State.currentMission === 2) {
+              activateCheckpoint('airport', 'Escobar Airport Runway', 0, 210);
+              setMission(3, "Fly North to Vice National Bank & Crack the Gold Vault!", 55, -50);
+            }
           } else {
             document.getElementById('car-pedals').style.display = 'flex';
             document.getElementById('plane-controls').style.display = 'none';
@@ -2166,12 +2808,44 @@
       });
     }
 
+    function activateCheckpoint(id, name, x, z) {
+      State.activeCheckpoint = { id, name, x, z };
+      try {
+        localStorage.setItem('vice_blocks_checkpoint', JSON.stringify(State.activeCheckpoint));
+      } catch(e){}
+
+      const banner = document.getElementById('checkpoint-banner');
+      if (banner) {
+        banner.innerText = `🏁 CHECKPOINT UNLOCKED: ${name}`;
+        banner.classList.add('show');
+        setTimeout(() => banner.classList.remove('show'), 3800);
+      }
+      showToast(`🏁 CHECKPOINT UNLOCKED: ${name}`);
+      Sound.playCash();
+    }
+
     function executeBuildingAction(z) {
-      if (z.action === 'heal_player') {
+      if (z.action === 'safehouse_save') {
+        State.health = 100;
+        updateHealthUI();
+        activateCheckpoint('safehouse', 'Ocean View Safehouse', -55, -112);
+        showToast("💾 SAFEHOUSE SAVED! Full Health Restored & Checkpoint Set!");
+        if (State.currentMission === 4) {
+          setWantedLevel(0);
+          addCash(50000);
+          Sound.playCash();
+          showToast("🏆 STORYLINE COMPLETED! +$50,000 CASH • RESPECT +");
+          setMission(1, "Freeroam Vice City! Visit any building or hijack planes anytime!", -55, -40);
+        }
+      } else if (z.action === 'heal_player') {
         State.health = 100;
         updateHealthUI();
         Sound.playCash();
         showToast("🍔 ATE BURGER SHOT COMBO! Full Health Restored!");
+        if (State.currentMission === 1) {
+          activateCheckpoint('burger_shot', 'Burger Shot Plaza', -55, -28);
+          setMission(2, "Head South to Escobar Airport & steal the Stunt Plane!", 0, 230);
+        }
       } else if (z.action === 'rob_gas') {
         addCash(1500);
         setWantedLevel(Math.min(5, State.wantedLevel + 2));
@@ -2182,6 +2856,10 @@
         setWantedLevel(4);
         Sound.playCash();
         showToast("💰 BANK VAULT CRACKED! +$15,000 Diamonds! 4-STAR WANTED!");
+        if (State.currentMission === 3) {
+          activateCheckpoint('bank', 'Vice National Bank', 55, -35);
+          setMission(4, "Escape 4-Star Heat & Return to Ocean View Safehouse to Save!", -55, -112);
+        }
       } else if (z.action === 'police_station') {
         setWantedLevel(3);
         showToast("🚨 INFILTRATED VCPD POLICE HQ! 3-STAR SWAT RESPONSE!");
@@ -2189,6 +2867,7 @@
         showToast("🎵 PARTYING AT CLUB MALIBU! Health +20");
         State.health = Math.min(100, State.health + 20);
         updateHealthUI();
+        activateCheckpoint('club_malibu', 'Club Malibu VIP', -55, 135);
       }
     }
 
@@ -2232,9 +2911,10 @@
         setWantedLevel(0);
         updateHealthUI();
         document.getElementById('cash-val').innerText = State.cash.toLocaleString();
-        player.group.position.set(0, 0, 0);
+        const cp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -112 };
+        player.group.position.set(cp.x, 0, cp.z);
         death.style.display = 'none';
-        showToast("Respawned on Central Boulevard (-$200 Hospital Bill)");
+        showToast(`Respawned at ${cp.name} (-$200 Hospital Bill)`);
       }, 2500);
     }
 
@@ -2247,9 +2927,10 @@
 
     // --- STORYLINE & MISSIONS ---
     const Missions = [
-      { id: 1, title: "EXPLORE VICE CITY", desc: "Visit Burger Shot to eat, or grab the ride outside Motel", tx: -55, tz: -40 },
-      { id: 2, title: "AIRPORT INFILTRATION", desc: "Head South to the Airport Runway and steal the Stunt Plane!", tx: 0, tz: 220 },
-      { id: 3, title: "BANK VAULT HEIST", desc: "Hit the Vice National Bank and crack the gold vault!", tx: 55, tz: -50 }
+      { id: 1, title: "VISIT BURGER SHOT", desc: "Drive from Safehouse to Burger Shot to eat & restore health", tx: -55, tz: -40 },
+      { id: 2, title: "AIRPORT INFILTRATION", desc: "Head South to the Airport Runway and steal the Stunt Plane!", tx: 0, tz: 230 },
+      { id: 3, title: "BANK VAULT HEIST", desc: "Hit the Vice National Bank and crack the gold vault!", tx: 55, tz: -50 },
+      { id: 4, title: "RETURN TO SAFEHOUSE", desc: "Evade the SWAT Pursuit and return to Ocean View Safehouse to Save!", tx: -55, tz: -112 }
     ];
 
     function setMission(id, desc, tx, tz) {
@@ -2304,7 +2985,8 @@
       buildingZones.forEach(b => {
         const bx = cx + (b.x - activePos.x) * scale;
         const by = cy + (b.z - activePos.z) * scale;
-        miniCtx.fillStyle = b.action.includes('heal') ? '#02b757' : (b.action.includes('bank') ? '#ffdd00' : '#00f3ff');
+        const act = b.action || '';
+        miniCtx.fillStyle = act.includes('heal') ? '#02b757' : (act.includes('bank') ? '#ffdd00' : '#00f3ff');
         miniCtx.fillRect(bx - 3, by - 3, 6, 6);
       });
 
@@ -2346,19 +3028,24 @@
 
     // --- MAIN GAME LOOP ---
     let lastTime = performance.now();
+    let _animErrShown = false;
+    let _frameCount = 0;
 
     function animate() {
       requestAnimationFrame(animate);
+      _frameCount++;
+      try {
 
       const now = performance.now();
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const activePos = State.inVehicle ? State.currentVehicle.group.position : player.group.position;
+      if (_frameCount === 1) console.log('[F1] step: activePos', activePos);
 
       // 1. UPDATE PLAYER ON FOOT
       let isMoving = false;
-      if (!State.inVehicle) {
+      if (!State.inVehicle && !State.inMenu) {
         let moveX = 0;
         let moveZ = 0;
 
@@ -2420,17 +3107,22 @@
           }
         }
       }
+      if (_frameCount === 1) console.log('[F1] step: after player movement');
 
       player.animate(dt, isMoving, State.inVehicle);
+      if (_frameCount === 1) console.log('[F1] step: after player.animate');
 
       // 2. UPDATE VEHICLES
-      vehicles.forEach(v => v.update(dt, v === State.currentVehicle ? keys : null));
+      vehicles.forEach(v => v.update(dt, (v === State.currentVehicle && !State.inMenu) ? keys : null));
+      if (_frameCount === 1) console.log('[F1] step: after vehicles.update');
 
       // 3. UPDATE LIVING NPCS
       npcs.forEach(npc => npc.update(dt));
+      if (_frameCount === 1) console.log('[F1] step: after npcs.update');
 
       // 4. UPDATE POLICE CHASE AI
       policeUnits.forEach(p => p.update(dt, activePos));
+      if (_frameCount === 1) console.log('[F1] step: after police.update');
 
       // Wanted timer
       if (State.wantedLevel > 0) {
@@ -2442,25 +3134,51 @@
         }
       }
 
-      // 5. CAMERA SYSTEM (Panoramic View for Flight & Ground)
-      let camOffset;
-      if (State.inVehicle && State.currentVehicle.isPlane) {
-        // High Altitude Airplane Camera (Pans wide to see entire city!)
-        camOffset = new THREE.Vector3(0, 14, -30).applyAxisAngle(new THREE.Vector3(0, 1, 0), State.currentVehicle.group.rotation.y);
-      } else if (State.inVehicle) {
-        camOffset = new THREE.Vector3(0, 9, -18).applyAxisAngle(new THREE.Vector3(0, 1, 0), State.currentVehicle.group.rotation.y);
+      // 5. CAMERA SYSTEM (Full 360° Free Swipe Orbit on Foot & Vehicles)
+      if (State.inMenu) {
+        // Scenic Cinematic Title Screen Flyover of Safehouse & Ocean Drive
+        const t = now * 0.0003;
+        camera.position.set(Math.sin(t) * 90 - 55, 36 + Math.cos(t * 0.7) * 8, Math.cos(t) * 90 - 110);
+        camera.lookAt(-55, 6, -110);
       } else {
-        camOffset = new THREE.Vector3(0, 7.5, -12);
-      }
+        // Smooth Orbit Angle Interpolation
+        camOrbitYaw += (camTargetYaw - camOrbitYaw) * 0.18;
+        camOrbitPitch += (camTargetPitch - camOrbitPitch) * 0.18;
 
-      const desiredCamPos = new THREE.Vector3().addVectors(activePos, camOffset);
-      camera.position.lerp(desiredCamPos, 0.12);
-      camera.lookAt(activePos.x, activePos.y + 1.8, activePos.z);
+        // Auto-realign camera behind player/vehicle smoothly if moving forward and not actively swiping
+        if (camDragPointerId === null && isMoving && (now - lastCameraInteractionTime > 1200)) {
+          camTargetYaw += (0 - camTargetYaw) * (dt * 1.2);
+        }
+
+        let baseHeading = 0;
+        if (State.inVehicle && State.currentVehicle) {
+          baseHeading = State.currentVehicle.group.rotation.y;
+        } else {
+          baseHeading = player.group.rotation.y;
+        }
+
+        const totalYaw = baseHeading + camOrbitYaw;
+        const isPlane = State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane;
+        const dist = isPlane ? 32 : (State.inVehicle ? 17 : 13.0);
+        const heightBase = isPlane ? 12 : (State.inVehicle ? 6.5 : 4.5);
+
+        const horizDist = dist * Math.cos(camOrbitPitch);
+        const vertHeight = heightBase + dist * Math.sin(camOrbitPitch);
+
+        const offX = -Math.sin(totalYaw) * horizDist;
+        const offZ = -Math.cos(totalYaw) * horizDist;
+        const offY = Math.max(1.0, vertHeight);
+
+        const desiredCamPos = new THREE.Vector3(activePos.x + offX, activePos.y + offY, activePos.z + offZ);
+        camera.position.lerp(desiredCamPos, 0.22);
+        camera.lookAt(activePos.x, activePos.y + (State.inVehicle ? 2.0 : 1.8), activePos.z);
+      }
 
       // 6. UPDATE PROMPT & SPEEDOMETER
       let promptText = null;
       if (!State.inVehicle) {
         vehicles.forEach(v => {
+          if (!v || !v.group) return;
           const d = Math.hypot(player.group.position.x - v.group.position.x, player.group.position.z - v.group.position.z);
           if (d < v.radius + 3.0) {
             promptText = `Press [E] to Enter ${v.name}`;
@@ -2476,34 +3194,55 @@
       }
 
       const promptBox = document.getElementById('prompt-box');
-      if (promptText) {
-        promptBox.innerText = promptText;
-        promptBox.style.display = 'block';
-      } else {
-        promptBox.style.display = 'none';
+      if (promptBox) {
+        if (promptText) {
+          promptBox.innerText = promptText;
+          promptBox.style.display = 'block';
+        } else {
+          promptBox.style.display = 'none';
+        }
       }
 
       // Vehicle HUD
-      if (State.inVehicle) {
+      if (State.inVehicle && State.currentVehicle) {
         const v = State.currentVehicle;
         const mph = Math.round(Math.abs(v.speed) * 2.8);
-        document.getElementById('vehicle-speed').innerText = mph;
-        if (v.isPlane) {
-          const alt = Math.round(v.altitude * 8);
-          document.getElementById('vehicle-extra').innerText = `MPH | ALT: ${alt} FT`;
-        } else {
-          document.getElementById('vehicle-extra').innerText = `MPH`;
+        const spdEl = document.getElementById('vehicle-speed');
+        if (spdEl) spdEl.innerText = mph;
+        const extEl = document.getElementById('vehicle-extra');
+        if (extEl) {
+          if (v.isPlane) {
+            const alt = Math.round(v.altitude * 8);
+            extEl.innerText = `MPH | ALT: ${alt} FT`;
+          } else {
+            extEl.innerText = `MPH`;
+          }
         }
       }
 
       // Distance indicator
       const wp = getCurrentWaypoint();
-      const dist = Math.round(Math.hypot(activePos.x - wp.x, activePos.z - wp.z));
-      document.getElementById('mission-dist').innerText = `(${dist}m)`;
+      if (wp) {
+        const dist = Math.round(Math.hypot(activePos.x - wp.x, activePos.z - wp.z));
+        const distEl = document.getElementById('mission-dist');
+        if (distEl) distEl.innerText = `(${dist}m)`;
+      }
 
       // 7. RENDER MINIMAP & 3D SCENE
       renderMinimap(activePos);
       renderer.render(scene, camera);
+
+      // Frame 1 debug: log camera & scene info
+      if (_frameCount === 1) {
+        console.log('[ViceBlocks] Frame 1 — cam:', camera.position, '| scene objs:', scene.children.length, '| canvas:', renderer.domElement.width, 'x', renderer.domElement.height);
+      }
+      } catch(e) {
+        if (!_animErrShown) {
+          _animErrShown = true;
+          console.error('[ViceBlocks] animate() ERROR frame', _frameCount, e);
+          document.body.insertAdjacentHTML('beforeend', `<div style="position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:#c00;color:#fff;padding:20px;border-radius:8px;z-index:99999;font-size:13px;max-width:90vw;max-height:80vh;overflow:auto">animate ERROR frame ${_frameCount}:<br><b>${e.message}</b><br><pre style="white-space:pre-wrap;font-size:11px;margin-top:10px">${e.stack}</pre></div>`);
+        }
+      }
     }
 
     animate();
