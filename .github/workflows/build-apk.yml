@@ -12,6 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python for Icon & Asset Processing
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -59,13 +64,37 @@ jobs:
           [ ! -f "www/three.min.js" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/three.min.js -o www/three.min.js
           [ ! -f "www/manifest.json" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/manifest.json -o www/manifest.json
           [ ! -f "www/icon-192.png" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/icon-192.png -o www/icon-192.png
+          [ ! -f "www/icon-512.png" ] && curl -sL https://polite-stardust-bdc2e1.netlify.app/icon-512.png -o www/icon-512.png
 
           # 3. Install Capacitor & Add Android Project
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap add android || true
           npx cap sync android
 
-          # 4. Fix Kotlin stdlib duplicate classes in Android Gradle
+          # 4. Replace Default Capacitor Icons with Official Vice Blocks GTA Icons
+          echo "=== Applying GTA Vice Blocks Android Launcher Icons & Splash Screens ==="
+          
+          # Remove any default vector foreground that overrides mipmaps on Android 8+
+          rm -f android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml || true
+          rm -f android/app/src/main/res/drawable/ic_launcher_foreground.xml || true
+
+          # If android_res already exists in repo, copy it directly
+          if [ -d "android_res" ]; then
+            cp -r android_res/* android/app/src/main/res/
+          elif [ -d "vice-block-gta/android_res" ]; then
+            cp -r vice-block-gta/android_res/* android/app/src/main/res/
+          else
+            python3 -m pip install pillow
+            if [ -f "generate_android_icons.py" ]; then
+              python3 generate_android_icons.py
+              cp -r android_res/* android/app/src/main/res/
+            elif [ -f "vice-block-gta/generate_android_icons.py" ]; then
+              python3 vice-block-gta/generate_android_icons.py
+              cp -r vice-block-gta/android_res/* android/app/src/main/res/
+            fi
+          fi
+
+          # 5. Fix Kotlin stdlib duplicate classes in Android Gradle
           cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
@@ -74,17 +103,20 @@ jobs:
           }
           EOF
 
-          # 5. Lock App to Horizontal Landscape Mode in AndroidManifest
+          # 6. Lock App to Horizontal Landscape Mode in AndroidManifest
           python3 -c "
+          import re
           with open('android/app/src/main/AndroidManifest.xml', 'r') as f:
               c = f.read()
-          if 'android:screenOrientation' not in c:
-              c = c.replace('<activity', '<activity android:screenOrientation=\"sensorLandscape\"')
-              with open('android/app/src/main/AndroidManifest.xml', 'w') as f:
-                  f.write(c)
+          if 'android:screenOrientation' in c:
+              c = re.sub(r'android:screenOrientation=\"[^\"]+\"', 'android:screenOrientation=\"landscape\"', c)
+          else:
+              c = c.replace('<activity', '<activity android:screenOrientation=\"landscape\"')
+          with open('android/app/src/main/AndroidManifest.xml', 'w') as f:
+              f.write(c)
           "
 
-          # 6. Compile the native APK
+          # 7. Compile the native APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
