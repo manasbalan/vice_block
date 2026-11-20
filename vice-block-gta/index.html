@@ -959,6 +959,11 @@
     }
   
     /* RETRO RPG / POKEMON STYLE NARRATIVE DIALOGUE BOX */
+    .exam-opt-btn:active, .exam-opt-btn:hover {
+      background: rgba(255, 0, 127, 0.28) !important;
+      border-color: #ff007f !important;
+      transform: scale(0.985);
+    }
     #narrative-dialog {
       display: none;
       position: fixed;
@@ -1160,9 +1165,9 @@
   <div id="narrative-dialog" onclick="closeNarrativeDialog()">
     <div class="narrative-tag">
       <span>👨‍💻</span>
-      <span>Game Dev</span>
+      <span id="narrative-speaker-text">Game Dev</span>
     </div>
-    <div class="narrative-text">
+    <div class="narrative-text" id="narrative-message-text">
       Don't expect too much, cause the developer is having exam ;)
       <span class="highlight">Enjoy the game !</span>
     </div>
@@ -1185,6 +1190,53 @@
         <button onclick="closeTasksModal()" style="background:#ff0055;border:none;color:#fff;border-radius:6px;padding:6px 14px;font-weight:900;cursor:pointer;">✕</button>
       </div>
       <div id="tasks-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+  </div>
+
+  <!-- EXAM QUESTION EASTER EGG MODAL (AFTER MISSION 1) -->
+  <div id="exam-modal" style="display:none;position:fixed;inset:0;background:rgba(8,5,18,0.92);z-index:999999;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:linear-gradient(145deg, #18122B, #26173a);border:3px solid #ff007f;border-radius:18px;max-width:520px;width:100%;padding:22px 20px;box-shadow:0 0 35px rgba(255,0,127,0.5), inset 0 1px 3px rgba(255,255,255,0.2);color:#fff;font-family:system-ui,-apple-system,sans-serif;">
+      
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(255,0,127,0.35);padding-bottom:12px;margin-bottom:14px;">
+        <span style="font-size:28px;">📝</span>
+        <div>
+          <div style="font-family:'Pricedown',Impact;font-size:22px;color:#fffa65;letter-spacing:1px;">EXAM TIME • POP QUIZ</div>
+          <div style="font-size:11px;color:#00f3ff;font-weight:700;letter-spacing:0.5px;">DEVELOPER HAS EXAM — SOLVE TO PROCEED!</div>
+        </div>
+      </div>
+
+      <!-- Question Text -->
+      <div style="background:rgba(0,0,0,0.45);border-left:4px solid #00f3ff;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.5;color:#f1f5f9;font-weight:600;">
+        If X has a uniform distribution in (-k,k) , k&gt;0  , Find k such that P(|x|&gt;1)
+      </div>
+
+      <!-- Options List -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="exam-opt-btn" onclick="answerExamQuestion(1)" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:12px 16px;font-size:15px;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s ease;">
+          <span style="background:#38bdf8;color:#0f172a;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;">1</span>
+          <span>1) k = 1</span>
+        </button>
+
+        <button class="exam-opt-btn" onclick="answerExamQuestion(2)" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:12px 16px;font-size:15px;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s ease;">
+          <span style="background:#38bdf8;color:#0f172a;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;">2</span>
+          <span>2) k = 0</span>
+        </button>
+
+        <button class="exam-opt-btn" onclick="answerExamQuestion(3)" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:12px 16px;font-size:15px;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s ease;">
+          <span style="background:#38bdf8;color:#0f172a;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;">3</span>
+          <span>3) k = -5</span>
+        </button>
+
+        <button class="exam-opt-btn" onclick="answerExamQuestion(4)" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:12px 16px;font-size:15px;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s ease;">
+          <span style="background:#38bdf8;color:#0f172a;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;">4</span>
+          <span>4) k = 2</span>
+        </button>
+      </div>
+
+      <div style="margin-top:14px;font-size:11px;color:#94a3b8;text-align:center;">
+        ⚠️ Select your answer carefully — Game Dev is evaluating!
+      </div>
     </div>
   </div>
 
@@ -1304,12 +1356,17 @@
       currentMission: 1,
       radioPlaying: true,
       inMenu: true,
+      hasKilledFirstPerson: false,
+      hasStolenFirstPlane: false,
       activeCheckpoint: { id: 'safehouse', name: "Ocean View Safehouse", x: -55, z: -112 },
       currentWeapon: 'fists', // 'fists', 'pistol', 'smg', 'shotgun', 'rifle', 'rpg', 'grenade'
       ammo: { pistol: 60, smg: 180, shotgun: 40, rifle: 150, rpg: 12, grenade: 10 },
       isAiming: false,
       isSprinting: false,
-      cheatSpeed: false
+      cheatSpeed: false,
+      isBusted: false,
+      isDead: false,
+      hasAnsweredExamQuestion: false
     };
 
     try {
@@ -1564,6 +1621,26 @@
           } catch(e){}
           this.sirenOsc = null;
         }
+      }
+
+      playSiren() {
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(650, now);
+          osc.frequency.linearRampToValueAtTime(950, now + 0.35);
+          osc.frequency.linearRampToValueAtTime(650, now + 0.7);
+          osc.frequency.linearRampToValueAtTime(950, now + 1.05);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 1.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.45);
+        } catch(e){}
       }
     }
     const Sound = new SoundEngine();
@@ -2509,9 +2586,10 @@
         if (this.health <= 0) {
           this.die();
         } else {
-          // Drop a small cash tip when hit
+          // Drop a small cash tip when hit (Robbery)
           addCash(25);
           showToast("Robbed Civilian! +$25 Cash");
+          onPersonRobbed();
         }
       }
 
@@ -2522,6 +2600,13 @@
         addCash(100);
         showToast("Civilian Defeated! +$100 Cash Dropped!");
         Sound.playCash();
+
+        // First Kill or Robbery Roast Check
+        if (!State.hasKilledFirstPerson) {
+          onPersonKilled('civilian');
+        } else {
+          onPersonRobbed();
+        }
 
         if (State.wantedLevel === 0) {
           setWantedLevel(1);
@@ -3048,10 +3133,10 @@
         if (Math.abs(this.speed) > 0.2) {
           const dir = this.speed >= 0 ? 1 : -1;
           if (typeof joyVector !== 'undefined' && joyTouchId !== null && Math.abs(joyVector.x) > 0.12) {
-            this.group.rotation.y += joyVector.x * this.turnSpeed * dt * dir;
+            this.group.rotation.y -= joyVector.x * this.turnSpeed * dt * dir;
           } else {
-            if (input.left) this.group.rotation.y -= this.turnSpeed * dt * dir;
-            if (input.right) this.group.rotation.y += this.turnSpeed * dt * dir;
+            if (input.left) this.group.rotation.y += this.turnSpeed * dt * dir;
+            if (input.right) this.group.rotation.y -= this.turnSpeed * dt * dir;
           }
         }
 
@@ -3113,12 +3198,13 @@
         }
 
         // Yaw Steering & Roll Banking in flight (Right turns Right, Left turns Left)
-        if (input.left || (typeof joyVector !== 'undefined' && joyVector.x < -0.2)) {
-          this.group.rotation.y -= this.turnSpeed * dt;
-          this.roll = THREE.MathUtils.lerp(this.roll, 0.4, 0.1);
-        } else if (input.right || (typeof joyVector !== 'undefined' && joyVector.x > 0.2)) {
+        const hasJoy = typeof joyVector !== 'undefined' && joyTouchId !== null;
+        if (input.left || (hasJoy && joyVector.x < -0.2)) {
           this.group.rotation.y += this.turnSpeed * dt;
           this.roll = THREE.MathUtils.lerp(this.roll, -0.4, 0.1);
+        } else if (input.right || (hasJoy && joyVector.x > 0.2)) {
+          this.group.rotation.y -= this.turnSpeed * dt;
+          this.roll = THREE.MathUtils.lerp(this.roll, 0.4, 0.1);
         } else {
           this.roll = THREE.MathUtils.lerp(this.roll, 0, 0.1);
         }
@@ -3463,7 +3549,16 @@
 
         const dx = playerPos.x - this.group.position.x;
         const dz = playerPos.z - this.group.position.z;
+        const dy = Math.abs(playerPos.y - this.group.position.y);
         const dist = Math.hypot(dx, dz);
+
+        const isPlayerFlying = State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane && (State.currentVehicle.altitude > 2.5 || State.currentVehicle.isFlying);
+
+        // If player is already dead, busted, or flying high in the sky (plane altitude > 2.5 or dy > 3.8), foot cops cannot reach or arrest
+        if (State.isBusted || State.isDead || isPlayerFlying || dy > 3.8) {
+          this.tackleTimer = 0;
+          return;
+        }
 
         const angle = Math.atan2(dx, dz);
         this.group.rotation.y = angle;
@@ -3475,28 +3570,77 @@
           this.whistleTimer = 4 + Math.random() * 5;
         }
 
-        // Pursue player on foot
-        if (dist > 2.2) {
-          const spd = (State.wantedLevel >= 2 ? this.speed * 1.15 : this.speed) * dt;
+        if (!State.inVehicle) {
+          // 1. PURSUE PLAYER ON FOOT (Balanced speed so player has time to run & board planes!)
+          const nearAirport = (playerPos.z > 140 && playerPos.z < 340 && Math.abs(playerPos.x) < 90);
+          const copSpeed = (nearAirport ? 6.5 : (7.5 + State.wantedLevel * 0.7)); // 6.5 - 11.0 m/s (player sprint is 19.2 m/s)
+          if (dist > 1.6) {
+            const spd = copSpeed * dt;
+            this.group.position.x += Math.sin(angle) * spd;
+            this.group.position.z += Math.cos(angle) * spd;
+
+            this.animTime += dt * 11;
+            const swing = Math.sin(this.animTime) * 0.9;
+            this.leftArm.rotation.x = -swing;
+            this.rightArm.rotation.x = swing;
+            this.leftLeg.rotation.x = swing;
+            this.rightLeg.rotation.x = -swing;
+          }
+
+          // 2. ACTIVE ARREST / TACKLE CATCH MECHANISM (Fair tackle distance & escape buffer)
+          if (dist < 2.4 && dy < 2.2) {
+            this.tackleTimer = (this.tackleTimer || 0) + dt;
+
+            // Melee strike with nightstick
+            this.attackCooldown -= dt;
+            if (this.attackCooldown <= 0) {
+              this.attackCooldown = 1.0;
+              damagePlayer(12);
+              Sound.playPunch();
+              Sound.playOof();
+              showToast("Cop tackling you! -12 HP (Sprint away or get busted!)");
+            }
+
+            // If cop stays on suspect for 2.0 seconds without escape: BUSTED!
+            if (this.tackleTimer > 2.0 || State.health <= 0) {
+              this.tackleTimer = 0;
+              bustPlayer();
+              return;
+            }
+
+            // If 2 or more cops surround the player within 3.6m: IMMEDIATE ARREST!
+            let nearbyCops = 0;
+            for (let c of footCops) {
+              if (!c.isDead && c.group.visible && Math.hypot(playerPos.x - c.group.position.x, playerPos.z - c.group.position.z) < 3.6) {
+                nearbyCops++;
+              }
+            }
+            if (nearbyCops >= 2) {
+              this.tackleTimer = 0;
+              bustPlayer();
+              return;
+            }
+          } else {
+            this.tackleTimer = 0;
+          }
+        } else {
+          // Player is in a vehicle!
+          // If vehicle is a plane that is flying or high up, ground cops cannot reach it
+          if (State.currentVehicle.isPlane && (State.currentVehicle.altitude > 2.5 || State.currentVehicle.isFlying)) {
+            this.tackleTimer = 0;
+            return;
+          }
+          // If ground vehicle is stopped or moving very slow (< 4.0 mph) and cop reaches the driver door (< 4.2m) at ground level:
+          if (!State.currentVehicle.isPlane && Math.abs(State.currentVehicle.speed) < 4.0 && dist < 4.2 && dy < 2.5) {
+            bustPlayer();
+            showToast("BUSTED! Dragged out of vehicle and arrested!");
+            return;
+          }
+          // Otherwise sprint toward vehicle at balanced speed
+          const nearAirport = (playerPos.z > 140 && playerPos.z < 340 && Math.abs(playerPos.x) < 90);
+          const spd = (nearAirport ? 6.5 : (8.0 + State.wantedLevel * 0.8)) * dt;
           this.group.position.x += Math.sin(angle) * spd;
           this.group.position.z += Math.cos(angle) * spd;
-
-          this.animTime += dt * 12;
-          const swing = Math.sin(this.animTime) * 0.9;
-          this.leftArm.rotation.x = -swing;
-          this.rightArm.rotation.x = swing;
-          this.leftLeg.rotation.x = swing;
-          this.rightLeg.rotation.x = -swing;
-        } else {
-          // Melee hit player
-          this.attackCooldown -= dt;
-          if (this.attackCooldown <= 0) {
-            this.attackCooldown = 1.0;
-            damagePlayer(12);
-            Sound.playPunch();
-            Sound.playOof();
-            showToast("👮 PATROL COP HIT YOU! -12 HP");
-          }
         }
       }
 
@@ -3523,6 +3667,9 @@
         Sound.playCash();
         State.ammo.pistol += 20;
         if (player) player.updateWeaponBadge();
+
+        // First Kill Easter Egg Check
+        onPersonKilled('cop');
 
         setTimeout(() => {
           if (State.wantedLevel > 0) {
@@ -3596,13 +3743,14 @@
         }
 
         // WANTED LEVEL 1-2: Foot patrol cops pursue, squad cruisers follow at moderate speed
+        const nearAirport = (playerPos.z > 140 && playerPos.z < 340 && Math.abs(playerPos.x) < 90);
         if (State.wantedLevel <= 2) {
           if (dist > 30) {
             let diff = targetAngle - this.vehicle.group.rotation.y;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
-            this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -1.8 * dt, 1.8 * dt);
-            const cruiseSpeed = 16;
+            this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -1.5 * dt, 1.5 * dt);
+            const cruiseSpeed = nearAirport ? 8 : 11;
             const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.vehicle.group.rotation.y);
             carPos.addScaledVector(forward, cruiseSpeed * dt);
             this.vehicle.speed = cruiseSpeed;
@@ -3612,23 +3760,39 @@
           return;
         }
 
-        // WANTED LEVEL 3-5: HIGH SPEED AGGRESSIVE SQUAD CAR PURSUIT & RAMMING!
+        // WANTED LEVEL 3-5: SQUAD CAR PURSUIT (Tuned so player has time to reach & take plane!)
         let diff = targetAngle - this.vehicle.group.rotation.y;
         while (diff < -Math.PI) diff += Math.PI * 2;
         while (diff > Math.PI) diff -= Math.PI * 2;
-        this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -3.2 * dt, 3.2 * dt);
+        this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -1.8 * dt, 1.8 * dt);
 
-        const chaseSpeed = 24 + State.wantedLevel * 2.8; // up to 38 m/s!
+        const chaseSpeed = nearAirport ? 11 : (14 + State.wantedLevel * 1.5); // Up to 21.5 m/s
         const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.vehicle.group.rotation.y);
         carPos.addScaledVector(forward, chaseSpeed * dt);
         this.vehicle.speed = chaseSpeed;
 
-        // Aggressively Ram player vehicle or hit player
-        if (dist < 4.5) {
+        // Aggressively Ram player vehicle or hit player (only on ground, never against flying aircraft!)
+        const isPlayerFlying = State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane && (State.currentVehicle.altitude > 2.5 || State.currentVehicle.isFlying);
+        const dy = Math.abs(playerPos.y - carPos.y);
+
+        if (!isPlayerFlying && dy < 3.2 && dist < 4.8) {
           damagePlayer(18);
           Sound.playCrash();
           Sound.playOof();
           carPos.addScaledVector(forward, -4);
+
+          // If player's ground car is pinned or stopped (< 4.0 m/s), box in and arrest!
+          if (State.inVehicle && State.currentVehicle && !State.currentVehicle.isPlane && Math.abs(State.currentVehicle.speed) < 4.0) {
+            this.boxInTimer = (this.boxInTimer || 0) + dt;
+            if (this.boxInTimer > 2.2) {
+              this.boxInTimer = 0;
+              bustPlayer();
+              showToast("BUSTED! Squad car boxed you in!");
+              return;
+            }
+          } else {
+            this.boxInTimer = 0;
+          }
         }
       }
     }
@@ -4140,6 +4304,9 @@
       } else if (code === 'LAWYERUP' || code === 'LEAVEMEALONE') {
         setWantedLevel(0);
         showToast("⚡ CHEAT ACTIVATED: WANTED STARS CLEARED!");
+      } else if (code === 'EXAM' || code === 'QUIZ' || code === 'MATH') {
+        showExamQuestionModal();
+        showToast("⚡ CHEAT ACTIVATED: EXAM QUESTION OPENED!");
       } else if (code === 'BRINGITON' || code === 'YOUWONTTAKEMEALIVE') {
         setWantedLevel(5);
         showToast("⚡ CHEAT ACTIVATED: 5-STAR MAXIMUM HEAT!");
@@ -4298,15 +4465,24 @@
     const btnCloseControls = document.getElementById('btn-close-controls');
 
     let _narrativeTimer = null;
-    function showNarrativeDialog() {
+    function showNarrativeDialog(speaker = "Game Dev", message = "", subtext = null, duration = 10000) {
       const el = document.getElementById('narrative-dialog');
       if (!el) return;
+
+      const speakerEl = document.getElementById('narrative-speaker-text');
+      if (speakerEl) speakerEl.innerText = speaker;
+
+      const msgEl = document.getElementById('narrative-message-text');
+      if (msgEl) {
+        msgEl.innerHTML = `${message}${subtext ? `<span class="highlight">${subtext}</span>` : ''}`;
+      }
+
       el.style.display = 'block';
       Sound.playWhistle();
       clearTimeout(_narrativeTimer);
       _narrativeTimer = setTimeout(() => {
         closeNarrativeDialog();
-      }, 8500);
+      }, duration);
     }
 
     function closeNarrativeDialog() {
@@ -4321,6 +4497,42 @@
       clearTimeout(_narrativeTimer);
     }
 
+    // --- DEVELOPER ROBBERY ROAST MESSAGES (CUSTOMIZABLE LIST) ---
+    // Feel free to add more lines to this list anytime!
+    const DEV_ROBBERY_QUOTES = [
+      "Picha karane engilum verude vidu",
+      "Adum mukki",
+      "Valla panikum poda daridravasi",
+      "Enthina bro ithrayum aathirthi",
+      "Pocketil onnum illa thappan nikkanda"
+    ];
+
+    let _lastRobberyQuoteTime = 0;
+    function onPersonRobbed() {
+      const now = performance.now();
+      // 3-second debounce so player can comfortably read each quote
+      if (now - _lastRobberyQuoteTime > 3000) {
+        _lastRobberyQuoteTime = now;
+        const randomQuote = DEV_ROBBERY_QUOTES[Math.floor(Math.random() * DEV_ROBBERY_QUOTES.length)];
+        showNarrativeDialog("Game Dev", randomQuote, null, 10000);
+      }
+    }
+
+    // First Kill Easter Egg Message from Developer!
+    function onPersonKilled(victimType = 'civilian') {
+      if (!State.hasKilledFirstPerson) {
+        State.hasKilledFirstPerson = true;
+        setTimeout(() => {
+          showNarrativeDialog(
+            "Game Dev",
+            "maan what did he even do to you",
+            null,
+            10000
+          );
+        }, 400);
+      }
+    }
+
     function startGameplay() {
       State.inMenu = false;
       mainMenuOverlay.classList.add('hidden');
@@ -4328,7 +4540,12 @@
       showToast(`WELCOME TO VICE CITY! VISIT BURGER SHOT OR GRAB YOUR RIDE!`);
       // Trigger Game Dev Narrative Dialog right outside Safehouse!
       setTimeout(() => {
-        showNarrativeDialog();
+        showNarrativeDialog(
+          "Game Dev",
+          "Don't expect too much, cause the developer is having exam ;)",
+          "Enjoy the game !",
+          10000
+        );
       }, 600);
     }
 
@@ -4486,6 +4703,39 @@
               activateCheckpoint('airport', 'Escobar Airport Runway', 0, 210);
               setMission(3, "Fly North to Vice National Bank & Crack the Gold Vault!", 55, -50);
             }
+                      // --- FIRST TIME AIRPLANE THEFT EASTER EGG (MALAYALAM DEVELOPER ROAST) ---
+            if (!State.hasStolenFirstPlane) {
+              State.hasStolenFirstPlane = true;
+              // 1. Initial message when stealing the plane (10 seconds long)
+              setTimeout(() => {
+                showNarrativeDialog("Game Dev", "Adu kond ninak enda karyam", null, 10000);
+              }, 400);
+
+              // 2. Blast the plane after riding for 5.5 seconds (gives time to board and taxi/takeoff!)
+              setTimeout(() => {
+                if (State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane) {
+                  const stolenPlane = State.currentVehicle;
+
+                  // Clear any dead/busted flags to ensure killPlayer callback always runs
+                  State.isDead = false;
+                  State.isBusted = false;
+
+                  // Eject from plane immediately so vehicle destruction doesn't trigger damagePlayer/bustPlayer
+                  toggleVehicle();
+
+                  // Explosion at plane
+                  createExplosion(stolenPlane.group.position.clone(), 20, 0);
+                  stolenPlane.takeDamage(1000);
+                  Sound.playExplosion();
+
+                  // Player dies from blast and is transported to safe house:
+                  killPlayer(() => {
+                    // 3. Developer message pops up AFTER arriving outside the safehouse (10 seconds long)!
+                    showNarrativeDialog("Game Dev", "Valla avashyam undayno task cheyda pore ", null, 10000);
+                  });
+                }
+              }, 5500);
+            }
           } else if (nearest.isTank) {
             document.getElementById('car-pedals').style.display = 'flex';
             document.getElementById('plane-controls').style.display = 'none';
@@ -4554,9 +4804,10 @@
         Sound.playGunshot();
 
         // Direction of fire
-        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
-        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
-        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.2);
+        const forward = State.isAiming ? 
+          new THREE.Vector3(Math.sin(camOrbitYaw) * Math.cos(camOrbitPitch), -Math.sin(camOrbitPitch), Math.cos(camOrbitYaw) * Math.cos(camOrbitPitch)).normalize() :
+          new THREE.Vector3(Math.sin(player.group.rotation.y), 0, Math.cos(player.group.rotation.y));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, State.isAiming ? 3.4 : 2.1, 0)).addScaledVector(forward, 1.2);
 
         // Spawn bullet projectile tracer
         new Projectile(spawnPos, forward, false, false);
@@ -4570,9 +4821,10 @@
         player.updateWeaponBadge();
         Sound.playGunshot();
 
-        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
-        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
-        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.2);
+        const forward = State.isAiming ? 
+          new THREE.Vector3(Math.sin(camOrbitYaw) * Math.cos(camOrbitPitch), -Math.sin(camOrbitPitch), Math.cos(camOrbitYaw) * Math.cos(camOrbitPitch)).normalize() :
+          new THREE.Vector3(Math.sin(player.group.rotation.y), 0, Math.cos(player.group.rotation.y));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, State.isAiming ? 3.4 : 2.1, 0)).addScaledVector(forward, 1.2);
         new Projectile(spawnPos, forward, false, false);
       } else if (State.currentWeapon === 'shotgun') {
         if (State.ammo.shotgun <= 0) {
@@ -4664,6 +4916,40 @@
       Sound.playCash();
     }
 
+        // --- EXAM QUESTION EASTER EGG (AFTER MISSION 1) ---
+    function showExamQuestionModal() {
+      const modal = document.getElementById('exam-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        try { Sound.playWhistle(); } catch(e){}
+      }
+    }
+
+    function closeExamQuestionModal() {
+      const modal = document.getElementById('exam-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function answerExamQuestion(option) {
+      closeExamQuestionModal();
+
+      setTimeout(() => {
+        if (option === 4) {
+          // 4th option is the correct answer
+          try { Sound.playCash(); } catch(e){}
+          showNarrativeDialog("Game Dev", "Aaah my bad  developer mistake , sthalam mari poi", null, 10000);
+        } else if (option === 3) {
+          // 3rd option (k = -5 when k > 0)
+          try { Sound.playOof(); } catch(e){}
+          showNarrativeDialog("Game Dev", " Excellent how in the world did u even get that much wrong ", null, 10000);
+        } else {
+          // Option 1 or Option 2
+          try { Sound.playWhistle(); } catch(e){}
+          showNarrativeDialog("Game Dev", " with great confidence u choose the wrong one", null, 10000);
+        }
+      }, 400);
+    }
+
     function executeBuildingAction(z) {
       if (z.action === 'safehouse_save') {
         State.health = 100;
@@ -4685,6 +4971,14 @@
         if (State.currentMission === 1) {
           activateCheckpoint('burger_shot', 'Burger Shot Plaza', -55, -28);
           setMission(2, "Head South to Escobar Airport & steal the Stunt Plane!", 0, 230);
+
+          // Pop developer exam question easter egg after Mission 1!
+          if (!State.hasAnsweredExamQuestion) {
+            State.hasAnsweredExamQuestion = true;
+            setTimeout(() => {
+              showExamQuestionModal();
+            }, 900);
+          }
         }
       } else if (z.action === 'rob_gas') {
         addCash(1500);
@@ -4756,11 +5050,7 @@
     function damagePlayer(amount) {
       State.health -= amount;
       if (State.health <= 0) {
-        if (State.wantedLevel > 0) {
-          bustPlayer();
-        } else {
-          killPlayer();
-        }
+        killPlayer();
       }
       updateHealthUI();
     }
@@ -4771,8 +5061,10 @@
       document.getElementById('health-num').innerText = Math.max(0, Math.round(State.health));
     }
 
-    function killPlayer() {
-      Sound.playOof();
+    function killPlayer(onRespawn) {
+      if (State.isDead || State.isBusted) return;
+      State.isDead = true;
+      try { Sound.playOof(); } catch(e){}
       const death = document.getElementById('death-screen');
       death.style.display = 'flex';
       const title = document.getElementById('death-title');
@@ -4785,21 +5077,37 @@
       if (State.inVehicle) toggleVehicle();
 
       setTimeout(() => {
+        State.isDead = false;
+        State.isBusted = false;
         State.health = 100;
         State.cash = Math.max(0, State.cash - 200);
         setWantedLevel(0);
         updateHealthUI();
         document.getElementById('cash-val').innerText = State.cash.toLocaleString();
-        const cp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -100 };
+        const cp = { name: "Ocean View Safehouse", x: -55, z: -112 };
         player.group.position.set(cp.x, 0, cp.z);
+        player.group.rotation.y = 0;
         resetAirportFleet();
         death.style.display = 'none';
-        showToast(`Respawned at ${cp.name} • Fleet Reset! (-$200 Hospital Bill)`);
+        showToast(`Respawned at ${cp.name} - Fleet Reset! (-$200 Hospital Bill)`);
+
+        if (typeof onRespawn === 'function') {
+          setTimeout(onRespawn, 500);
+        }
       }, 2500);
     }
 
-    function bustPlayer() {
-      Sound.playSiren();
+    function bustPlayer(onRespawn) {
+      if (State.isBusted || State.isDead) return;
+      State.isBusted = true;
+      try {
+        if (Sound && typeof Sound.playSiren === 'function') {
+          Sound.playSiren();
+        } else if (Sound && typeof Sound.updateSiren === 'function') {
+          Sound.updateSiren(true);
+          setTimeout(() => Sound.updateSiren(false), 2000);
+        }
+      } catch(e){}
       const death = document.getElementById('death-screen');
       death.style.display = 'flex';
       const title = document.getElementById('death-title');
@@ -4812,6 +5120,8 @@
       if (State.inVehicle) toggleVehicle();
 
       setTimeout(() => {
+        State.isBusted = false;
+        State.isDead = false;
         State.health = 100;
         State.cash = Math.max(0, State.cash - 100);
         setWantedLevel(0);
@@ -4823,7 +5133,11 @@
         player.group.rotation.y = Math.PI; // Face outwards toward road
         resetAirportFleet();
         death.style.display = 'none';
-        showToast("👮 BUSTED! Released on bail outside VCPD Police Station! (-$100)");
+        showToast("BUSTED! Released on bail outside VCPD Police Station! (-$100)");
+
+        if (typeof onRespawn === 'function') {
+          setTimeout(onRespawn, 500);
+        }
       }, 2500);
     }
 
@@ -4971,8 +5285,8 @@
         const mag = Math.hypot(moveX, moveZ);
         if (mag > 0.12) {
           isMoving = true;
-          // Calculate input angle
-          const inputAngle = Math.atan2(moveX, moveZ);
+          // Calculate input angle (in Three.js right-handed view where camera looks +Z, screen-right is -X)
+          const inputAngle = Math.atan2(-moveX, moveZ);
           // Target heading is camera azimuth + input direction!
           const targetHeading = camOrbitYaw + inputAngle;
 
@@ -5110,7 +5424,7 @@
           const sx = activePos.x + Math.sin(spawnAngle) * spawnDist;
           const sz = activePos.z + Math.cos(spawnAngle) * spawnDist;
           const newCop = new RobloxFootCop(sx, sz);
-          newCop.speed = 13 + State.wantedLevel * 0.8;
+          newCop.speed = 7.5 + State.wantedLevel * 0.7;
           Sound.playWhistle();
         }
 
@@ -5170,34 +5484,60 @@
           camTargetYaw += vDiff * (dt * 1.5);
         }
 
-        let camDist, camHeightBase;
-        if (State.inVehicle && State.currentVehicle) {
-          const v = State.currentVehicle;
-          camDist = v.isPlane ? 34 : (v.isTank ? 22 : 17);
-          camHeightBase = v.isPlane ? 12 : (v.isTank ? 8.5 : 6.0);
+        if (State.isAiming && !State.inVehicle) {
+          // 1. Hide player model so it NEVER blocks the scope or people in front!
+          player.group.visible = false;
+
+          // 2. Place camera directly at character eye-level (True 1st-Person Tactical Scope View)
+          const forwardX = Math.sin(camOrbitYaw);
+          const forwardZ = Math.cos(camOrbitYaw);
+          const pitchY = Math.sin(camOrbitPitch);
+
+          const desiredCamPos = new THREE.Vector3(
+            activePos.x + forwardX * 0.4,
+            activePos.y + 3.6,
+            activePos.z + forwardZ * 0.4
+          );
+          camera.position.copy(desiredCamPos);
+
+          // Direct look vector straight through the scope crosshair towards distant targets in front!
+          const lookTarget = new THREE.Vector3(
+            desiredCamPos.x + forwardX * 80,
+            desiredCamPos.y - pitchY * 80,
+            desiredCamPos.z + forwardZ * 80
+          );
+          camera.lookAt(lookTarget);
         } else {
-          camDist = State.isAiming ? 6.5 : 12.0;
-          camHeightBase = State.isAiming ? 2.6 : 4.4;
+          // Normal Third-Person View (Character model visible)
+          player.group.visible = true;
+
+          let camDist, camHeightBase;
+          if (State.inVehicle && State.currentVehicle) {
+            const v = State.currentVehicle;
+            camDist = v.isPlane ? 34 : (v.isTank ? 22 : 17);
+            camHeightBase = v.isPlane ? 12 : (v.isTank ? 8.5 : 6.0);
+          } else {
+            camDist = 12.0;
+            camHeightBase = 4.4;
+          }
+
+          const horizDist = camDist * Math.cos(camOrbitPitch);
+          const vertHeight = camHeightBase + camDist * Math.sin(camOrbitPitch);
+
+          const offX = -Math.sin(camOrbitYaw) * horizDist;
+          const offZ = -Math.cos(camOrbitYaw) * horizDist;
+          const offY = Math.max(1.0, vertHeight);
+
+          const desiredCamPos = new THREE.Vector3(activePos.x + offX, activePos.y + offY, activePos.z + offZ);
+          camera.position.lerp(desiredCamPos, 0.25);
+
+          const lookTarget = new THREE.Vector3(
+            activePos.x,
+            activePos.y + (State.inVehicle ? 2.0 : 1.8),
+            activePos.z
+          );
+          camera.lookAt(lookTarget);
         }
-
-        const horizDist = camDist * Math.cos(camOrbitPitch);
-        const vertHeight = camHeightBase + camDist * Math.sin(camOrbitPitch);
-
-        // Aiming over-shoulder camera offset
-        const sideOffset = (State.isAiming && !State.inVehicle) ? 1.4 : 0.0;
-        const offX = -Math.sin(camOrbitYaw) * horizDist + Math.cos(camOrbitYaw) * sideOffset;
-        const offZ = -Math.cos(camOrbitYaw) * horizDist - Math.sin(camOrbitYaw) * sideOffset;
-        const offY = Math.max(1.0, vertHeight);
-
-        const desiredCamPos = new THREE.Vector3(activePos.x + offX, activePos.y + offY, activePos.z + offZ);
-        camera.position.lerp(desiredCamPos, 0.25);
-
-        const lookTarget = new THREE.Vector3(
-          activePos.x + (State.isAiming ? Math.sin(camOrbitYaw) * 12 : 0),
-          activePos.y + (State.inVehicle ? 2.0 : 1.8),
-          activePos.z + (State.isAiming ? Math.cos(camOrbitYaw) * 12 : 0)
-        );
-        camera.lookAt(lookTarget);
       }
 
       // 6. UPDATE VEHICLE HUD (Speedometer & Altitude)
