@@ -522,37 +522,161 @@
     }
 
     /* KEYBOARD HINTS (DESKTOP ONLY) */
-    #help-overlay {
-      position: absolute;
-      bottom: calc(16px + env(safe-area-inset-bottom));
+    /* AIMING CROSSHAIR RETICLE (PHONE & DESKTOP) */
+    #crosshair {
+      position: fixed;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      background: rgba(25, 27, 29, 0.85);
-      border-radius: 8px;
-      padding: 4px 12px;
-      font-size: 11px;
-      color: #d8d8d8;
-      font-weight: 700;
-      z-index: 90;
+      transform: translate(-50%, -50%);
+      width: 28px;
+      height: 28px;
       pointer-events: none;
-      display: flex;
-      gap: 12px;
+      z-index: 100;
+      display: none;
     }
-    #help-overlay kbd {
-      background: #fff;
-      color: #111;
-      padding: 1px 4px;
-      border-radius: 3px;
+    #crosshair::before, #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(0, 243, 255, 0.95);
+      box-shadow: 0 0 6px #00f3ff;
+      border-radius: 1px;
+    }
+    #crosshair::before {
+      top: 13px; left: 0; width: 28px; height: 2px;
+    }
+    #crosshair::after {
+      top: 0; left: 13px; width: 2px; height: 28px;
+    }
+    .crosshair-center {
+      position: absolute;
+      top: 11px;
+      left: 11px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff007f;
+      box-shadow: 0 0 6px #ff007f;
     }
 
-    /* GTA VICE CITY STYLE MAIN MENU SCREEN */
+    /* TOPBAR CHEAT BUTTON */
+    #btn-cheats {
+      background: linear-gradient(90deg, #ff007f, #b300ff);
+      border: 1.5px solid #00f3ff;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 5px 10px;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #btn-cheats:active {
+      transform: scale(0.96);
+    }
+
+    /* WEAPON AMMO BADGE */
+    #weapon-ammo-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 9px;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 0 4px #000;
+    }
+
+    /* CHEAT CODES MODAL (ONE-TAP MOBILE BUTTONS) */
+    #cheat-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 4, 20, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 5500;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    #cheat-modal.open { display: flex; }
+    .cheat-card {
+      background: rgba(22, 14, 42, 0.98);
+      border: 2px solid #00f3ff;
+      border-radius: 14px;
+      padding: 14px;
+      width: min(440px, 94vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 35px rgba(0, 243, 255, 0.4);
+      text-align: center;
+      color: #fff;
+    }
+    .cheat-card h2 {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ff007f;
+      letter-spacing: 2px;
+      margin: 0 0 4px 0;
+      text-shadow: 0 0 12px #ff007f;
+    }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .cheat-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid #ff007f;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 8px 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .cheat-btn:active {
+      background: #ff007f;
+      color: #fff;
+      transform: scale(0.97);
+    }
+    .cheat-input-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .cheat-input {
+      flex: 1;
+      background: #111;
+      border: 1px solid #00f3ff;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 10px;
+      text-transform: uppercase;
+    }
+
+    /* GTA VICE CITY STYLE MAIN MENU SCREEN - RESPONSIVE FOR PHONES */
     #main-menu-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, rgba(32, 10, 56, 0.82) 0%, rgba(10, 5, 24, 0.94) 100%);
+      background: radial-gradient(circle at center, rgba(32, 10, 56, 0.90) 0%, rgba(10, 5, 24, 0.96) 100%);
       backdrop-filter: blur(6px);
       z-index: 5000;
       display: flex;
@@ -560,7 +684,8 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 16px;
+      padding: 12px;
+      overflow-y: auto;
       user-select: none;
       transition: opacity 0.35s ease, visibility 0.35s;
     }
@@ -570,57 +695,56 @@
       pointer-events: none;
     }
     .gta-logo-box {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     .gta-logo-title {
       font-family: 'Impact', 'Arial Black', sans-serif;
-      font-size: clamp(42px, 8.5vw, 84px);
-      letter-spacing: 5px;
+      font-size: clamp(32px, 7vw, 68px);
+      letter-spacing: 4px;
       color: #ff007f;
-      text-shadow: 0 0 20px #ff007f, 3px 3px 0 #00ffff, 0 0 50px rgba(255, 0, 127, 0.8);
+      text-shadow: 0 0 18px #ff007f, 2px 2px 0 #00ffff, 0 0 40px rgba(255, 0, 127, 0.8);
       text-transform: uppercase;
       line-height: 1.0;
       margin: 0;
     }
     .gta-logo-sub {
-      font-size: clamp(11px, 2.4vw, 17px);
+      font-size: clamp(10px, 2.2vw, 15px);
       font-weight: 900;
-      letter-spacing: 6px;
+      letter-spacing: 5px;
       color: #00ffff;
-      text-shadow: 0 0 14px #00ffff;
-      margin-top: 6px;
+      text-shadow: 0 0 12px #00ffff;
+      margin-top: 4px;
       text-transform: uppercase;
     }
     .gta-menu-box {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      width: min(340px, 92vw);
+      gap: 8px;
+      width: min(320px, 92vw);
     }
     .gta-menu-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 2px solid #ff007f;
       border-radius: 8px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
-      letter-spacing: 2px;
-      padding: 12px 16px;
+      letter-spacing: 1.5px;
+      padding: 10px 14px;
       cursor: pointer;
       text-transform: uppercase;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.25);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.25);
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
-    .gta-menu-btn:hover, .gta-menu-btn:active {
+    .gta-menu-btn:active {
       background: #ff007f;
       color: #fff;
       border-color: #00ffff;
-      box-shadow: 0 0 25px #ff007f, 0 0 35px #00ffff;
-      transform: scale(1.03);
+      transform: scale(0.98);
     }
     .gta-menu-btn.primary {
       background: linear-gradient(90deg, #ff007f, #b300ff);
@@ -628,22 +752,45 @@
     }
     .gta-menu-btn.cyan {
       border-color: #00ffff;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
-    }
-    .gta-menu-btn.cyan:hover {
-      background: #00ffff;
-      color: #111;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
     }
     .menu-info-pill {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 1px;
       color: #a8d5ff;
-      margin-top: 14px;
+      margin-top: 10px;
       background: rgba(0, 0, 0, 0.4);
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* LANDSCAPE MOBILE ADAPTATION FOR MENU */
+    @media (orientation: landscape) and (max-height: 520px) {
+      #main-menu-overlay {
+        flex-direction: row;
+        justify-content: space-evenly;
+        padding: 8px 12px;
+      }
+      .gta-logo-box {
+        margin-bottom: 0;
+        max-width: 42vw;
+      }
+      .gta-menu-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 52vw;
+        gap: 6px;
+      }
+      .gta-menu-btn {
+        padding: 8px 8px;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+      .menu-info-pill {
+        display: none;
+      }
     }
 
     /* CONTROLS MODAL INSIDE MENU */
@@ -778,6 +925,9 @@
     <div class="menu-info-pill">🌴 100% OFFLINE • OPEN WORLD • LIVING NPCS • FLYABLE PLANES 🌴</div>
   </div>
 
+  <!-- AIMING CROSSHAIR -->
+  <div id="crosshair"><div class="crosshair-center"></div></div>
+
   <!-- TOP BAR -->
   <div id="top-bar">
     <button id="menu-toggle" aria-label="Open menu" aria-expanded="false" title="Roblox Menu">
@@ -807,19 +957,37 @@
     <div class="hud-card cash-box">
       $<span id="cash-val">500</span>
     </div>
+
+    <!-- ONE-TAP CHEAT CODES BUTTON -->
+    <button id="btn-cheats" title="Cheat Codes">⚡ CHEATS</button>
   </div>
 
-  <!-- KEYBOARD HINTS -->
-  <div id="help-overlay">
-    <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move/Drive/Fly</span>
-    <span><kbd>SPACE</kbd> Jump/Pitch Up</span>
-    <span><kbd>E</kbd> Enter/Exit</span>
-    <span><kbd>F</kbd> Punch/Rob/Eat</span>
-    <span><kbd>H</kbd> Horn</span>
-    <span><kbd>R</kbd> Radio</span>
+  <!-- CHEAT CODES MODAL (ONE-TAP MOBILE BUTTONS) -->
+  <div id="cheat-modal">
+    <div class="cheat-card">
+      <h2>⚡ VICE CITY CHEAT CODES</h2>
+      <p style="font-size:11px;color:#aaa;margin:0 0 6px 0;">Tap any cheat to activate instantly!</p>
+      <div class="cheat-grid">
+        <button class="cheat-btn" data-cheat="TURTLE">🛡️ FULL HEALTH + $5K</button>
+        <button class="cheat-btn" data-cheat="GUNSGUNSGUNS">🔫 ALL WEAPONS + RPG</button>
+        <button class="cheat-btn" data-cheat="PANZER">🎖️ SPAWN RHINO TANK</button>
+        <button class="cheat-btn" data-cheat="LAWYERUP">🕊️ CLEAR WANTED LEVEL</button>
+        <button class="cheat-btn" data-cheat="BRINGITON">⭐ 5-STAR MAXIMUM HEAT</button>
+        <button class="cheat-btn" data-cheat="SPEEDFREAK">⚡ 2.5X SUPER SPEED</button>
+        <button class="cheat-btn" data-cheat="AIRPORT">✈️ TELEPORT AIRPORT</button>
+        <button class="cheat-btn" data-cheat="HOME">🏠 TELEPORT SAFEHOUSE</button>
+      </div>
+      <div class="cheat-input-row">
+        <input type="text" id="cheat-text-input" class="cheat-input" placeholder="OR TYPE GTA CHEAT CODE..." />
+        <button class="cheat-btn" id="btn-submit-cheat" style="padding:6px 12px;">ACTIVATE</button>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="gta-menu-btn cyan" id="btn-close-cheats" style="padding:6px 16px;font-size:12px;margin:auto;">CLOSE CHEATS</button>
+      </div>
+    </div>
   </div>
 
-  <!-- MISSION OBJECTIVE BANNER -->
+  <!-- MISSION OBJECTIVE BANNER (COMPACT) -->
   <div id="mission-banner">
     <span class="tag">MISSION 1</span>
     <span id="mission-text">Explore Vice City! Visit Burger Shot or grab the ride at Motel</span>
@@ -850,32 +1018,40 @@
     </div>
   </div>
 
-  <!-- MULTI-TOUCH BUTTONS (RIGHT THUMB) -->
+  <!-- MULTI-TOUCH BUTTONS FOR PHONES (RIGHT THUMB) -->
   <div id="mobile-actions">
     <!-- Plane Flight Controls -->
     <div class="action-row" id="plane-controls" style="display:none;">
-      <div class="pedal-btn" id="btn-pitch-down">DIVE<br>▼</div>
-      <div class="pedal-btn" id="btn-pitch-up">CLIMB<br>▲</div>
-      <div class="pedal-btn" id="btn-plane-gas">THRUST<br>⚡</div>
+      <button class="pedal-btn" id="btn-pitch-down">▼<br>DIVE</button>
+      <button class="pedal-btn" id="btn-pitch-up">▲<br>CLIMB</button>
+      <button class="pedal-btn" id="btn-plane-gas">⚡<br>THRUST</button>
+    </div>
+
+    <!-- Tank Cannon Controls -->
+    <div class="action-row" id="tank-controls" style="display:none;">
+      <button class="action-btn" id="btn-tank-fire" title="Fire Cannon" style="width:68px;height:68px;background:#dc2626;border-color:#fffa65;font-size:24px;box-shadow:0 0 15px #dc2626;">💣<span style="font-size:9px;display:block;margin-top:-2px;">CANNON</span></button>
     </div>
 
     <!-- Ground Vehicle Pedals -->
     <div class="action-row" id="car-pedals" style="display:none;">
-      <div class="pedal-btn" id="btn-reverse">REV<br>▼</div>
-      <div class="pedal-btn" id="btn-gas">GAS<br>▲</div>
-      <div class="action-btn" id="btn-handbrake" title="Drift">💨</div>
-      <div class="action-btn" id="btn-horn" title="Horn">🎺</div>
+      <button class="action-btn" id="btn-horn" title="Horn">🎺</button>
+      <button class="action-btn" id="btn-handbrake" title="Drift">💨</button>
+      <button class="pedal-btn" id="btn-reverse">🛑<br>REV</button>
+      <button class="pedal-btn" id="btn-gas">⚡<br>GAS</button>
     </div>
 
-    <!-- On Foot Buttons -->
+    <!-- On Foot Buttons (Clean, Phone-friendly) -->
     <div class="action-row" id="foot-actions">
-      <div class="action-btn" id="btn-punch" title="Punch / Rob / Buy">👊</div>
-      <div class="action-btn" id="btn-jump" title="Jump">⤴</div>
+      <button class="action-btn" id="btn-weapon-swap" title="Switch Weapon" style="position:relative;">👊<span id="weapon-ammo-badge"></span></button>
+      <button class="action-btn" id="btn-aim" title="Aim Target">🎯</button>
+      <button class="action-btn" id="btn-sprint" title="Sprint">🏃</button>
+      <button class="action-btn" id="btn-jump" title="Jump">⤴</button>
+      <button class="action-btn" id="btn-punch" title="Attack / Fire">👊</button>
     </div>
 
     <!-- Universal Enter/Exit button -->
     <div class="action-row">
-      <div class="action-btn" id="btn-enter" title="Enter / Exit Vehicle">🚗</div>
+      <button class="action-btn" id="btn-enter" title="Enter / Exit Vehicle" style="border-color:#00f3ff;box-shadow:0 0 15px rgba(0,243,255,0.4);">🚗</button>
     </div>
   </div>
 
@@ -933,7 +1109,12 @@
       currentMission: 1,
       radioPlaying: true,
       inMenu: true,
-      activeCheckpoint: { id: 'safehouse', name: "Ocean View Safehouse", x: -55, z: -112 }
+      activeCheckpoint: { id: 'safehouse', name: "Ocean View Safehouse", x: -55, z: -112 },
+      currentWeapon: 'fists', // 'fists', 'pistol', 'rifle', 'rpg'
+      ammo: { pistol: 60, rifle: 150, rpg: 12 },
+      isAiming: false,
+      isSprinting: false,
+      cheatSpeed: false
     };
 
     try {
@@ -1027,6 +1208,71 @@
         osc.stop(now + 0.22);
       }
 
+      playGunshot() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const bufferSize = Math.floor(this.ctx.sampleRate * 0.12);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.025));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1600, now);
+        filter.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+
+      playExplosion() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const bufferSize = Math.floor(this.ctx.sampleRate * 0.55);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.12));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(650, now);
+        filter.frequency.exponentialRampToValueAtTime(45, now + 0.5);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+
+      playWhistle() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2200, now);
+        osc.frequency.setValueAtTime(2800, now + 0.08);
+        osc.frequency.setValueAtTime(2400, now + 0.16);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
       playHorn() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -1102,8 +1348,8 @@
 
     const container = document.getElementById('game-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x4cb8ff);
-    scene.fog = new THREE.Fog(0x4cb8ff, 180, 1100);
+    scene.background = new THREE.Color(0x7ec0ee);
+    scene.fog = new THREE.Fog(0x7ec0ee, 350, 1800);
 
     const camera = new THREE.PerspectiveCamera(65, getW() / getH(), 0.1, 1800);
     camera.position.set(0, 6, -14);
@@ -1112,7 +1358,7 @@
     const renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(getW(), getH());
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setClearColor(0x4cb8ff, 1); // explicit clear color, no sRGBEncoding
+    renderer.setClearColor(0x7ec0ee, 1); // explicit clear color, no sRGBEncoding
     renderer.shadowMap.enabled = false;
 
     // Make canvas fill container properly
@@ -1172,7 +1418,13 @@
       roadLine: new THREE.MeshBasicMaterial({ color: 0xffd700 }),
       runway: new THREE.MeshLambertMaterial({ color: 0x24272e }),
       runwayStripe: new THREE.MeshBasicMaterial({ color: 0xffffff }),
-      grass: new THREE.MeshLambertMaterial({ color: 0x22c55e }),
+      grass: new THREE.MeshLambertMaterial({ color: 0x2e9b46 }), // Rich emerald green ground
+      sidewalk: new THREE.MeshLambertMaterial({ color: 0xd1d5db }), // Concrete sidewalk
+      tankGreen: new THREE.MeshLambertMaterial({ color: 0x3d4f2d }), // Military Olive Drab
+      tankTread: new THREE.MeshLambertMaterial({ color: 0x181a1b }), // Heavy black caterpillar tread
+      tankBarrel: new THREE.MeshLambertMaterial({ color: 0x26331d }), // Cannon metal
+      propHydrant: new THREE.MeshLambertMaterial({ color: 0xdc2626 }), // Fire hydrant red
+      propCone: new THREE.MeshLambertMaterial({ color: 0xf97316 }), // Traffic cone orange
       sand: new THREE.MeshLambertMaterial({ color: 0xfde047 }),
       water: new THREE.MeshLambertMaterial({ color: 0x0284c7, transparent: true, opacity: 0.88 }),
       wallDark: new THREE.MeshLambertMaterial({ color: 0x475569 }),
@@ -1215,26 +1467,29 @@
     // Interactive building zones with actions
     const buildingZones = [];
 
-    // --- CITY MAP BUILDER ---
+    // --- CITY MAP BUILDER (Lush, Vibrant & Mobile-Optimized) ---
+    const hydrants = [];
+    const trafficCones = [];
+
     function buildCity() {
-      // 1. Large Ground
-      const groundGeo = new THREE.PlaneGeometry(800, 800);
+      // 1. Massive Ground with Lush Emerald Grass
+      const groundGeo = new THREE.PlaneGeometry(1200, 1200);
       const ground = new THREE.Mesh(groundGeo, M.grass);
       ground.rotation.x = -Math.PI / 2;
       scene.add(ground);
 
       // 2. Beach & Ocean (West, X < -140)
-      const sand = new THREE.Mesh(new THREE.PlaneGeometry(80, 800), M.sand);
+      const sand = new THREE.Mesh(new THREE.PlaneGeometry(90, 1200), M.sand);
       sand.rotation.x = -Math.PI / 2;
-      sand.position.set(-155, 0.05, 0);
+      sand.position.set(-165, 0.05, 0);
       scene.add(sand);
 
-      const ocean = new THREE.Mesh(new THREE.PlaneGeometry(350, 800), M.water);
+      const ocean = new THREE.Mesh(new THREE.PlaneGeometry(450, 1200), M.water);
       ocean.rotation.x = -Math.PI / 2;
-      ocean.position.set(-320, 0.1, 0);
+      ocean.position.set(-420, 0.1, 0);
       scene.add(ocean);
 
-      // 3. Roads Grid
+      // 3. Roads Grid with Flanking Concrete Sidewalks
       createRoadSegment(-100, 0, 24, 600, true);  // Ocean Drive
       createRoadSegment(0, 0, 24, 600, true);     // Central Ave
       createRoadSegment(110, 0, 26, 600, true);   // East Ave
@@ -1249,11 +1504,39 @@
       createStuntRamp(45, 60, Math.PI / 2);
       createStuntRamp(100, 180, 0);
 
-      // 5. Palm Trees
-      for (let z = -240; z <= 240; z += 35) {
+      // 5. Abundant Palm Trees & Tropical Trees (No more hollow map!)
+      // Ocean Drive Palm Boulevard
+      for (let z = -280; z <= 280; z += 24) {
         createPalmTree(-118, z);
         createPalmTree(-82, z);
+        if (z % 48 === 0) createStreetLamp(-83, z);
+        if (z % 72 === 0) createBench(-116, z);
       }
+
+      // Central Avenue Palms & Shady Tropical Trees
+      for (let z = -260; z <= 260; z += 28) {
+        createPalmTree(-18, z);
+        createLushTree(18, z);
+        if (z % 56 === 0) createStreetLamp(18, z + 6);
+        if (z % 84 === 0) createFireHydrant(17, z + 12);
+      }
+
+      // East Avenue Palms & Trees
+      for (let z = -240; z <= 240; z += 30) {
+        createLushTree(92, z);
+        createPalmTree(128, z);
+        if (z % 60 === 0) createStreetLamp(93, z);
+      }
+
+      // Beach Palms along the coast
+      for (let z = -250; z <= 250; z += 40) {
+        createPalmTree(-140 + Math.sin(z) * 6, z);
+      }
+
+      // Traffic cones near ramps & street corners
+      createTrafficConeGroup(-93, -28);
+      createTrafficConeGroup(42, 48);
+      createTrafficConeGroup(97, 168);
 
       // 6. BUILDINGS WITH WALK-IN OPENINGS & PURPOSES
       buildAllOpenBuildings();
@@ -1264,21 +1547,122 @@
       // 8. Downtown Filler Skyscrapers
       buildSkyscrapers();
 
-      // 9. GTA Highway Gantries, Billboards & Airport Arch
-      buildGTASignboards();
+      // 9. Airport Arch
+      buildAirportGrandArch();
     }
 
     function createRoadSegment(x, z, w, h, isVertical) {
+      // Asphalt Road
       const road = new THREE.Mesh(new THREE.PlaneGeometry(w, h), M.road);
       road.rotation.x = -Math.PI / 2;
       road.position.set(x, 0.06, z);
       scene.add(road);
 
+      // Center Divider Stripe
       const lineLen = isVertical ? h : w;
       const line = new THREE.Mesh(new THREE.PlaneGeometry(isVertical ? 0.6 : lineLen, isVertical ? lineLen : 0.6), M.roadLine);
       line.rotation.x = -Math.PI / 2;
       line.position.set(x, 0.08, z);
       scene.add(line);
+
+      // Flanking Concrete Sidewalks (Light Gray)
+      const swW = 3.6;
+      if (isVertical) {
+        const swLeft = new THREE.Mesh(new THREE.PlaneGeometry(swW, h), M.sidewalk);
+        swLeft.rotation.x = -Math.PI / 2;
+        swLeft.position.set(x - w / 2 - swW / 2, 0.07, z);
+        const swRight = new THREE.Mesh(new THREE.PlaneGeometry(swW, h), M.sidewalk);
+        swRight.rotation.x = -Math.PI / 2;
+        swRight.position.set(x + w / 2 + swW / 2, 0.07, z);
+        scene.add(swLeft, swRight);
+      } else {
+        const swTop = new THREE.Mesh(new THREE.PlaneGeometry(w, swW), M.sidewalk);
+        swTop.rotation.x = -Math.PI / 2;
+        swTop.position.set(x, 0.07, z - h / 2 - swW / 2);
+        const swBot = new THREE.Mesh(new THREE.PlaneGeometry(w, swW), M.sidewalk);
+        swBot.rotation.x = -Math.PI / 2;
+        swBot.position.set(x, 0.07, z + h / 2 + swW / 2);
+        scene.add(swTop, swBot);
+      }
+    }
+
+    // Leafy Tropical Shade Tree (Roblox Chunky Style)
+    function createLushTree(x, z) {
+      const tree = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.9, 7, 6), new THREE.MeshLambertMaterial({ color: 0x4a2e18 }));
+      trunk.position.y = 3.5;
+      tree.add(trunk);
+
+      const leafMat1 = new THREE.MeshLambertMaterial({ color: 0x15803d });
+      const leafMat2 = new THREE.MeshLambertMaterial({ color: 0x22c55e });
+      const c1 = new THREE.Mesh(new THREE.BoxGeometry(6.2, 3.8, 6.2), leafMat1);
+      c1.position.y = 7.5;
+      const c2 = new THREE.Mesh(new THREE.BoxGeometry(4.4, 3.2, 4.4), leafMat2);
+      c2.position.y = 10.0;
+      tree.add(c1, c2);
+
+      tree.position.set(x, 0, z);
+      scene.add(tree);
+      addBoxCollider(x - 0.9, x + 0.9, z - 0.9, z + 0.9, 'tree');
+    }
+
+    // Street Lamp
+    function createStreetLamp(x, z) {
+      const lamp = new THREE.Group();
+      const poleMat = new THREE.MeshLambertMaterial({ color: 0x1f2937 });
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 10, 6), poleMat);
+      pole.position.y = 5;
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 0.25), poleMat);
+      arm.position.set(0.8, 9.8, 0);
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 0.6), M.neonYellow);
+      head.position.set(1.6, 9.5, 0);
+      lamp.add(pole, arm, head);
+      lamp.position.set(x, 0, z);
+      scene.add(lamp);
+    }
+
+    // Fire Hydrant (Interactive: sprays water when hit!)
+    function createFireHydrant(x, z) {
+      const hGroup = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 1.4, 8), M.propHydrant);
+      body.position.y = 0.7;
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.3, 8), M.propHydrant);
+      cap.position.y = 1.4;
+      hGroup.add(body, cap);
+      hGroup.position.set(x, 0, z);
+      scene.add(hGroup);
+      hydrants.push({ group: hGroup, x, z, active: false, timer: 0 });
+    }
+
+    // Traffic Cones
+    function createTrafficConeGroup(startX, startZ) {
+      for (let i = 0; i < 3; i++) {
+        const cone = new THREE.Group();
+        const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.9), M.propCone);
+        base.position.y = 0.06;
+        const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.32, 1.3, 8), M.propCone);
+        tip.position.y = 0.72;
+        cone.add(base, tip);
+        const cx = startX + i * 2.2;
+        const cz = startZ;
+        cone.position.set(cx, 0, cz);
+        scene.add(cone);
+        trafficCones.push({ group: cone, x: cx, z: cz, hit: false });
+      }
+    }
+
+    // Park Bench
+    function createBench(x, z) {
+      const bench = new THREE.Group();
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.2, 4.0), new THREE.MeshLambertMaterial({ color: 0x78350f }));
+      seat.position.y = 0.9;
+      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 0.3), new THREE.MeshLambertMaterial({ color: 0x1f2937 }));
+      leg1.position.set(0, 0.4, -1.6);
+      const leg2 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 0.3), new THREE.MeshLambertMaterial({ color: 0x1f2937 }));
+      leg2.position.set(0, 0.4, 1.6);
+      bench.add(seat, leg1, leg2);
+      bench.position.set(x, 0, z);
+      scene.add(bench);
     }
 
     function createStuntRamp(x, z, rotY) {
@@ -1362,10 +1746,10 @@
       roof.position.set(0, h + 0.7, 0);
       group.add(roof);
 
-      // Floating Neon Name Sign
-      const signMesh = create3DTextSign(`${name} - [${purpose}]`, signCol || 0x00f3ff);
-      signMesh.position.set(0, h + 3.0, d / 2 + 0.8);
-      group.add(signMesh);
+      // Architectural Neon Accent Fascia Strip (Clean & Sightline-Friendly, No Bulky Floating Text)
+      const fascia = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, 1.0, 0.4), new THREE.MeshBasicMaterial({ color: signCol || 0x00f3ff }));
+      fascia.position.set(0, h + 0.5, d / 2 + 0.25);
+      group.add(fascia);
 
       group.position.set(x, 0, z);
       scene.add(group);
@@ -1900,32 +2284,200 @@
     // --- ROBLOX VEHICLES SYSTEM (CARS, BIKES, AIRPLANES) ---
     const vehicles = [];
 
+    // --- PROJECTILES & EXPLOSIONS ENGINE ---
+    const activeProjectiles = [];
+    const activeExplosions = [];
+
+    class Projectile {
+      constructor(origin, dir, isRocket = false, isTankShell = false) {
+        this.group = new THREE.Group();
+        this.dir = dir.clone().normalize();
+        this.isRocket = isRocket;
+        this.isTankShell = isTankShell;
+        this.speed = isTankShell ? 85 : (isRocket ? 58 : 95);
+        this.life = 4.0;
+        this.damage = isTankShell ? 240 : (isRocket ? 150 : 35);
+        this.radius = isTankShell ? 1.0 : (isRocket ? 0.7 : 0.4);
+
+        if (this.isTankShell) {
+          const shell = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 1.2, 6), M.neonYellow);
+          shell.rotation.x = Math.PI / 2;
+          this.group.add(shell);
+        } else if (this.isRocket) {
+          const body = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.4, 6), M.tankGreen);
+          body.rotation.x = Math.PI / 2;
+          const tip = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.6, 6), M.neonPink);
+          tip.rotation.x = -Math.PI / 2;
+          tip.position.z = 0.9;
+          this.group.add(body, tip);
+        } else {
+          const tracer = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 1.2), M.neonYellow);
+          this.group.add(tracer);
+        }
+
+        this.group.position.copy(origin);
+        this.group.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.dir);
+        scene.add(this.group);
+        activeProjectiles.push(this);
+      }
+
+      update(dt) {
+        this.life -= dt;
+        if (this.life <= 0) {
+          this.destroy();
+          return;
+        }
+
+        this.group.position.addScaledVector(this.dir, this.speed * dt);
+
+        // Ground collision
+        if (this.group.position.y <= 0.3) {
+          createExplosion(this.group.position, this.isTankShell ? 14 : 9, this.damage);
+          this.destroy();
+          return;
+        }
+
+        // Solid Building collisions
+        const px = this.group.position.x;
+        const pz = this.group.position.z;
+        for (let b of solidBoxes) {
+          if (px >= b.minX && px <= b.maxX && pz >= b.minZ && pz <= b.maxZ && this.group.position.y <= 16) {
+            createExplosion(this.group.position, this.isTankShell ? 14 : 9, this.damage);
+            this.destroy();
+            return;
+          }
+        }
+
+        // Vehicle collisions
+        for (let v of vehicles) {
+          if (v.driver === player && this.life > 3.8) continue;
+          const d = Math.hypot(px - v.group.position.x, pz - v.group.position.z);
+          if (d < v.radius + this.radius && Math.abs(this.group.position.y - v.group.position.y) < 3) {
+            createExplosion(this.group.position, this.isTankShell ? 14 : 9, this.damage);
+            v.takeDamage(this.damage);
+            this.destroy();
+            return;
+          }
+        }
+
+        // NPC collisions
+        for (let npc of npcs) {
+          if (npc.isDead) continue;
+          const d = Math.hypot(px - npc.group.position.x, pz - npc.group.position.z);
+          if (d < 1.8 && this.group.position.y < 4.5) {
+            createExplosion(this.group.position, this.isTankShell ? 12 : 8, this.damage);
+            npc.takeDamage(this.damage);
+            this.destroy();
+            return;
+          }
+        }
+
+        // Foot Cop collisions
+        for (let cop of footCops) {
+          if (cop.isDead || !cop.group.visible) continue;
+          const d = Math.hypot(px - cop.group.position.x, pz - cop.group.position.z);
+          if (d < 1.8 && this.group.position.y < 4.5) {
+            createExplosion(this.group.position, this.isTankShell ? 12 : 8, this.damage);
+            cop.takeDamage(this.damage);
+            this.destroy();
+            return;
+          }
+        }
+      }
+
+      destroy() {
+        scene.remove(this.group);
+        const idx = activeProjectiles.indexOf(this);
+        if (idx !== -1) activeProjectiles.splice(idx, 1);
+      }
+    }
+
+    function createExplosion(pos, radius = 9, damage = 120) {
+      Sound.playExplosion();
+
+      // Visual blast sphere
+      const sphereMat = new THREE.MeshBasicMaterial({ color: 0xff4500, transparent: true, opacity: 0.95 });
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), sphereMat);
+      sphere.position.copy(pos);
+      scene.add(sphere);
+
+      activeExplosions.push({
+        mesh: sphere,
+        maxRadius: radius,
+        currentRadius: 1.2,
+        life: 0.38,
+        totalLife: 0.38
+      });
+
+      // Area Damage to vehicles
+      vehicles.forEach(v => {
+        const d = Math.hypot(pos.x - v.group.position.x, pos.z - v.group.position.z);
+        if (d < radius + v.radius) {
+          v.takeDamage(damage * Math.max(0.3, 1 - d / (radius + v.radius)));
+          const push = new THREE.Vector3().subVectors(v.group.position, pos).normalize().multiplyScalar(14);
+          v.group.position.add(push);
+          v.speed = -18;
+        }
+      });
+
+      // Area Damage to NPCs
+      npcs.forEach(npc => {
+        if (npc.isDead) return;
+        const d = Math.hypot(pos.x - npc.group.position.x, pos.z - npc.group.position.z);
+        if (d < radius + 1.2) {
+          npc.takeDamage(damage);
+        }
+      });
+
+      // Foot cops
+      footCops.forEach(cop => {
+        if (cop.isDead || !cop.group.visible) return;
+        const d = Math.hypot(pos.x - cop.group.position.x, pos.z - cop.group.position.z);
+        if (d < radius + 1.2) {
+          cop.takeDamage(damage);
+        }
+      });
+
+      // Player damage
+      const pDist = Math.hypot(pos.x - player.group.position.x, pos.z - player.group.position.z);
+      if (pDist < radius + 1.0 && !State.inVehicle) {
+        damagePlayer(Math.round(damage * 0.45 * (1 - pDist / radius)));
+        Sound.playOof();
+      }
+    }
+
     class RobloxVehicle {
       constructor(opts) {
-        this.type = opts.type || 'car'; // 'car', 'cop', 'bike', 'plane'
+        this.type = opts.type || 'car'; // 'car', 'cop', 'bike', 'plane', 'tank'
         this.isPolice = this.type === 'cop';
         this.isBike = this.type === 'bike';
         this.isPlane = this.type === 'plane';
+        this.isTank = this.type === 'tank';
         this.name = opts.name || 'Vehicle';
         this.group = new THREE.Group();
 
         this.speed = 0;
-        this.maxSpeed = this.isPlane ? 48 : (this.isBike ? 38 : (this.isPolice ? 32 : 35));
-        this.acceleration = this.isBike ? 24 : (this.isPlane ? 20 : 18);
-        this.friction = 4.5;
-        this.turnSpeed = this.isBike ? 2.8 : (this.isPlane ? 1.8 : 2.2);
+        this.maxSpeed = this.isPlane ? 48 : (this.isBike ? 38 : (this.isPolice ? 34 : (this.isTank ? 22 : 35)));
+        this.acceleration = this.isBike ? 24 : (this.isPlane ? 20 : (this.isTank ? 12 : 18));
+        this.friction = this.isTank ? 6.0 : 4.5;
+        this.turnSpeed = this.isBike ? 2.8 : (this.isPlane ? 1.8 : (this.isTank ? 1.4 : 2.2));
         
         // Solid Hitbox Radius
-        this.radius = this.isPlane ? 4.5 : (this.isBike ? 1.4 : 2.6);
+        this.radius = this.isPlane ? 4.5 : (this.isBike ? 1.4 : (this.isTank ? 4.2 : 2.6));
+        this.health = this.isTank ? 800 : 200;
+        this.maxHealth = this.health;
         this.driver = null;
 
         // Plane flight states
         this.altitude = 0.5;
-        this.pitch = 0; // Flight climb/dive angle
+        this.pitch = 0;
         this.roll = 0;
         this.isFlying = false;
 
-        this.buildModel(opts.colorMat || M.carPink);
+        // Tank cannon cooldown
+        this.cannonCooldown = 0;
+
+        this.buildModel(opts.colorMat || (this.isTank ? M.tankGreen : M.carPink));
         this.group.position.set(opts.x, 0.5, opts.z);
         scene.add(this.group);
         vehicles.push(this);
@@ -1936,9 +2488,81 @@
           this.buildPlane();
         } else if (this.isBike) {
           this.buildBike();
+        } else if (this.isTank) {
+          this.buildTank();
         } else {
           this.buildCar(colorMat);
         }
+      }
+
+      takeDamage(amt) {
+        this.health -= amt;
+        if (this.health <= 0) {
+          createExplosion(this.group.position, 12, 100);
+          if (this.driver === player) {
+            damagePlayer(60);
+            toggleVehicle();
+          }
+          this.health = this.maxHealth;
+          this.speed = 0;
+          this.group.position.y = 0.5;
+          showToast(`${this.name} Destroyed!`);
+        }
+      }
+
+      fireTankCannon() {
+        if (!this.isTank) return;
+        if (this.cannonCooldown > 0) return;
+        this.cannonCooldown = 1.0; // 1s reload
+
+        Sound.playGunshot();
+        Sound.playExplosion();
+
+        // Tip of barrel position
+        const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.group.rotation.y);
+        const barrelPos = this.group.position.clone().add(new THREE.Vector3(0, 2.6, 0)).addScaledVector(forward, 6.2);
+
+        // Spawn explosive tank artillery projectile
+        new Projectile(barrelPos, forward, false, true);
+
+        // Recoil kick
+        this.speed -= 10;
+        showToast("💣 TANK CANNON FIRED!");
+      }
+
+      buildTank() {
+        // Armored Green Chassis
+        const hull = new THREE.Mesh(new THREE.BoxGeometry(5.4, 1.8, 8.4), M.tankGreen);
+        hull.position.y = 1.2;
+        this.group.add(hull);
+
+        // Caterpillar Treads Left & Right
+        const treadGeo = new THREE.BoxGeometry(1.3, 1.5, 8.8);
+        const treadL = new THREE.Mesh(treadGeo, M.tankTread);
+        treadL.position.set(-2.8, 0.8, 0);
+        const treadR = new THREE.Mesh(treadGeo, M.tankTread);
+        treadR.position.set(2.8, 0.8, 0);
+        this.group.add(treadL, treadR);
+
+        // Armored Rotating Turret
+        const turret = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.5, 4.2), M.tankGreen);
+        turret.position.set(0, 2.7, -0.4);
+        this.group.add(turret);
+
+        // Giant Cannon Barrel
+        const barrelGeo = new THREE.CylinderGeometry(0.38, 0.42, 5.8, 8);
+        barrelGeo.rotateX(Math.PI / 2);
+        this.cannonBarrel = new THREE.Mesh(barrelGeo, M.tankBarrel);
+        this.cannonBarrel.position.set(0, 2.7, 3.8);
+        this.group.add(this.cannonBarrel);
+
+        // Muzzle brake ring
+        const brake = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.8, 8), M.tankTread);
+        brake.rotateX(Math.PI / 2);
+        brake.position.set(0, 2.7, 6.4);
+        this.group.add(brake);
+
+        this.wheels = [];
       }
 
       buildCar(colorMat) {
@@ -2175,27 +2799,38 @@
           }
         });
 
-        // 2. Solid Vehicle-to-Vehicle Collisions (Car cannot pass through car!)
+        if (this.isTank && this.cannonCooldown > 0) {
+          this.cannonCooldown -= dt;
+        }
+
+        // 2. Solid Vehicle-to-Vehicle Collisions (Tank crushes & tosses cars aside!)
         vehicles.forEach(other => {
           if (other === this) return;
           const dist = Math.hypot(myPos.x - other.group.position.x, myPos.z - other.group.position.z);
           const minAllowedDist = this.radius + other.radius;
 
           if (dist < minAllowedDist) {
-            // Solid bump recoil
             Sound.playCrash();
-            const overlap = minAllowedDist - dist;
-            const pushDir = new THREE.Vector3()
-              .subVectors(myPos, other.group.position)
-              .normalize()
-              .multiplyScalar(overlap * 0.6);
+            if (this.isTank && Math.abs(this.speed) > 4) {
+              // Tank rams and blasts cars!
+              other.speed = -25;
+              other.group.position.addScaledVector(forward, 6);
+              other.takeDamage(120);
+              createExplosion(other.group.position, 6, 40);
+              showToast("RHINO TANK CRUSHED VEHICLE!");
+            } else {
+              const overlap = minAllowedDist - dist;
+              const pushDir = new THREE.Vector3()
+                .subVectors(myPos, other.group.position)
+                .normalize()
+                .multiplyScalar(overlap * 0.6);
 
-            myPos.add(pushDir);
-            other.group.position.sub(pushDir);
+              myPos.add(pushDir);
+              other.group.position.sub(pushDir);
 
-            // Momentum bounce
-            this.speed = -this.speed * 0.35;
-            other.speed = -other.speed * 0.35;
+              this.speed = -this.speed * 0.35;
+              other.speed = -other.speed * 0.35;
+            }
           }
         });
 
@@ -2213,7 +2848,147 @@
       }
     }
 
-    // --- POLICE AI SQUAD ---
+    // --- POLICE FOOT PATROL COPS (1-2 Star Heat) ---
+    const footCops = [];
+    class RobloxFootCop {
+      constructor(x, z) {
+        this.group = new THREE.Group();
+        this.speed = 12.0;
+        this.health = 50;
+        this.isDead = false;
+        this.animTime = Math.random() * 10;
+        this.whistleTimer = 2 + Math.random() * 4;
+        this.attackCooldown = 0;
+
+        this.buildModel();
+        this.group.position.set(x, 0, z);
+        scene.add(this.group);
+        footCops.push(this);
+      }
+
+      buildModel() {
+        this.head = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 1.1), M.skin);
+        this.head.position.y = 3.5;
+        this.group.add(this.head);
+
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.4, 1.3), M.shirtCop);
+        cap.position.set(0, 4.2, -0.05);
+        const badge = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.1), M.neonYellow);
+        badge.position.set(0, 4.25, 0.65);
+        this.group.add(cap, badge);
+
+        const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.3, 0.2), new THREE.MeshBasicMaterial({ color: 0x111 }));
+        glasses.position.set(0, 3.55, 0.52);
+        this.group.add(glasses);
+
+        this.torso = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.8, 0.9), M.shirtCop);
+        this.torso.position.y = 2.1;
+        this.group.add(this.torso);
+
+        const armGeo = new THREE.BoxGeometry(0.65, 1.7, 0.65);
+        this.leftArm = new THREE.Mesh(armGeo, M.shirtCop);
+        this.leftArm.position.set(-1.25, 2.1, 0);
+        this.rightArm = new THREE.Mesh(armGeo, M.shirtCop);
+        this.rightArm.position.set(1.25, 2.1, 0);
+        this.group.add(this.leftArm, this.rightArm);
+
+        // Police nightstick
+        const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.4, 6), new THREE.MeshBasicMaterial({ color: 0x111 }));
+        stick.position.set(0, -0.8, 0.3);
+        stick.rotation.x = Math.PI / 4;
+        this.rightArm.add(stick);
+
+        const legGeo = new THREE.BoxGeometry(0.75, 1.7, 0.75);
+        this.leftLeg = new THREE.Mesh(legGeo, M.wallBank);
+        this.leftLeg.position.set(-0.45, 0.85, 0);
+        this.rightLeg = new THREE.Mesh(legGeo, M.wallBank);
+        this.rightLeg.position.set(0.45, 0.85, 0);
+        this.group.add(this.leftLeg, this.rightLeg);
+      }
+
+      update(dt, playerPos) {
+        if (this.isDead) return;
+        if (State.wantedLevel <= 0) {
+          this.group.visible = false;
+          return;
+        }
+        this.group.visible = true;
+
+        const dx = playerPos.x - this.group.position.x;
+        const dz = playerPos.z - this.group.position.z;
+        const dist = Math.hypot(dx, dz);
+
+        const angle = Math.atan2(dx, dz);
+        this.group.rotation.y = angle;
+
+        // Whistle sound
+        this.whistleTimer -= dt;
+        if (this.whistleTimer <= 0 && dist < 45) {
+          Sound.playWhistle();
+          this.whistleTimer = 4 + Math.random() * 5;
+        }
+
+        // Pursue player on foot
+        if (dist > 2.2) {
+          const spd = (State.wantedLevel >= 2 ? this.speed * 1.15 : this.speed) * dt;
+          this.group.position.x += Math.sin(angle) * spd;
+          this.group.position.z += Math.cos(angle) * spd;
+
+          this.animTime += dt * 12;
+          const swing = Math.sin(this.animTime) * 0.9;
+          this.leftArm.rotation.x = -swing;
+          this.rightArm.rotation.x = swing;
+          this.leftLeg.rotation.x = swing;
+          this.rightLeg.rotation.x = -swing;
+        } else {
+          // Melee hit player
+          this.attackCooldown -= dt;
+          if (this.attackCooldown <= 0) {
+            this.attackCooldown = 1.0;
+            damagePlayer(12);
+            Sound.playPunch();
+            Sound.playOof();
+            showToast("👮 PATROL COP HIT YOU! -12 HP");
+          }
+        }
+      }
+
+      takeDamage(amount) {
+        if (this.isDead) return;
+        this.health -= amount;
+        Sound.playPunch();
+        if (this.health <= 0) {
+          this.die();
+        }
+      }
+
+      die() {
+        this.isDead = true;
+        this.group.rotation.x = Math.PI / 2;
+        this.group.position.y = 0.4;
+        addCash(150);
+        showToast("👮 COP DOWN! +$150 Cash & Ammo Dropped!");
+        Sound.playCash();
+        State.ammo.pistol += 20;
+        if (player) player.updateWeaponBadge();
+
+        setTimeout(() => {
+          this.isDead = false;
+          this.health = 50;
+          this.group.rotation.x = 0;
+          this.group.position.y = 0;
+          const p = State.inVehicle ? State.currentVehicle.group.position : player.group.position;
+          this.group.position.set(p.x + (Math.random() > 0.5 ? 40 : -40), 0, p.z + (Math.random() > 0.5 ? 40 : -40));
+        }, 15000);
+      }
+    }
+
+    // Spawn initial foot cops
+    new RobloxFootCop(40, 110);
+    new RobloxFootCop(-70, 240);
+    new RobloxFootCop(-50, -30);
+
+    // --- POLICE SQUAD CRUISERS (3-5 Star High-Speed Pursuit) ---
     const policeUnits = [];
     class PoliceAI {
       constructor(x, z, type = 'cop') {
@@ -2222,26 +2997,52 @@
       }
 
       update(dt, playerPos) {
-        if (State.wantedLevel <= 0) return;
+        if (State.wantedLevel <= 0) {
+          if (this.vehicle.redL) this.vehicle.redL.material = M.wallDark;
+          if (this.vehicle.blueL) this.vehicle.blueL.material = M.wallDark;
+          return;
+        }
 
-        // Pursue player
         const carPos = this.vehicle.group.position;
         const targetAngle = Math.atan2(playerPos.x - carPos.x, playerPos.z - carPos.z);
+        const dist = Math.hypot(playerPos.x - carPos.x, playerPos.z - carPos.z);
 
+        // Flash emergency lights
+        const flash = Math.sin(performance.now() * 0.015) > 0;
+        if (this.vehicle.redL) this.vehicle.redL.material = flash ? M.neonPink : M.wallDark;
+        if (this.vehicle.blueL) this.vehicle.blueL.material = flash ? M.wallDark : M.neonCyan;
+
+        // WANTED LEVEL 1-2: Foot patrol cops pursue, squad cruisers follow at distance (DO NOT RAM)
+        if (State.wantedLevel <= 2) {
+          if (dist > 36) {
+            let diff = targetAngle - this.vehicle.group.rotation.y;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -1.5 * dt, 1.5 * dt);
+            const cruiseSpeed = 12;
+            const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.vehicle.group.rotation.y);
+            carPos.addScaledVector(forward, cruiseSpeed * dt);
+            this.vehicle.speed = cruiseSpeed;
+          } else {
+            this.vehicle.speed = 0;
+          }
+          return;
+        }
+
+        // WANTED LEVEL 3-5: HIGH SPEED AGGRESSIVE SQUAD CAR PURSUIT & RAMMING!
         let diff = targetAngle - this.vehicle.group.rotation.y;
         while (diff < -Math.PI) diff += Math.PI * 2;
         while (diff > Math.PI) diff -= Math.PI * 2;
-        this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -2.4 * dt, 2.4 * dt);
+        this.vehicle.group.rotation.y += THREE.MathUtils.clamp(diff, -2.8 * dt, 2.8 * dt);
 
-        const chaseSpeed = 16 + State.wantedLevel * 2.8;
+        const chaseSpeed = 22 + State.wantedLevel * 2.5; // up to 34.5 m/s!
         const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.vehicle.group.rotation.y);
         carPos.addScaledVector(forward, chaseSpeed * dt);
         this.vehicle.speed = chaseSpeed;
 
-        // Ram player
-        const dist = Math.hypot(playerPos.x - carPos.x, playerPos.z - carPos.z);
+        // Aggressively Ram player
         if (dist < 4.2) {
-          damagePlayer(15);
+          damagePlayer(16);
           Sound.playCrash();
           Sound.playOof();
           carPos.addScaledVector(forward, -4);
@@ -2249,7 +3050,7 @@
       }
     }
 
-    // --- ROBLOX CHARACTER SYSTEM ---
+    // --- ROBLOX CHARACTER SYSTEM (Weapons, Aiming & Animation) ---
     class RobloxCharacter {
       constructor(isLucia = true) {
         this.group = new THREE.Group();
@@ -2304,6 +3105,30 @@
         this.rightArm.position.set(1.35, 2.1, 0);
         this.group.add(this.leftArm, this.rightArm);
 
+        // 3D WEAPONS ATTACHED TO RIGHT HAND
+        // Pistol
+        this.meshPistol = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.55, 0.95), new THREE.MeshLambertMaterial({ color: 0x111827 }));
+        this.meshPistol.position.set(0, -0.9, 0.4);
+        this.rightArm.add(this.meshPistol);
+
+        // Assault Rifle
+        this.meshRifle = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.75, 2.4), new THREE.MeshLambertMaterial({ color: 0x1e293b }));
+        this.meshRifle.position.set(0, -0.85, 0.6);
+        this.rightArm.add(this.meshRifle);
+
+        // Rocket Launcher (RPG)
+        this.meshRpg = new THREE.Group();
+        const rpgTube = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 3.2, 8), M.tankGreen);
+        rpgTube.rotation.x = Math.PI / 2;
+        const rocketTip = new THREE.Mesh(new THREE.ConeGeometry(0.38, 0.8, 8), M.neonPink);
+        rocketTip.rotation.x = -Math.PI / 2;
+        rocketTip.position.z = 2.0;
+        this.meshRpg.add(rpgTube, rocketTip);
+        this.meshRpg.position.set(0, -0.7, 0.6);
+        this.rightArm.add(this.meshRpg);
+
+        this.setWeapon(State.currentWeapon || 'fists');
+
         // Legs
         const legGeo = new THREE.BoxGeometry(0.8, 1.8, 0.8);
         this.leftLeg = new THREE.Mesh(legGeo, M.denim);
@@ -2318,12 +3143,64 @@
         this.buildModel();
       }
 
+      setWeapon(weaponName) {
+        State.currentWeapon = weaponName;
+        if (this.meshPistol) this.meshPistol.visible = (weaponName === 'pistol');
+        if (this.meshRifle) this.meshRifle.visible = (weaponName === 'rifle');
+        if (this.meshRpg) this.meshRpg.visible = (weaponName === 'rpg');
+        this.updateWeaponBadge();
+      }
+
+      cycleWeapon() {
+        const order = ['fists', 'pistol', 'rifle', 'rpg'];
+        const nextIdx = (order.indexOf(State.currentWeapon) + 1) % order.length;
+        this.setWeapon(order[nextIdx]);
+        Sound.playGunshot();
+      }
+
+      updateWeaponBadge() {
+        const btnSwap = document.getElementById('btn-weapon-swap');
+        const badge = document.getElementById('weapon-ammo-badge');
+        const punchBtn = document.getElementById('btn-punch');
+        const icons = { fists: '👊', pistol: '🔫', rifle: '💥', rpg: '🚀' };
+        if (btnSwap) {
+          btnSwap.innerHTML = `${icons[State.currentWeapon] || '👊'}<span id="weapon-ammo-badge"></span>`;
+        }
+        if (punchBtn) {
+          punchBtn.innerText = icons[State.currentWeapon] || '👊';
+        }
+        const newBadge = document.getElementById('weapon-ammo-badge');
+        if (newBadge) {
+          if (State.currentWeapon === 'fists') {
+            newBadge.innerText = '';
+          } else {
+            newBadge.innerText = State.ammo[State.currentWeapon] || 0;
+          }
+        }
+      }
+
       animate(dt, isMoving, isDriving) {
         if (isDriving) {
           this.leftArm.rotation.set(-1.1, 0.3, 0);
           this.rightArm.rotation.set(-1.1, -0.3, 0);
           this.leftLeg.rotation.set(-1.4, 0, 0);
           this.rightLeg.rotation.set(-1.4, 0, 0);
+          return;
+        }
+
+        // Aiming stance: arms raised straight forward towards crosshair!
+        if (State.isAiming) {
+          this.rightArm.rotation.set(-Math.PI / 2, 0, 0);
+          this.leftArm.rotation.set(-Math.PI / 2, 0.4, 0);
+          if (isMoving) {
+            this.animTime += dt * 10;
+            const swing = Math.sin(this.animTime) * 0.75;
+            this.leftLeg.rotation.x = swing;
+            this.rightLeg.rotation.x = -swing;
+          } else {
+            this.leftLeg.rotation.set(0, 0, 0);
+            this.rightLeg.rotation.set(0, 0, 0);
+          }
           return;
         }
 
@@ -2339,8 +3216,8 @@
         }
 
         if (isMoving) {
-          this.animTime += dt * 10;
-          const swing = Math.sin(this.animTime) * 0.75;
+          this.animTime += dt * (State.isSprinting ? 16 : 10);
+          const swing = Math.sin(this.animTime) * (State.isSprinting ? 1.1 : 0.75);
           this.leftArm.rotation.x = -swing;
           this.rightArm.rotation.x = swing;
           this.leftLeg.rotation.x = swing;
@@ -2521,6 +3398,15 @@
     bindPointerBtn('btn-enter', () => toggleVehicle());
     bindPointerBtn('btn-punch', () => handleAction());
     bindPointerBtn('btn-jump', () => { keys.jump = true; setTimeout(() => keys.jump = false, 300); });
+    bindPointerBtn('btn-sprint', 
+      () => { State.isSprinting = true; },
+      () => { State.isSprinting = false; }
+    );
+    bindPointerBtn('btn-tank-fire', () => {
+      if (State.inVehicle && State.currentVehicle && State.currentVehicle.isTank) {
+        State.currentVehicle.fireTankCannon();
+      }
+    });
     bindPointerBtn('btn-gas', 
       () => { keys.forward = true; keysFromPedals.forward = true; },
       () => { keysFromPedals.forward = false; if (joyVector.y >= -0.22) keys.forward = false; }
@@ -2531,6 +3417,141 @@
     );
     bindPointerBtn('btn-handbrake', () => { keys.handbrake = true; }, () => { keys.handbrake = false; });
     bindPointerBtn('btn-horn', () => Sound.playHorn());
+
+    // Weapon switcher & Aim mode touch buttons
+    const btnWeaponSwap = document.getElementById('btn-weapon-swap');
+    if (btnWeaponSwap) {
+      btnWeaponSwap.addEventListener('click', (e) => {
+        e.preventDefault();
+        player.cycleWeapon();
+      });
+    }
+
+    const btnAim = document.getElementById('btn-aim');
+    if (btnAim) {
+      btnAim.addEventListener('click', (e) => {
+        e.preventDefault();
+        State.isAiming = !State.isAiming;
+        const crosshair = document.getElementById('crosshair');
+        if (crosshair) crosshair.style.display = State.isAiming ? 'block' : 'none';
+        btnAim.style.background = State.isAiming ? '#ff007f' : '';
+        showToast(State.isAiming ? "🎯 AIM MODE ON" : "AIM MODE OFF");
+      });
+    }
+
+    // --- CHEAT CODES SYSTEM (One-Tap Mobile Modal & Text Input) ---
+    let spawnedTank = null;
+    function spawnRhinoTankAtPlayer() {
+      const pPos = player.group.position;
+      const angle = player.group.rotation.y + Math.PI / 2;
+      const sx = pPos.x + Math.sin(angle) * 8;
+      const sz = pPos.z + Math.cos(angle) * 8;
+      if (spawnedTank && vehicles.includes(spawnedTank)) {
+        scene.remove(spawnedTank.group);
+        const idx = vehicles.indexOf(spawnedTank);
+        if (idx !== -1) vehicles.splice(idx, 1);
+      }
+      spawnedTank = new RobloxVehicle({ x: sx, z: sz, type: 'tank', colorMat: M.tankGreen, name: 'Rhino Tank' });
+      spawnedTank.group.rotation.y = player.group.rotation.y;
+      createExplosion(new THREE.Vector3(sx, 1, sz), 5, 0);
+    }
+
+    function executeCheatCode(code) {
+      code = (code || '').toUpperCase().trim();
+      if (code === 'TURTLE' || code === 'ASPIRINE' || code === 'PRECIOUSPROTECTION') {
+        State.health = 100;
+        addCash(5000);
+        updateHealthUI();
+        showToast("⚡ CHEAT ACTIVATED: FULL HEALTH & +$5,000 CASH!");
+        Sound.playCash();
+      } else if (code === 'GUNSGUNSGUNS' || code === 'NUTTERTOOLS' || code === 'THUGSTOOLS') {
+        State.ammo.pistol = 999;
+        State.ammo.rifle = 999;
+        State.ammo.rpg = 30;
+        player.setWeapon('rpg');
+        showToast("⚡ CHEAT ACTIVATED: ALL WEAPONS & 30 RPG ROCKETS!");
+        Sound.playGunshot();
+      } else if (code === 'PANZER' || code === 'TANK') {
+        spawnRhinoTankAtPlayer();
+        showToast("⚡ CHEAT ACTIVATED: MILITARY RHINO TANK SPAWNED!");
+        Sound.playCrash();
+      } else if (code === 'LAWYERUP' || code === 'LEAVEMEALONE') {
+        setWantedLevel(0);
+        showToast("⚡ CHEAT ACTIVATED: WANTED STARS CLEARED!");
+      } else if (code === 'BRINGITON' || code === 'YOUWONTTAKEMEALIVE') {
+        setWantedLevel(5);
+        showToast("⚡ CHEAT ACTIVATED: 5-STAR MAXIMUM HEAT!");
+        Sound.updateSiren(true);
+      } else if (code === 'SPEEDFREAK' || code === 'CATCHME') {
+        State.cheatSpeed = !State.cheatSpeed;
+        showToast("⚡ CHEAT ACTIVATED: 2.5X SUPER SPEED " + (State.cheatSpeed ? "ENABLED" : "DISABLED") + "!");
+      } else if (code === 'AIRPORT') {
+        const targetPos = { x: 0, z: 230 };
+        if (State.inVehicle && State.currentVehicle) {
+          State.currentVehicle.group.position.set(targetPos.x, 0.5, targetPos.z);
+        } else {
+          player.group.position.set(targetPos.x, 0, targetPos.z);
+        }
+        showToast("⚡ CHEAT ACTIVATED: TELEPORTED TO AIRPORT RUNWAY!");
+        Sound.playCash();
+      } else if (code === 'HOME' || code === 'SAFEHOUSE') {
+        const targetPos = { x: -55, z: -112 };
+        if (State.inVehicle && State.currentVehicle) {
+          State.currentVehicle.group.position.set(targetPos.x, 0.5, targetPos.z);
+        } else {
+          player.group.position.set(targetPos.x, 0, targetPos.z);
+        }
+        showToast("⚡ CHEAT ACTIVATED: TELEPORTED TO OCEAN SAFEHOUSE!");
+        Sound.playCash();
+      } else {
+        showToast("INVALID CHEAT CODE!");
+      }
+    }
+
+    const cheatModal = document.getElementById('cheat-modal');
+    const btnCheats = document.getElementById('btn-cheats');
+    const btnCloseCheats = document.getElementById('btn-close-cheats');
+
+    if (btnCheats && cheatModal) {
+      btnCheats.addEventListener('click', () => {
+        cheatModal.classList.add('open');
+      });
+    }
+    if (btnCloseCheats && cheatModal) {
+      btnCloseCheats.addEventListener('click', () => {
+        cheatModal.classList.remove('open');
+      });
+    }
+    document.querySelectorAll('.cheat-btn[data-cheat]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.getAttribute('data-cheat');
+        executeCheatCode(code);
+        if (cheatModal) cheatModal.classList.remove('open');
+      });
+    });
+
+    const btnSubmitCheat = document.getElementById('btn-submit-cheat');
+    const cheatTextInput = document.getElementById('cheat-text-input');
+    if (btnSubmitCheat && cheatTextInput) {
+      btnSubmitCheat.addEventListener('click', () => {
+        const code = cheatTextInput.value.trim().toUpperCase();
+        if (code) {
+          executeCheatCode(code);
+          cheatTextInput.value = '';
+          if (cheatModal) cheatModal.classList.remove('open');
+        }
+      });
+      cheatTextInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const code = cheatTextInput.value.trim().toUpperCase();
+          if (code) {
+            executeCheatCode(code);
+            cheatTextInput.value = '';
+            if (cheatModal) cheatModal.classList.remove('open');
+          }
+        }
+      });
+    }
 
     // Plane Touch Pedals
     bindPointerBtn('btn-plane-gas', 
@@ -2723,7 +3744,7 @@
       mobileMenu.classList.remove('open');
     });
 
-    // --- VEHICLE ENTER / EXIT ---
+    // --- VEHICLE ENTER / EXIT (Cars, Bikes, Planes & Rhino Tank) ---
     function toggleVehicle() {
       if (State.inVehicle) {
         // Exit
@@ -2733,19 +3754,21 @@
         State.currentVehicle = null;
 
         player.group.position.copy(v.group.position);
-        player.group.position.x += v.isBike ? 1.8 : 3.4;
+        player.group.position.x += v.isBike ? 1.8 : (v.isTank ? 4.5 : 3.4);
         player.group.position.y = 0;
         player.group.visible = true;
 
         document.getElementById('vehicle-hud').style.display = 'none';
         document.getElementById('car-pedals').style.display = 'none';
         document.getElementById('plane-controls').style.display = 'none';
+        const tankCtl = document.getElementById('tank-controls');
+        if (tankCtl) tankCtl.style.display = 'none';
         document.getElementById('foot-actions').style.display = 'flex';
         showToast(`Exited ${v.name}`);
       } else {
         // Find nearest vehicle within radius
         let nearest = null;
-        let minDist = 7.0;
+        let minDist = 7.5;
         vehicles.forEach(v => {
           const d = Math.hypot(player.group.position.x - v.group.position.x, player.group.position.z - v.group.position.z);
           if (d < minDist + v.radius) {
@@ -2762,18 +3785,26 @@
           document.getElementById('vehicle-hud').style.display = 'flex';
           document.getElementById('foot-actions').style.display = 'none';
 
+          const tankCtl = document.getElementById('tank-controls');
           if (nearest.isPlane) {
             document.getElementById('plane-controls').style.display = 'flex';
             document.getElementById('car-pedals').style.display = 'none';
+            if (tankCtl) tankCtl.style.display = 'none';
             showToast("✈ HIJACKED STUNT AIRPLANE! 3-STAR AIRPORT SECURITY BREACH!");
             setWantedLevel(3);
             if (State.currentMission === 2) {
               activateCheckpoint('airport', 'Escobar Airport Runway', 0, 210);
               setMission(3, "Fly North to Vice National Bank & Crack the Gold Vault!", 55, -50);
             }
+          } else if (nearest.isTank) {
+            document.getElementById('car-pedals').style.display = 'flex';
+            document.getElementById('plane-controls').style.display = 'none';
+            if (tankCtl) tankCtl.style.display = 'flex';
+            showToast("💣 DRIVING MILITARY RHINO TANK! TAP CANNON TO FIRE!");
           } else {
             document.getElementById('car-pedals').style.display = 'flex';
             document.getElementById('plane-controls').style.display = 'none';
+            if (tankCtl) tankCtl.style.display = 'none';
             showToast(`Driving: ${nearest.name}`);
             if (nearest.isPolice && State.wantedLevel === 0) {
               setWantedLevel(2);
@@ -2785,27 +3816,90 @@
       }
     }
 
-    // --- ACTIONS & BUILDING INTERACTIONS ---
+    // --- ACTIONS & WEAPONS FIRING SYSTEM ---
     function handleAction() {
-      player.triggerPunch();
-
-      // Check punch hit against NPCs
       const pPos = player.group.position;
-      npcs.forEach(npc => {
-        if (npc.isDead) return;
-        const d = Math.hypot(pPos.x - npc.group.position.x, pPos.z - npc.group.position.z);
-        if (d < 3.2) {
-          npc.takeDamage(20);
-        }
-      });
 
-      // Check interactive building zones
+      // 1. Check interactive building zones first if close
+      let buildingInteracted = false;
       buildingZones.forEach(z => {
         const d = Math.hypot(pPos.x - z.x, pPos.z - z.z);
         if (d < z.radius) {
           executeBuildingAction(z);
+          buildingInteracted = true;
         }
       });
+      if (buildingInteracted && State.currentWeapon === 'fists') return;
+
+      // 2. Fire Active Weapon (Fists, Pistol, Rifle, RPG)
+      if (State.currentWeapon === 'fists') {
+        player.triggerPunch();
+        // Melee check against NPCs
+        npcs.forEach(npc => {
+          if (npc.isDead) return;
+          const d = Math.hypot(pPos.x - npc.group.position.x, pPos.z - npc.group.position.z);
+          if (d < 3.2) {
+            npc.takeDamage(20);
+          }
+        });
+        // Melee check against foot cops
+        footCops.forEach(cop => {
+          if (cop.isDead || !cop.group.visible) return;
+          const d = Math.hypot(pPos.x - cop.group.position.x, pPos.z - cop.group.position.z);
+          if (d < 3.2) {
+            cop.takeDamage(25);
+          }
+        });
+      } else if (State.currentWeapon === 'pistol') {
+        if (State.ammo.pistol <= 0) {
+          showToast("OUT OF PISTOL AMMO! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.pistol--;
+        player.updateWeaponBadge();
+        Sound.playGunshot();
+
+        // Direction of fire
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.2);
+
+        // Spawn bullet projectile tracer
+        new Projectile(spawnPos, forward, false, false);
+      } else if (State.currentWeapon === 'rifle') {
+        if (State.ammo.rifle <= 0) {
+          showToast("OUT OF RIFLE AMMO! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.rifle--;
+        player.updateWeaponBadge();
+        Sound.playGunshot();
+
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.4);
+
+        new Projectile(spawnPos, forward, false, false);
+      } else if (State.currentWeapon === 'rpg') {
+        if (State.ammo.rpg <= 0) {
+          showToast("OUT OF ROCKETS! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.rpg--;
+        player.updateWeaponBadge();
+        Sound.playGunshot();
+
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.3, 0)).addScaledVector(forward, 1.6);
+
+        // Spawn rocket missile projectile!
+        new Projectile(spawnPos, forward, true, false);
+        showToast("🚀 ROCKET LAUNCHED!");
+      }
     }
 
     function activateCheckpoint(id, name, x, z) {
@@ -3043,7 +4137,7 @@
       const activePos = State.inVehicle ? State.currentVehicle.group.position : player.group.position;
       if (_frameCount === 1) console.log('[F1] step: activePos', activePos);
 
-      // 1. UPDATE PLAYER ON FOOT
+      // 1. UPDATE PLAYER ON FOOT (Camera-Relative Smooth 360° Movement)
       let isMoving = false;
       if (!State.inVehicle && !State.inMenu) {
         let moveX = 0;
@@ -3062,12 +4156,20 @@
         const mag = Math.hypot(moveX, moveZ);
         if (mag > 0.12) {
           isMoving = true;
-          const moveAngle = Math.atan2(moveX, moveZ);
-          player.group.rotation.y = moveAngle;
+          // Calculate input angle
+          const inputAngle = Math.atan2(moveX, moveZ);
+          // Target heading is camera azimuth + input direction!
+          const targetHeading = camOrbitYaw + inputAngle;
 
-          const speed = player.speed * Math.min(1.0, mag);
-          const nextX = player.group.position.x + Math.sin(moveAngle) * speed * dt;
-          const nextZ = player.group.position.z + Math.cos(moveAngle) * speed * dt;
+          // Smoothly rotate character toward target heading
+          let angleDiff = targetHeading - player.group.rotation.y;
+          while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+          while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+          player.group.rotation.y += THREE.MathUtils.clamp(angleDiff, -16 * dt, 16 * dt);
+
+          const currentSpeed = (State.isSprinting ? player.speed * 1.6 : player.speed) * (State.cheatSpeed ? 2.5 : 1.0) * Math.min(1.0, mag);
+          const nextX = player.group.position.x + Math.sin(targetHeading) * currentSpeed * dt;
+          const nextZ = player.group.position.z + Math.cos(targetHeading) * currentSpeed * dt;
 
           // Check Solid Building Collisions
           let blocked = false;
@@ -3078,7 +4180,7 @@
             }
           });
 
-          // Check Solid Vehicle Collisions (Cannot walk through cars!)
+          // Check Solid Vehicle Collisions
           vehicles.forEach(v => {
             const dist = Math.hypot(nextX - v.group.position.x, nextZ - v.group.position.z);
             if (dist < v.radius + 0.8) {
@@ -3090,6 +4192,14 @@
             player.group.position.x = nextX;
             player.group.position.z = nextZ;
           }
+        }
+
+        // When aiming on foot, character rotates to align with camera heading
+        if (State.isAiming) {
+          let aimDiff = camOrbitYaw - player.group.rotation.y;
+          while (aimDiff < -Math.PI) aimDiff += Math.PI * 2;
+          while (aimDiff > Math.PI) aimDiff -= Math.PI * 2;
+          player.group.rotation.y += aimDiff * 0.35;
         }
 
         // Jump Physics
@@ -3120,9 +4230,27 @@
       npcs.forEach(npc => npc.update(dt));
       if (_frameCount === 1) console.log('[F1] step: after npcs.update');
 
-      // 4. UPDATE POLICE CHASE AI
+      // 4. UPDATE POLICE UNITS (Foot Cops at 1-2 stars & Squad Cruisers at 3-5 stars)
+      footCops.forEach(cop => cop.update(dt, activePos));
       policeUnits.forEach(p => p.update(dt, activePos));
       if (_frameCount === 1) console.log('[F1] step: after police.update');
+
+      // UPDATE ACTIVE PROJECTILES & EXPLOSIONS
+      for (let i = activeProjectiles.length - 1; i >= 0; i--) {
+        activeProjectiles[i].update(dt);
+      }
+      for (let i = activeExplosions.length - 1; i >= 0; i--) {
+        const exp = activeExplosions[i];
+        exp.life -= dt;
+        const progress = 1 - (exp.life / exp.totalLife);
+        const curR = 1.2 + (exp.maxRadius - 1.2) * progress;
+        exp.mesh.scale.set(curR, curR, curR);
+        exp.mesh.material.opacity = Math.max(0, 1 - progress);
+        if (exp.life <= 0) {
+          scene.remove(exp.mesh);
+          activeExplosions.splice(i, 1);
+        }
+      }
 
       // Wanted timer
       if (State.wantedLevel > 0) {
@@ -3150,28 +4278,34 @@
           camTargetYaw += (0 - camTargetYaw) * (dt * 1.2);
         }
 
-        let baseHeading = 0;
+        let camDist, camHeightBase;
         if (State.inVehicle && State.currentVehicle) {
-          baseHeading = State.currentVehicle.group.rotation.y;
+          const v = State.currentVehicle;
+          camDist = v.isPlane ? 34 : (v.isTank ? 22 : 17);
+          camHeightBase = v.isPlane ? 12 : (v.isTank ? 8.5 : 6.0);
         } else {
-          baseHeading = player.group.rotation.y;
+          camDist = State.isAiming ? 6.5 : 12.0;
+          camHeightBase = State.isAiming ? 2.6 : 4.4;
         }
 
-        const totalYaw = baseHeading + camOrbitYaw;
-        const isPlane = State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane;
-        const dist = isPlane ? 32 : (State.inVehicle ? 17 : 13.0);
-        const heightBase = isPlane ? 12 : (State.inVehicle ? 6.5 : 4.5);
+        const horizDist = camDist * Math.cos(camOrbitPitch);
+        const vertHeight = camHeightBase + camDist * Math.sin(camOrbitPitch);
 
-        const horizDist = dist * Math.cos(camOrbitPitch);
-        const vertHeight = heightBase + dist * Math.sin(camOrbitPitch);
-
-        const offX = -Math.sin(totalYaw) * horizDist;
-        const offZ = -Math.cos(totalYaw) * horizDist;
+        // Aiming over-shoulder camera offset
+        const sideOffset = (State.isAiming && !State.inVehicle) ? 1.4 : 0.0;
+        const offX = -Math.sin(camOrbitYaw) * horizDist + Math.cos(camOrbitYaw) * sideOffset;
+        const offZ = -Math.cos(camOrbitYaw) * horizDist - Math.sin(camOrbitYaw) * sideOffset;
         const offY = Math.max(1.0, vertHeight);
 
         const desiredCamPos = new THREE.Vector3(activePos.x + offX, activePos.y + offY, activePos.z + offZ);
-        camera.position.lerp(desiredCamPos, 0.22);
-        camera.lookAt(activePos.x, activePos.y + (State.inVehicle ? 2.0 : 1.8), activePos.z);
+        camera.position.lerp(desiredCamPos, 0.25);
+
+        const lookTarget = new THREE.Vector3(
+          activePos.x + (State.isAiming ? Math.sin(camOrbitYaw) * 12 : 0),
+          activePos.y + (State.inVehicle ? 2.0 : 1.8),
+          activePos.z + (State.isAiming ? Math.cos(camOrbitYaw) * 12 : 0)
+        );
+        camera.lookAt(lookTarget);
       }
 
       // 6. UPDATE PROMPT & SPEEDOMETER
