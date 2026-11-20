@@ -8,6 +8,85 @@
   <meta name="theme-color" content="#191b1d">
   <link rel="apple-touch-icon" href="icon-192.png">
   <style>
+    /* WEAPON SCOPE OVERLAY (FIRST PERSON TACTICAL SNIPER VIEW) */
+    #weapon-scope {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1500;
+      display: none;
+    }
+    .scope-overlay {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 34%, rgba(0, 0, 0, 0.88) 46%, rgba(0, 0, 0, 0.98) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .scope-circle {
+      width: min(85vmin, 440px);
+      height: min(85vmin, 440px);
+      border-radius: 50%;
+      border: 3px solid rgba(0, 243, 255, 0.7);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.45), inset 0 0 35px rgba(0, 0, 0, 0.85);
+      position: relative;
+    }
+    .scope-line-h {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1.5px;
+      background: rgba(0, 243, 255, 0.85);
+      box-shadow: 0 0 6px #00f3ff;
+    }
+    .scope-line-v {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1.5px;
+      height: 100%;
+      background: rgba(0, 243, 255, 0.85);
+      box-shadow: 0 0 6px #00f3ff;
+    }
+    .scope-center-dot {
+      position: absolute;
+      top: calc(50% - 4px);
+      left: calc(50% - 4px);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff0055;
+      box-shadow: 0 0 8px #ff0055;
+    }
+    .scope-data {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 16px;
+      color: #00ffff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #00f3ff;
+    }
+    @font-face {
+      font-family: 'Pricedown';
+      src: url('./pricedown.otf') format('opentype');
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'RageItalic';
+      src: url('./rage.ttf') format('truetype');
+      font-display: swap;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
@@ -301,24 +380,7 @@
     }
 
     /* PROMPT POPUP */
-    #prompt-box {
-      position: absolute;
-      bottom: calc(150px + env(safe-area-inset-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      color: #111;
-      font-weight: 800;
-      padding: 8px 20px;
-      border-radius: 10px;
-      font-size: 13px;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
-      display: none;
-      z-index: 100;
-      pointer-events: none;
-      animation: bouncePrompt 0.8s infinite alternate;
-      white-space: nowrap;
-    }
+    /* #prompt-box removed for phone-first touch UI */
     @keyframes bouncePrompt {
       0% { transform: translateX(-50%) translateY(0); }
       100% { transform: translateX(-50%) translateY(-5px); }
@@ -508,12 +570,12 @@
       z-index: 250;
     }
     #death-title {
-      font-size: clamp(48px, 12vw, 76px);
-      font-weight: 900;
+      font-size: clamp(48px, 12vw, 84px);
+      font-weight: normal;
       color: #ff0044;
-      text-shadow: 0 0 30px #000;
-      letter-spacing: 6px;
-      font-family: impact, sans-serif;
+      text-shadow: 0 0 30px #000, 3px 3px 0 #000;
+      letter-spacing: 4px;
+      font-family: 'Pricedown', 'Impact', sans-serif;
     }
     #death-desc {
       font-size: 16px;
@@ -695,25 +757,37 @@
       pointer-events: none;
     }
     .gta-logo-box {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    .gta-logo-title {
-      font-family: 'Impact', 'Arial Black', sans-serif;
-      font-size: clamp(32px, 7vw, 68px);
-      letter-spacing: 4px;
-      color: #ff007f;
-      text-shadow: 0 0 18px #ff007f, 2px 2px 0 #00ffff, 0 0 40px rgba(255, 0, 127, 0.8);
-      text-transform: uppercase;
-      line-height: 1.0;
-      margin: 0;
+    .gta-official-logo {
+      width: min(390px, 86vw);
+      max-height: 190px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px rgba(255, 0, 128, 0.6)) drop-shadow(0 0 35px rgba(0, 243, 255, 0.4));
+      animation: gtaLogoGlow 3.5s ease-in-out infinite alternate;
+      user-select: none;
+    }
+    @keyframes gtaLogoGlow {
+      0% {
+        transform: scale(1.0);
+        filter: drop-shadow(0 0 16px rgba(255, 0, 128, 0.5)) drop-shadow(0 0 28px rgba(0, 243, 255, 0.35));
+      }
+      100% {
+        transform: scale(1.025);
+        filter: drop-shadow(0 0 26px rgba(255, 0, 128, 0.85)) drop-shadow(0 0 45px rgba(0, 243, 255, 0.6));
+      }
     }
     .gta-logo-sub {
-      font-size: clamp(10px, 2.2vw, 15px);
-      font-weight: 900;
-      letter-spacing: 5px;
+      font-family: 'Pricedown', 'Impact', sans-serif;
+      font-size: clamp(12px, 2.5vw, 16px);
+      letter-spacing: 3px;
       color: #00ffff;
-      text-shadow: 0 0 12px #00ffff;
-      margin-top: 4px;
+      text-shadow: 0 0 14px #00ffff, 2px 2px 0 #000;
+      margin-top: 6px;
       text-transform: uppercase;
     }
     .gta-menu-box {
@@ -775,7 +849,11 @@
       }
       .gta-logo-box {
         margin-bottom: 0;
-        max-width: 42vw;
+        max-width: 44vw;
+      }
+      .gta-official-logo {
+        width: min(290px, 42vw);
+        max-height: 135px;
       }
       .gta-menu-box {
         display: grid;
@@ -893,8 +971,8 @@
   <!-- GTA VICE CITY STYLE MAIN MENU SCREEN -->
   <div id="main-menu-overlay">
     <div class="gta-logo-box">
-      <h1 class="gta-logo-title">VICE BLOCKS</h1>
-      <div class="gta-logo-sub">GRAND THEFT AUTO: MIAMI 1986</div>
+      <img src="gta_logo.png" alt="Grand Theft Auto: Vice Blocks" class="gta-official-logo" />
+      <div class="gta-logo-sub">GRAND THEFT AUTO • MIAMI 1986</div>
     </div>
 
     <div class="gta-menu-box">
@@ -923,6 +1001,21 @@
     </div>
 
     <div class="menu-info-pill">🌴 100% OFFLINE • OPEN WORLD • LIVING NPCS • FLYABLE PLANES 🌴</div>
+  </div>
+
+  <!-- WEAPON TACTICAL SCOPE OVERLAY -->
+  <div id="weapon-scope">
+    <div class="scope-overlay">
+      <div class="scope-circle">
+        <div class="scope-line-h"></div>
+        <div class="scope-line-v"></div>
+        <div class="scope-center-dot"></div>
+        <div class="scope-data">
+          <span>[4X TACTICAL ZOOM]</span>
+          <span id="scope-range">ELEVATION 0.0</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- AIMING CROSSHAIR -->
@@ -1006,7 +1099,7 @@
   </div>
 
   <!-- PROMPT -->
-  <div id="prompt-box">Press [E] to Enter Vehicle</div>
+  <!-- prompt-box removed for phone -->
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast">Notification text</div>
@@ -1020,8 +1113,9 @@
 
   <!-- MULTI-TOUCH BUTTONS FOR PHONES (RIGHT THUMB) -->
   <div id="mobile-actions">
-    <!-- Plane Flight Controls -->
+    <!-- Plane & Fighter Jet Flight Controls -->
     <div class="action-row" id="plane-controls" style="display:none;">
+      <button class="action-btn" id="btn-plane-fire" title="Fire Jet Missiles" style="width:62px;height:62px;background:#e11d48;border-color:#fffa65;font-size:20px;box-shadow:0 0 14px #e11d48;">🚀<span style="font-size:8px;display:block;">MISSILE</span></button>
       <button class="pedal-btn" id="btn-pitch-down">▼<br>DIVE</button>
       <button class="pedal-btn" id="btn-pitch-up">▲<br>CLIMB</button>
       <button class="pedal-btn" id="btn-plane-gas">⚡<br>THRUST</button>
@@ -1110,8 +1204,8 @@
       radioPlaying: true,
       inMenu: true,
       activeCheckpoint: { id: 'safehouse', name: "Ocean View Safehouse", x: -55, z: -112 },
-      currentWeapon: 'fists', // 'fists', 'pistol', 'rifle', 'rpg'
-      ammo: { pistol: 60, rifle: 150, rpg: 12 },
+      currentWeapon: 'fists', // 'fists', 'pistol', 'smg', 'shotgun', 'rifle', 'rpg', 'grenade'
+      ammo: { pistol: 60, smg: 180, shotgun: 40, rifle: 150, rpg: 12, grenade: 10 },
       isAiming: false,
       isSprinting: false,
       cheatSpeed: false
@@ -1254,6 +1348,39 @@
         filter.connect(gain);
         gain.connect(this.ctx.destination);
         noise.start(now);
+      }
+
+      playShotgun() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        // Heavy blast + deep boom
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(25, now + 0.28);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+        this.playGunshot();
+      }
+
+      playHelicopter() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(28, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
       }
 
       playWhistle() {
@@ -1415,7 +1542,7 @@
     // --- MATERIALS (Crisp & High-Visibility) ---
     const M = {
       road: new THREE.MeshLambertMaterial({ color: 0x373b44 }),
-      roadLine: new THREE.MeshBasicMaterial({ color: 0xffd700 }),
+      roadLine: new THREE.MeshBasicMaterial({ color: 0xffd700, polygonOffset: true, polygonOffsetFactor: -1.5, polygonOffsetUnits: -4.0 }),
       runway: new THREE.MeshLambertMaterial({ color: 0x24272e }),
       runwayStripe: new THREE.MeshBasicMaterial({ color: 0xffffff }),
       grass: new THREE.MeshLambertMaterial({ color: 0x2e9b46 }), // Rich emerald green ground
@@ -1472,22 +1599,28 @@
     const trafficCones = [];
 
     function buildCity() {
-      // 1. Massive Ground with Lush Emerald Grass
-      const groundGeo = new THREE.PlaneGeometry(1200, 1200);
+      // 1. Massive Ground with Lush Emerald Grass (2400 x 2400 Expanded World!)
+      const groundGeo = new THREE.PlaneGeometry(2400, 2400);
       const ground = new THREE.Mesh(groundGeo, M.grass);
       ground.rotation.x = -Math.PI / 2;
       scene.add(ground);
 
-      // 2. Beach & Ocean (West, X < -140)
-      const sand = new THREE.Mesh(new THREE.PlaneGeometry(90, 1200), M.sand);
+      // 2. Beach & Ocean (West, X < -160)
+      const sand = new THREE.Mesh(new THREE.PlaneGeometry(160, 2400), M.sand);
       sand.rotation.x = -Math.PI / 2;
-      sand.position.set(-165, 0.05, 0);
+      sand.position.set(-200, 0.05, 0);
       scene.add(sand);
 
-      const ocean = new THREE.Mesh(new THREE.PlaneGeometry(450, 1200), M.water);
+      const ocean = new THREE.Mesh(new THREE.PlaneGeometry(750, 2400), M.water);
       ocean.rotation.x = -Math.PI / 2;
-      ocean.position.set(-420, 0.1, 0);
+      ocean.position.set(-650, 0.1, 0);
       scene.add(ocean);
+
+      // 2.5 Extended Highways for High-Speed Cruising
+      createRoadSegment(-180, 0, 26, 1200, true);  // Ocean Beach Coastal Highway
+      createRoadSegment(220, 0, 26, 1200, true);   // East Military & Industrial Highway
+      createRoadSegment(0, -350, 600, 26, false);  // North Bay Expressway
+      createRoadSegment(0, 350, 600, 26, false);   // South Airport Beltway
 
       // 3. Roads Grid with Flanking Concrete Sidewalks
       createRoadSegment(-100, 0, 24, 600, true);  // Ocean Drive
@@ -1552,38 +1685,38 @@
     }
 
     function createRoadSegment(x, z, w, h, isVertical) {
-      // Asphalt Road
+      // 1. Asphalt Road at y = 0.04 (raised clean above grass y = 0)
       const road = new THREE.Mesh(new THREE.PlaneGeometry(w, h), M.road);
       road.rotation.x = -Math.PI / 2;
-      road.position.set(x, 0.06, z);
+      road.position.set(x, 0.04, z);
       scene.add(road);
 
-      // Center Divider Stripe
-      const lineLen = isVertical ? h : w;
-      const line = new THREE.Mesh(new THREE.PlaneGeometry(isVertical ? 0.6 : lineLen, isVertical ? lineLen : 0.6), M.roadLine);
-      line.rotation.x = -Math.PI / 2;
-      line.position.set(x, 0.08, z);
-      scene.add(line);
-
-      // Flanking Concrete Sidewalks (Light Gray)
-      const swW = 3.6;
+      // 2. Concrete Sidewalks at y = 0.08 (crisp stepped curb)
+      const swW = 4.0;
       if (isVertical) {
         const swLeft = new THREE.Mesh(new THREE.PlaneGeometry(swW, h), M.sidewalk);
         swLeft.rotation.x = -Math.PI / 2;
-        swLeft.position.set(x - w / 2 - swW / 2, 0.07, z);
+        swLeft.position.set(x - w / 2 - swW / 2, 0.08, z);
         const swRight = new THREE.Mesh(new THREE.PlaneGeometry(swW, h), M.sidewalk);
         swRight.rotation.x = -Math.PI / 2;
-        swRight.position.set(x + w / 2 + swW / 2, 0.07, z);
+        swRight.position.set(x + w / 2 + swW / 2, 0.08, z);
         scene.add(swLeft, swRight);
       } else {
         const swTop = new THREE.Mesh(new THREE.PlaneGeometry(w, swW), M.sidewalk);
         swTop.rotation.x = -Math.PI / 2;
-        swTop.position.set(x, 0.07, z - h / 2 - swW / 2);
+        swTop.position.set(x, 0.08, z - h / 2 - swW / 2);
         const swBot = new THREE.Mesh(new THREE.PlaneGeometry(w, swW), M.sidewalk);
         swBot.rotation.x = -Math.PI / 2;
-        swBot.position.set(x, 0.07, z + h / 2 + swW / 2);
+        swBot.position.set(x, 0.08, z + h / 2 + swW / 2);
         scene.add(swTop, swBot);
       }
+
+      // 3. Center Divider Stripe at y = 0.12 with polygonOffset (100% Z-fighting free!)
+      const lineLen = isVertical ? h : w;
+      const line = new THREE.Mesh(new THREE.PlaneGeometry(isVertical ? 0.8 : lineLen, isVertical ? lineLen : 0.8), M.roadLine);
+      line.rotation.x = -Math.PI / 2;
+      line.position.set(x, 0.12, z);
+      scene.add(line);
     }
 
     // Leafy Tropical Shade Tree (Roblox Chunky Style)
@@ -2383,6 +2516,18 @@
             return;
           }
         }
+
+        // Police Helicopter Air-Target Collision!
+        if (typeof policeChopper !== 'undefined' && policeChopper && policeChopper.group.visible && !policeChopper.isDead) {
+          const chPos = policeChopper.group.position;
+          const d3 = this.group.position.distanceTo(chPos);
+          if (d3 < 5.4) {
+            createExplosion(this.group.position, 14, this.damage);
+            policeChopper.takeDamage(this.damage);
+            this.destroy();
+            return;
+          }
+        }
       }
 
       destroy() {
@@ -2451,16 +2596,17 @@
         this.type = opts.type || 'car'; // 'car', 'cop', 'bike', 'plane', 'tank'
         this.isPolice = this.type === 'cop';
         this.isBike = this.type === 'bike';
-        this.isPlane = this.type === 'plane';
+        this.isPlane = this.type === 'plane' || this.type === 'jet';
+        this.isJet = this.type === 'jet';
         this.isTank = this.type === 'tank';
         this.name = opts.name || 'Vehicle';
         this.group = new THREE.Group();
 
         this.speed = 0;
-        this.maxSpeed = this.isPlane ? 48 : (this.isBike ? 38 : (this.isPolice ? 34 : (this.isTank ? 22 : 35)));
-        this.acceleration = this.isBike ? 24 : (this.isPlane ? 20 : (this.isTank ? 12 : 18));
-        this.friction = this.isTank ? 6.0 : 4.5;
-        this.turnSpeed = this.isBike ? 2.8 : (this.isPlane ? 1.8 : (this.isTank ? 1.4 : 2.2));
+        this.maxSpeed = this.isJet ? 65 : (this.isPlane ? 48 : (this.isBike ? 38 : (this.isPolice ? 35 : (this.isTank ? 22 : 35))));
+        this.acceleration = this.isJet ? 30 : (this.isBike ? 24 : (this.isPlane ? 20 : (this.isTank ? 12 : 18)));
+        this.friction = this.isTank ? 6.0 : (this.isJet ? 2.5 : 4.5);
+        this.turnSpeed = this.isBike ? 2.8 : (this.isJet ? 2.2 : (this.isPlane ? 1.8 : (this.isTank ? 1.4 : 2.2)));
         
         // Solid Hitbox Radius
         this.radius = this.isPlane ? 4.5 : (this.isBike ? 1.4 : (this.isTank ? 4.2 : 2.6));
@@ -2484,7 +2630,9 @@
       }
 
       buildModel(colorMat) {
-        if (this.isPlane) {
+        if (this.isJet) {
+          this.buildJet();
+        } else if (this.isPlane) {
           this.buildPlane();
         } else if (this.isBike) {
           this.buildBike();
@@ -2493,6 +2641,57 @@
         } else {
           this.buildCar(colorMat);
         }
+      }
+
+      fireJetWeapons() {
+        if (!this.isJet && !this.isPlane) return;
+        Sound.playGunshot();
+        Sound.playExplosion();
+
+        const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.group.rotation.y);
+        // Left & right wing pylons
+        const p1 = this.group.position.clone().add(new THREE.Vector3(-4.5, 0.5, 1.0)).addScaledVector(forward, 3.5);
+        const p2 = this.group.position.clone().add(new THREE.Vector3(4.5, 0.5, 1.0)).addScaledVector(forward, 3.5);
+
+        new Projectile(p1, forward, true, false);
+        new Projectile(p2, forward, true, false);
+        showToast("🚀 FIGHTER JET MISSILES LAUNCHED!");
+      }
+
+      buildJet() {
+        // Sleek Military Fighter Jet Fuselage
+        const body = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.8, 12.0), new THREE.MeshLambertMaterial({ color: 0x334155 }));
+        body.position.y = 1.4;
+        this.group.add(body);
+
+        // Cockpit canopy
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 3.6), M.glass);
+        glass.position.set(0, 2.3, 2.0);
+        this.group.add(glass);
+
+        // Swept Delta Wings
+        const wingL = new THREE.Mesh(new THREE.BoxGeometry(7.0, 0.25, 4.5), new THREE.MeshLambertMaterial({ color: 0x475569 }));
+        wingL.position.set(-4.5, 1.4, -0.5);
+        const wingR = new THREE.Mesh(new THREE.BoxGeometry(7.0, 0.25, 4.5), new THREE.MeshLambertMaterial({ color: 0x475569 }));
+        wingR.position.set(4.5, 1.4, -0.5);
+        this.group.add(wingL, wingR);
+
+        // Twin Vertical Tail Fins
+        const finL = new THREE.Mesh(new THREE.BoxGeometry(0.25, 2.8, 2.4), new THREE.MeshLambertMaterial({ color: 0x1e293b }));
+        finL.position.set(-1.4, 3.0, -4.8);
+        finL.rotation.z = -0.15;
+        const finR = new THREE.Mesh(new THREE.BoxGeometry(0.25, 2.8, 2.4), new THREE.MeshLambertMaterial({ color: 0x1e293b }));
+        finR.position.set(1.4, 3.0, -4.8);
+        finR.rotation.z = 0.15;
+        this.group.add(finL, finR);
+
+        // Afterburner Nozzle
+        const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 1.2, 8), M.neonPink);
+        nozzle.rotation.x = Math.PI / 2;
+        nozzle.position.set(0, 1.4, -6.4);
+        this.group.add(nozzle);
+
+        this.wheels = [];
       }
 
       takeDamage(amt) {
@@ -2848,6 +3047,191 @@
       }
     }
 
+    // --- THROWN TIMED HAND GRENADES ---
+    class ActiveGrenade {
+      constructor(origin, dir) {
+        this.group = new THREE.Group();
+        const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.38), M.tankGreen);
+        const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.3), M.neonYellow);
+        pin.position.y = 0.32;
+        this.group.add(mesh, pin);
+        this.group.position.copy(origin);
+        scene.add(this.group);
+
+        this.velocity = dir.clone().multiplyScalar(26);
+        this.velocity.y = 9.5;
+        this.fuse = 1.8;
+        activeGrenades.push(this);
+      }
+
+      update(dt) {
+        this.fuse -= dt;
+        this.velocity.y -= 26 * dt; // gravity
+        this.group.position.addScaledVector(this.velocity, dt);
+        this.group.rotation.x += 14 * dt;
+        this.group.rotation.y += 10 * dt;
+
+        // Bounce on ground
+        if (this.group.position.y <= 0.35) {
+          this.group.position.y = 0.35;
+          this.velocity.y = -this.velocity.y * 0.42;
+          this.velocity.x *= 0.65;
+          this.velocity.z *= 0.65;
+          Sound.playPunch();
+        }
+
+        if (this.fuse <= 0) {
+          createExplosion(this.group.position, 14, 220);
+          this.destroy();
+        }
+      }
+
+      destroy() {
+        scene.remove(this.group);
+        const idx = activeGrenades.indexOf(this);
+        if (idx !== -1) activeGrenades.splice(idx, 1);
+      }
+    }
+    const activeGrenades = [];
+
+    // --- POLICE MAVERICK HELICOPTER (4-5 Star Air Pursuit) ---
+    class PoliceHelicopter {
+      constructor() {
+        this.group = new THREE.Group();
+        this.health = 220;
+        this.maxHealth = 220;
+        this.isDead = false;
+        this.shootTimer = 2.0;
+        this.chopSoundTimer = 0;
+
+        this.buildModel();
+        this.group.position.set(0, 36, 0);
+        this.group.visible = false;
+        scene.add(this.group);
+      }
+
+      buildModel() {
+        // Fuselage
+        const body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.4, 7.8), M.copBlack);
+        body.position.y = 1.2;
+        this.group.add(body);
+
+        // Cockpit canopy
+        const canopy = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.5, 2.8), M.glass);
+        canopy.position.set(0, 1.9, 1.8);
+        this.group.add(canopy);
+
+        // Tail boom
+        const boom = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 6.2), M.copBlack);
+        boom.position.set(0, 1.5, -5.4);
+        this.group.add(boom);
+
+        // Main rotor mast & spinning blades
+        this.rotorGroup = new THREE.Group();
+        this.rotorGroup.position.set(0, 3.0, 0);
+        const blade1 = new THREE.Mesh(new THREE.BoxGeometry(15.0, 0.12, 0.9), M.wheel);
+        const blade2 = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 15.0), M.wheel);
+        this.rotorGroup.add(blade1, blade2);
+        this.group.add(this.rotorGroup);
+
+        // Tail rotor
+        this.tailRotor = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.6, 0.35), M.wheel);
+        this.tailRotor.position.set(0.45, 1.9, -8.4);
+        this.group.add(this.tailRotor);
+
+        // High intensity police spotlight
+        this.spotlight = new THREE.SpotLight(0x00f3ff, 2.8, 110, Math.PI / 4, 0.4);
+        this.spotlight.position.set(0, 0.2, 1.6);
+        this.group.add(this.spotlight);
+        this.group.add(this.spotlight.target);
+      }
+
+      update(dt, playerPos) {
+        if (State.wantedLevel < 4 || this.isDead) {
+          this.group.visible = false;
+          return;
+        }
+        this.group.visible = true;
+
+        // Spin rotors
+        this.rotorGroup.rotation.y += 30 * dt;
+        this.tailRotor.rotation.x += 35 * dt;
+
+        // Audio chop
+        this.chopSoundTimer -= dt;
+        if (this.chopSoundTimer <= 0) {
+          Sound.playHelicopter();
+          this.chopSoundTimer = 0.18;
+        }
+
+        // Hover & bank towards player
+        const targetY = 32 + Math.sin(performance.now() * 0.002) * 4;
+        this.group.position.y += (targetY - this.group.position.y) * dt * 1.5;
+
+        const dx = playerPos.x - this.group.position.x;
+        const dz = playerPos.z - this.group.position.z;
+        const dist = Math.hypot(dx, dz);
+
+        const targetAngle = Math.atan2(dx, dz);
+        let diff = targetAngle - this.group.rotation.y;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        this.group.rotation.y += THREE.MathUtils.clamp(diff, -1.8 * dt, 1.8 * dt);
+
+        if (dist > 22) {
+          const forward = new THREE.Vector3(Math.sin(this.group.rotation.y), 0, Math.cos(this.group.rotation.y));
+          this.group.position.addScaledVector(forward, 22 * dt);
+        }
+
+        // Spotlight tracks player
+        this.spotlight.target.position.set(playerPos.x, playerPos.y, playerPos.z);
+
+        // Fire at player
+        this.shootTimer -= dt;
+        if (this.shootTimer <= 0 && dist < 70) {
+          this.shootTimer = 2.2;
+          Sound.playGunshot();
+          const shotOrigin = this.group.position.clone().add(new THREE.Vector3(0, -1, 1.8));
+          const aimDir = new THREE.Vector3().subVectors(playerPos, shotOrigin).normalize();
+          new Projectile(shotOrigin, aimDir, false, false);
+          showToast("🚁 POLICE CHOPPER FIRING FROM ABOVE!");
+        }
+      }
+
+      takeDamage(amount) {
+        if (this.isDead || !this.group.visible) return;
+        this.health -= amount;
+        if (this.health <= 0) {
+          this.die();
+        }
+      }
+
+      die() {
+        this.isDead = true;
+        createExplosion(this.group.position, 16, 220);
+        showToast("🚁 POLICE HELICOPTER SHOT DOWN! +$1,000 BOUNTY!");
+        addCash(1000);
+        setWantedLevel(Math.max(2, State.wantedLevel - 2));
+
+        const crashInterval = setInterval(() => {
+          this.group.position.y -= 1.4;
+          this.group.rotation.y += 0.35;
+          this.group.rotation.z += 0.2;
+          if (this.group.position.y <= 1.2) {
+            clearInterval(crashInterval);
+            createExplosion(this.group.position, 18, 250);
+            this.group.visible = false;
+            setTimeout(() => {
+              this.isDead = false;
+              this.health = this.maxHealth;
+              this.group.position.set(player.group.position.x + 80, 36, player.group.position.z + 80);
+            }, 30000);
+          }
+        }, 30);
+      }
+    }
+    let policeChopper = null;
+
     // --- POLICE FOOT PATROL COPS (1-2 Star Heat) ---
     const footCops = [];
     class RobloxFootCop {
@@ -2997,6 +3381,7 @@
       }
 
       update(dt, playerPos) {
+        if (this.disabled || this.vehicle.driver === player) return;
         if (State.wantedLevel <= 0) {
           if (this.vehicle.redL) this.vehicle.redL.material = M.wallDark;
           if (this.vehicle.blueL) this.vehicle.blueL.material = M.wallDark;
@@ -3106,10 +3491,20 @@
         this.group.add(this.leftArm, this.rightArm);
 
         // 3D WEAPONS ATTACHED TO RIGHT HAND
-        // Pistol
+        // Pistol (9mm)
         this.meshPistol = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.55, 0.95), new THREE.MeshLambertMaterial({ color: 0x111827 }));
         this.meshPistol.position.set(0, -0.9, 0.4);
         this.rightArm.add(this.meshPistol);
+
+        // SMG / Micro-Uzi
+        this.meshSmg = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.65, 1.4), new THREE.MeshLambertMaterial({ color: 0x334155 }));
+        this.meshSmg.position.set(0, -0.85, 0.5);
+        this.rightArm.add(this.meshSmg);
+
+        // Combat Shotgun
+        this.meshShotgun = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.65, 2.2), new THREE.MeshLambertMaterial({ color: 0x5a3d28 }));
+        this.meshShotgun.position.set(0, -0.85, 0.65);
+        this.rightArm.add(this.meshShotgun);
 
         // Assault Rifle
         this.meshRifle = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.75, 2.4), new THREE.MeshLambertMaterial({ color: 0x1e293b }));
@@ -3126,6 +3521,11 @@
         this.meshRpg.add(rpgTube, rocketTip);
         this.meshRpg.position.set(0, -0.7, 0.6);
         this.rightArm.add(this.meshRpg);
+
+        // Hand Grenade
+        this.meshGrenade = new THREE.Mesh(new THREE.DodecahedronGeometry(0.32), M.tankGreen);
+        this.meshGrenade.position.set(0, -0.95, 0.35);
+        this.rightArm.add(this.meshGrenade);
 
         this.setWeapon(State.currentWeapon || 'fists');
 
@@ -3146,13 +3546,16 @@
       setWeapon(weaponName) {
         State.currentWeapon = weaponName;
         if (this.meshPistol) this.meshPistol.visible = (weaponName === 'pistol');
+        if (this.meshSmg) this.meshSmg.visible = (weaponName === 'smg');
+        if (this.meshShotgun) this.meshShotgun.visible = (weaponName === 'shotgun');
         if (this.meshRifle) this.meshRifle.visible = (weaponName === 'rifle');
         if (this.meshRpg) this.meshRpg.visible = (weaponName === 'rpg');
+        if (this.meshGrenade) this.meshGrenade.visible = (weaponName === 'grenade');
         this.updateWeaponBadge();
       }
 
       cycleWeapon() {
-        const order = ['fists', 'pistol', 'rifle', 'rpg'];
+        const order = ['fists', 'pistol', 'smg', 'shotgun', 'rifle', 'rpg', 'grenade'];
         const nextIdx = (order.indexOf(State.currentWeapon) + 1) % order.length;
         this.setWeapon(order[nextIdx]);
         Sound.playGunshot();
@@ -3160,9 +3563,16 @@
 
       updateWeaponBadge() {
         const btnSwap = document.getElementById('btn-weapon-swap');
-        const badge = document.getElementById('weapon-ammo-badge');
         const punchBtn = document.getElementById('btn-punch');
-        const icons = { fists: '👊', pistol: '🔫', rifle: '💥', rpg: '🚀' };
+        const icons = {
+          fists: '👊',
+          pistol: '🔫',
+          smg: '⚡',
+          shotgun: '💥',
+          rifle: '🎯',
+          rpg: '🚀',
+          grenade: '💣'
+        };
         if (btnSwap) {
           btnSwap.innerHTML = `${icons[State.currentWeapon] || '👊'}<span id="weapon-ammo-badge"></span>`;
         }
@@ -3248,27 +3658,60 @@
       document.body.insertAdjacentHTML('beforeend', `<div style="position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#c00;color:#fff;padding:20px;border-radius:8px;z-index:99999;font-size:14px;max-width:90vw">buildCity ERROR:<br>${e.message}</div>`);
     }
 
-    // Spawn Player at their Safehouse Home porch on Ocean Beach
+    // Spawn Player on spacious Safehouse Driveway (Completely free of any collisions!)
     const player = new RobloxCharacter(true);
-    const startCp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -112 };
+    const startCp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -100 };
     player.group.position.set(startCp.x, 0, startCp.z);
 
-    // SPAWN VEHICLES
-    // 1. Starter Sports Car (Parked outside Ocean View Safehouse Driveway)
-    const cheetah = new RobloxVehicle({ x: -48, z: -112, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
-    // 2. Sanchez Dirt Bike (Parked outside Safehouse Garage)
-    const dirtBike = new RobloxVehicle({ x: -62, z: -112, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
-    // 3. Yellow Stunt Airplane (Parked on Airport Runway!)
-    const stuntPlane = new RobloxVehicle({ x: 0, z: 230, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
-    // 4. Blue Aerobatic Stunt Jet (Inside Open Airport Hangar!)
+    // SPAWN VEHICLES (Widely spaced so player never gets blocked!)
+    // 1. Starter Sports Car (Parked on open driveway)
+    const cheetah = new RobloxVehicle({ x: -38, z: -100, type: 'car', colorMat: M.carPink, name: 'Pink Cheetah' });
+    // 2. Sanchez Dirt Bike
+    const dirtBike = new RobloxVehicle({ x: -72, z: -100, type: 'bike', colorMat: M.bikeRed, name: 'Sanchez Bike' });
+
+    // 3. AIRPORT FLEET (Multiple Planes & Armed Fighter Jet!)
+    // A. Yellow Stunt Plane on Runway
+    const stuntPlane = new RobloxVehicle({ x: -16, z: 230, type: 'plane', colorMat: M.planeYellow, name: 'Stunt Dodo Plane' });
+    // B. Military Armed Fighter Jet (F-16 Hydra) on Main Tarmac
+    const fighterJet = new RobloxVehicle({ x: 18, z: 230, type: 'jet', colorMat: M.wallDark, name: 'F-16 Fighter Jet' });
+    // C. Blue Aerobatic Jet in Hangar 1
     const stuntJet = new RobloxVehicle({ x: -55, z: 270, type: 'plane', colorMat: M.carBlue, name: 'Aerobatic Stunt Jet' });
-    // 5. Police Cruisers
+
+    // 4. Police Cruisers (Player can steal them anytime!)
     const copCar1 = new RobloxVehicle({ x: 45, z: 45, type: 'cop', name: 'Police Cruiser' });
     const copCar2 = new RobloxVehicle({ x: 110, z: 0, type: 'cop', name: 'Police Cruiser' });
 
-    // Spawn Police AI Chase Units
+    // Spawn Police AI Units
     new PoliceAI(50, 100);
     new PoliceAI(-80, 260);
+
+    // Spawn Police Helicopter
+    policeChopper = new PoliceHelicopter();
+
+    // Reset All Airplanes & Vehicles after Busted / Wasted
+    function resetAirportFleet() {
+      if (stuntPlane) {
+        stuntPlane.group.position.set(-16, 0.5, 230);
+        stuntPlane.group.rotation.set(0, 0, 0);
+        stuntPlane.speed = 0;
+        stuntPlane.altitude = 0.5;
+        stuntPlane.health = stuntPlane.maxHealth;
+      }
+      if (fighterJet) {
+        fighterJet.group.position.set(18, 0.5, 230);
+        fighterJet.group.rotation.set(0, 0, 0);
+        fighterJet.speed = 0;
+        fighterJet.altitude = 0.5;
+        fighterJet.health = fighterJet.maxHealth;
+      }
+      if (stuntJet) {
+        stuntJet.group.position.set(-55, 0.5, 270);
+        stuntJet.group.rotation.set(0, 0, 0);
+        stuntJet.speed = 0;
+        stuntJet.altitude = 0.5;
+        stuntJet.health = stuntJet.maxHealth;
+      }
+    }
 
     // --- INPUT MANAGER ---
     const keys = {
@@ -3432,12 +3875,33 @@
       btnAim.addEventListener('click', (e) => {
         e.preventDefault();
         State.isAiming = !State.isAiming;
+        const scope = document.getElementById('weapon-scope');
         const crosshair = document.getElementById('crosshair');
-        if (crosshair) crosshair.style.display = State.isAiming ? 'block' : 'none';
-        btnAim.style.background = State.isAiming ? '#ff007f' : '';
-        showToast(State.isAiming ? "🎯 AIM MODE ON" : "AIM MODE OFF");
+
+        if (State.isAiming) {
+          if (scope) scope.style.display = 'block';
+          if (crosshair) crosshair.style.display = 'none';
+          camera.fov = 28; // 4X TACTICAL SCOPE ZOOM!
+          camera.updateProjectionMatrix();
+          btnAim.style.background = '#ff007f';
+          showToast("🎯 TACTICAL SCOPE [4X ZOOM] ACTIVATED");
+        } else {
+          if (scope) scope.style.display = 'none';
+          if (crosshair) crosshair.style.display = 'none';
+          camera.fov = 65; // Normal FOV
+          camera.updateProjectionMatrix();
+          btnAim.style.background = '';
+          showToast("SCOPE DEACTIVATED");
+        }
       });
     }
+
+    // Jet weapon touch pedal
+    bindPointerBtn('btn-plane-fire', () => {
+      if (State.inVehicle && State.currentVehicle) {
+        State.currentVehicle.fireJetWeapons();
+      }
+    });
 
     // --- CHEAT CODES SYSTEM (One-Tap Mobile Modal & Text Input) ---
     let spawnedTank = null;
@@ -3806,9 +4270,12 @@
             document.getElementById('plane-controls').style.display = 'none';
             if (tankCtl) tankCtl.style.display = 'none';
             showToast(`Driving: ${nearest.name}`);
-            if (nearest.isPolice && State.wantedLevel === 0) {
-              setWantedLevel(2);
-              showToast("STOLE POLICE CRUISER! 2-STAR HEAT!");
+            if (nearest.isPolice) {
+              policeUnits.forEach(p => {
+                if (p.vehicle === nearest) p.disabled = true;
+              });
+              showToast("🚨 COMMANDEERED POLICE SQUAD CAR! DRIVE & SIREN READY!");
+              if (State.wantedLevel === 0) setWantedLevel(1);
             }
           }
           Sound.playHorn();
@@ -3867,6 +4334,43 @@
 
         // Spawn bullet projectile tracer
         new Projectile(spawnPos, forward, false, false);
+      } else if (State.currentWeapon === 'smg') {
+        if (State.ammo.smg <= 0) {
+          showToast("OUT OF SMG AMMO! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.smg--;
+        player.updateWeaponBadge();
+        Sound.playGunshot();
+
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.2);
+        new Projectile(spawnPos, forward, false, false);
+      } else if (State.currentWeapon === 'shotgun') {
+        if (State.ammo.shotgun <= 0) {
+          showToast("OUT OF SHOTGUN SHELLS! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.shotgun--;
+        player.updateWeaponBadge();
+        Sound.playShotgun();
+
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const baseDir = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(baseDir, 1.4);
+
+        // 6 buckshot spread pellets!
+        for (let i = 0; i < 6; i++) {
+          const spreadDir = baseDir.clone().add(new THREE.Vector3(
+            (Math.random() - 0.5) * 0.18,
+            (Math.random() - 0.5) * 0.12,
+            (Math.random() - 0.5) * 0.18
+          )).normalize();
+          new Projectile(spawnPos, spreadDir, false, false);
+        }
       } else if (State.currentWeapon === 'rifle') {
         if (State.ammo.rifle <= 0) {
           showToast("OUT OF RIFLE AMMO! Swapping to Fists");
@@ -3882,6 +4386,22 @@
         const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.1, 0)).addScaledVector(forward, 1.4);
 
         new Projectile(spawnPos, forward, false, false);
+      } else if (State.currentWeapon === 'grenade') {
+        if (State.ammo.grenade <= 0) {
+          showToast("OUT OF GRENADES! Swapping to Fists");
+          player.setWeapon('fists');
+          return;
+        }
+        State.ammo.grenade--;
+        player.updateWeaponBadge();
+        Sound.playPunch();
+
+        const fireAngle = State.isAiming ? camOrbitYaw : player.group.rotation.y;
+        const forward = new THREE.Vector3(Math.sin(fireAngle), 0, Math.cos(fireAngle));
+        const spawnPos = pPos.clone().add(new THREE.Vector3(0, 2.4, 0)).addScaledVector(forward, 1.4);
+
+        new ActiveGrenade(spawnPos, forward);
+        showToast("💣 GRENADE THROWN! FUSE: 1.8s!");
       } else if (State.currentWeapon === 'rpg') {
         if (State.ammo.rpg <= 0) {
           showToast("OUT OF ROCKETS! Swapping to Fists");
@@ -4005,10 +4525,11 @@
         setWantedLevel(0);
         updateHealthUI();
         document.getElementById('cash-val').innerText = State.cash.toLocaleString();
-        const cp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -112 };
+        const cp = State.activeCheckpoint || { name: "Ocean View Safehouse", x: -55, z: -100 };
         player.group.position.set(cp.x, 0, cp.z);
+        resetAirportFleet(); // Airplanes and jets reset to original runway spots!
         death.style.display = 'none';
-        showToast(`Respawned at ${cp.name} (-$200 Hospital Bill)`);
+        showToast(`Respawned at ${cp.name} • Fleet Reset! (-$200 Hospital Bill)`);
       }, 2500);
     }
 
@@ -4171,27 +4692,49 @@
           const nextX = player.group.position.x + Math.sin(targetHeading) * currentSpeed * dt;
           const nextZ = player.group.position.z + Math.cos(targetHeading) * currentSpeed * dt;
 
-          // Check Solid Building Collisions
-          let blocked = false;
-          solidBoxes.forEach(b => {
-            if (nextX >= b.minX - 0.9 && nextX <= b.maxX + 0.9 &&
-                nextZ >= b.minZ - 0.9 && nextZ <= b.maxZ + 0.9) {
-              blocked = true;
-            }
-          });
+          // Multi-Axis Collision Sliding (Never get stuck on walls or vehicles!)
+          const curPos = player.group.position;
+          let blockedX = false;
+          let blockedZ = false;
 
-          // Check Solid Vehicle Collisions
-          vehicles.forEach(v => {
-            const dist = Math.hypot(nextX - v.group.position.x, nextZ - v.group.position.z);
-            if (dist < v.radius + 0.8) {
-              blocked = true;
+          // Test X movement independently
+          for (let b of solidBoxes) {
+            if (nextX >= b.minX - 0.8 && nextX <= b.maxX + 0.8 &&
+                curPos.z >= b.minZ - 0.8 && curPos.z <= b.maxZ + 0.8) {
+              blockedX = true;
+              break;
             }
-          });
-
-          if (!blocked) {
-            player.group.position.x = nextX;
-            player.group.position.z = nextZ;
           }
+          if (!blockedX) {
+            for (let v of vehicles) {
+              if (v.driver === player) continue;
+              if (Math.hypot(nextX - v.group.position.x, curPos.z - v.group.position.z) < v.radius + 0.75) {
+                blockedX = true;
+                break;
+              }
+            }
+          }
+
+          // Test Z movement independently
+          for (let b of solidBoxes) {
+            if (curPos.x >= b.minX - 0.8 && curPos.x <= b.maxX + 0.8 &&
+                nextZ >= b.minZ - 0.8 && nextZ <= b.maxZ + 0.8) {
+              blockedZ = true;
+              break;
+            }
+          }
+          if (!blockedZ) {
+            for (let v of vehicles) {
+              if (v.driver === player) continue;
+              if (Math.hypot(curPos.x - v.group.position.x, nextZ - v.group.position.z) < v.radius + 0.75) {
+                blockedZ = true;
+                break;
+              }
+            }
+          }
+
+          if (!blockedX) curPos.x = nextX;
+          if (!blockedZ) curPos.z = nextZ;
         }
 
         // When aiming on foot, character rotates to align with camera heading
@@ -4230,10 +4773,16 @@
       npcs.forEach(npc => npc.update(dt));
       if (_frameCount === 1) console.log('[F1] step: after npcs.update');
 
-      // 4. UPDATE POLICE UNITS (Foot Cops at 1-2 stars & Squad Cruisers at 3-5 stars)
+      // 4. UPDATE POLICE UNITS (Foot Cops, Squad Cruisers & Police Chopper)
       footCops.forEach(cop => cop.update(dt, activePos));
       policeUnits.forEach(p => p.update(dt, activePos));
+      if (policeChopper) policeChopper.update(dt, activePos);
       if (_frameCount === 1) console.log('[F1] step: after police.update');
+
+      // UPDATE ACTIVE THROWN GRENADES
+      for (let i = activeGrenades.length - 1; i >= 0; i--) {
+        activeGrenades[i].update(dt);
+      }
 
       // UPDATE ACTIVE PROJECTILES & EXPLOSIONS
       for (let i = activeProjectiles.length - 1; i >= 0; i--) {
@@ -4273,9 +4822,13 @@
         camOrbitYaw += (camTargetYaw - camOrbitYaw) * 0.18;
         camOrbitPitch += (camTargetPitch - camOrbitPitch) * 0.18;
 
-        // Auto-realign camera behind player/vehicle smoothly if moving forward and not actively swiping
-        if (camDragPointerId === null && isMoving && (now - lastCameraInteractionTime > 1200)) {
-          camTargetYaw += (0 - camTargetYaw) * (dt * 1.2);
+        // Free orbit: camera preserves orientation relative to player movement smoothly without snapping
+        if (State.inVehicle && State.currentVehicle && camDragPointerId === null && Math.abs(State.currentVehicle.speed) > 4) {
+          const vHeading = State.currentVehicle.group.rotation.y;
+          let vDiff = vHeading - camTargetYaw;
+          while (vDiff < -Math.PI) vDiff += Math.PI * 2;
+          while (vDiff > Math.PI) vDiff -= Math.PI * 2;
+          camTargetYaw += vDiff * (dt * 1.5);
         }
 
         let camDist, camHeightBase;
@@ -4308,34 +4861,7 @@
         camera.lookAt(lookTarget);
       }
 
-      // 6. UPDATE PROMPT & SPEEDOMETER
-      let promptText = null;
-      if (!State.inVehicle) {
-        vehicles.forEach(v => {
-          if (!v || !v.group) return;
-          const d = Math.hypot(player.group.position.x - v.group.position.x, player.group.position.z - v.group.position.z);
-          if (d < v.radius + 3.0) {
-            promptText = `Press [E] to Enter ${v.name}`;
-          }
-        });
-
-        buildingZones.forEach(z => {
-          const d = Math.hypot(player.group.position.x - z.x, player.group.position.z - z.z);
-          if (d < z.radius) {
-            promptText = `Inside ${z.name}: Press [F] to ${z.purpose}`;
-          }
-        });
-      }
-
-      const promptBox = document.getElementById('prompt-box');
-      if (promptBox) {
-        if (promptText) {
-          promptBox.innerText = promptText;
-          promptBox.style.display = 'block';
-        } else {
-          promptBox.style.display = 'none';
-        }
-      }
+      // 6. UPDATE VEHICLE HUD (Speedometer & Altitude)
 
       // Vehicle HUD
       if (State.inVehicle && State.currentVehicle) {
