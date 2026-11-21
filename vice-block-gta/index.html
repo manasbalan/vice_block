@@ -1174,6 +1174,7 @@
         <button class="cheat-btn" data-cheat="SPEEDFREAK">⚡ 2.5X SUPER SPEED</button>
         <button class="cheat-btn" data-cheat="AIRPORT">✈️ TELEPORT AIRPORT</button>
         <button class="cheat-btn" data-cheat="HOME">🏠 TELEPORT SAFEHOUSE</button>
+
       </div>
       <div class="cheat-input-row">
         <input type="text" id="cheat-text-input" class="cheat-input" placeholder="OR TYPE GTA CHEAT CODE..." />
@@ -1759,6 +1760,11 @@
       runway: new THREE.MeshLambertMaterial({ color: 0x24272e }),
       runwayStripe: new THREE.MeshBasicMaterial({ color: 0xffffff }),
       grass: new THREE.MeshLambertMaterial({ color: 0x2e9b46 }), // Rich emerald green ground
+      dinoGreen: new THREE.MeshLambertMaterial({ color: 0x225528 }),     // Deep prehistoric T-Rex reptile skin
+      dinoBelly: new THREE.MeshLambertMaterial({ color: 0x6e8b4e }),     // Pale scaly underbelly
+      dinoEye: new THREE.MeshBasicMaterial({ color: 0xff1100 }),          // Piercing glowing red eyes
+      dinoTeeth: new THREE.MeshLambertMaterial({ color: 0xf8fafc }),       // Razor-sharp bone white teeth
+      dinoClaw: new THREE.MeshLambertMaterial({ color: 0x111827 }),        // Dark slate talons & claws
       sidewalk: new THREE.MeshLambertMaterial({ color: 0xd1d5db }), // Concrete sidewalk
       tankGreen: new THREE.MeshLambertMaterial({ color: 0x3d4f2d }), // Military Olive Drab
       tankTread: new THREE.MeshLambertMaterial({ color: 0x181a1b }), // Heavy black caterpillar tread
@@ -2398,6 +2404,24 @@
         doorWidth: 14,
         zoneAction: 'pay_n_spray'
       });
+
+      // 8. OCEAN CARGO DOCKS (Container Port for Final Mission 9 Heist)
+      buildWalkInBuilding({
+        id: 'cargo_docks',
+        x: 105, z: -180, w: 36, h: 14, d: 34,
+        wallMat: new THREE.MeshLambertMaterial({ color: 0x334155 }),
+        name: "VICE OCEAN DOCKS",
+        purpose: "CARGO CONTAINERS & HEIST",
+        signCol: 0x38bdf8,
+        doorWidth: 16,
+        zoneAction: 'cargo_docks'
+      });
+      // Shipping containers inside dock
+      const c1 = new THREE.Mesh(new THREE.BoxGeometry(6, 4, 14), new THREE.MeshLambertMaterial({ color: 0x0284c7 }));
+      c1.position.set(100, 2, -180);
+      const c2 = new THREE.Mesh(new THREE.BoxGeometry(6, 4, 14), new THREE.MeshLambertMaterial({ color: 0xdc2626 }));
+      c2.position.set(110, 2, -180);
+      scene.add(c1, c2);
     }
 
     // --- AIRPORT AREA & RUNWAY ---
@@ -2644,6 +2668,20 @@
         // First Kill Easter Egg Check ONLY (No developer message on subsequent kills)
         if (!State.hasKilledFirstPerson) {
           onPersonKilled('civilian');
+        }
+
+        // Mission 8: Malibu Syndicate hitmen elimination
+        if (this.isMalibuGoon && State.currentMission === 8) {
+          State.malibuGoonsRemaining = Math.max(0, (State.malibuGoonsRemaining || 6) - 1);
+          showToast(`💀 Syndicate Goon Down! (${6 - State.malibuGoonsRemaining}/6)`);
+          if (State.malibuGoonsRemaining === 0) {
+            addCash(25000); Sound.playCash();
+            showToast("💃 CLUB MALIBU SAVED! +$25,000 Cash! Boss fled to the Docks!");
+            showNarrativeDialog("Game Dev", "Gunda aayi marukayano? Dockil ulla container koodi pottikku!", null, 10000);
+            setTimeout(() => {
+              setMission(9, "FINAL HEIST: Infiltrate Cargo Docks (105, -180) & crack the diamond cargo container!", 105, -180);
+            }, 2000);
+          }
         }
 
         if (State.wantedLevel === 0) {
@@ -2985,6 +3023,21 @@
           }
           showToast(`${this.name} Destroyed!`);
 
+          // Mission 6: Police Vigilante car elimination check
+          if (State.currentMission === 6 && State.vigilanteActive && this.driver !== player) {
+            State.vigilanteKills = (State.vigilanteKills || 0) + 1;
+            if (State.vigilanteKills === 1) {
+              showToast("🚨 GANG VEHICLE 1/2 NEUTRALIZED! Eliminate 1 more!");
+            } else if (State.vigilanteKills >= 2) {
+              addCash(15000); Sound.playCash();
+              showToast("🚨 VIGILANTE CRIME SWEEP COMPLETE! +$15,000 Cash!");
+              showNarrativeDialog("Game Dev", "Singham aavan nokkuvano? Adutha task airportil und!", null, 10000);
+              setTimeout(() => {
+                setMission(7, "TOP GUN: Fly the Stunt Plane at Airport (0, 210) through 4 sky rings!", 0, 210);
+              }, 2000);
+            }
+          }
+
           // Restore vehicle cleanly after delay
           setTimeout(() => {
             this.health = this.maxHealth;
@@ -3275,9 +3328,24 @@
           if (myPos.x >= b.minX - this.radius && myPos.x <= b.maxX + this.radius &&
               myPos.z >= b.minZ - this.radius && myPos.z <= b.maxZ + this.radius) {
             
+            const crashSpd = Math.abs(this.speed);
             // Recoil & bounce
             this.speed = -this.speed * 0.45;
             Sound.playCrash();
+
+            // Malayalam Developer roast on severe vehicle crash (>16 speed)
+            if (this.driver === player && crashSpd > 16) {
+              if (typeof window._lastCrashRoastTime === 'undefined' || performance.now() - window._lastCrashRoastTime > 22000) {
+                window._lastCrashRoastTime = performance.now();
+                setTimeout(() => {
+                  if (this.isPlane) {
+                    showNarrativeDialog("Game Dev", "Vimanam parathaan ariyillel enthina keriyath?", null, 10000);
+                  } else {
+                    showNarrativeDialog("Game Dev", "Driving license entha kandil ninnu kittiyathano?", null, 10000);
+                  }
+                }, 300);
+              }
+            }
 
             // Push vehicle outside box
             const cx = (b.minX + b.maxX) / 2;
@@ -4188,7 +4256,7 @@
       if (e.pointerId !== joyTouchId) return;
       joyTouchId = null;
       joyVector = { x: 0, y: 0 };
-      joyKnob.style.transform = 'translate(0px, 0px)';
+      joyKnob.style.transform = 'translate3d(0px, 0px, 0)';
       joyBase.style.top = 'auto';
       joyBase.style.bottom = 'calc(25px + env(safe-area-inset-bottom))';
       joyBase.style.left = 'calc(25px + env(safe-area-inset-left))';
@@ -4210,7 +4278,7 @@
         dx = (dx / dist) * maxDist;
         dy = (dy / dist) * maxDist;
       }
-      joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+      joyKnob.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
 
       joyVector.x = dx / maxDist;
       joyVector.y = dy / maxDist;
@@ -4325,6 +4393,13 @@
 
     function executeCheatCode(code) {
       code = (code || '').toUpperCase().trim();
+      // Malayalam Developer roast on cheat codes (20s debounce)
+      if (typeof window._lastCheatRoastTime === 'undefined' || performance.now() - window._lastCheatRoastTime > 20000) {
+        window._lastCheatRoastTime = performance.now();
+        setTimeout(() => {
+          showNarrativeDialog("Game Dev", "Cheat code adichu kalikan aano ithra kashtapettu code cheythe?", null, 10000);
+        }, 500);
+      }
       if (code === 'TURTLE' || code === 'ASPIRINE' || code === 'PRECIOUSPROTECTION') {
         State.health = 100;
         addCash(5000);
@@ -4338,6 +4413,7 @@
         player.setWeapon('rpg');
         showToast("⚡ CHEAT ACTIVATED: ALL WEAPONS & 30 RPG ROCKETS!");
         Sound.playGunshot();
+
       } else if (code === 'PANZER' || code === 'TANK') {
         spawnRhinoTankAtPlayer();
         showToast("⚡ CHEAT ACTIVATED: MILITARY RHINO TANK SPAWNED!");
@@ -4345,9 +4421,6 @@
       } else if (code === 'LAWYERUP' || code === 'LEAVEMEALONE') {
         setWantedLevel(0);
         showToast("⚡ CHEAT ACTIVATED: WANTED STARS CLEARED!");
-      } else if (code === 'EXAM' || code === 'QUIZ' || code === 'MATH') {
-        showExamQuestionModal();
-        showToast("⚡ CHEAT ACTIVATED: EXAM QUESTION OPENED!");
       } else if (code === 'BRINGITON' || code === 'YOUWONTTAKEMEALIVE') {
         setWantedLevel(5);
         showToast("⚡ CHEAT ACTIVATED: 5-STAR MAXIMUM HEAT!");
@@ -4373,6 +4446,7 @@
         }
         showToast("⚡ CHEAT ACTIVATED: TELEPORTED TO OCEAN SAFEHOUSE!");
         Sound.playCash();
+
       } else {
         showToast("INVALID CHEAT CODE!");
       }
@@ -4504,6 +4578,15 @@
     const btnMenuAudio = document.getElementById('btn-menu-audio');
     const controlsModal = document.getElementById('controls-modal');
     const btnCloseControls = document.getElementById('btn-close-controls');
+
+    // Dino Scream Audio: Funny scream sound when huge T-Rex charges near the player
+    const dinoScreamAudio = new Audio('dino_scream.m4a');
+    dinoScreamAudio.volume = 1.0;
+    dinoScreamAudio.loop = false;
+
+    // Police Catch Audio: Malayalam "Ayyoo!" despair sound when police catches player
+    const policeCatchAudio = new Audio('police_catch.mp3');
+    policeCatchAudio.volume = 1.0;
 
     let _narrativeTimer = null;
     function showNarrativeDialog(speaker = "Game Dev", message = "", subtext = null, duration = 10000) {
@@ -4733,6 +4816,15 @@
           document.getElementById('vehicle-hud').style.display = 'flex';
           document.getElementById('foot-actions').style.display = 'none';
 
+          // Malayalam Developer roast when stealing police cruiser
+          if (nearest.isPolice) {
+            showToast("🚨 HIJACKED VCPD POLICE CRUISER! 2-STAR HEAT!");
+            setWantedLevel(Math.max(2, State.wantedLevel));
+            setTimeout(() => {
+              showNarrativeDialog("Game Dev", "Police vandiyum kondu evidekk... Patunna paniki poya pore!", null, 10000);
+            }, 450);
+          }
+
           const tankCtl = document.getElementById('tank-controls');
           if (nearest.isPlane) {
             document.getElementById('plane-controls').style.display = 'flex';
@@ -4837,6 +4929,7 @@
       } else if (State.currentWeapon === 'pistol') {
         if (State.ammo.pistol <= 0) {
           showToast("OUT OF PISTOL AMMO! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Ammo teernada ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4855,6 +4948,7 @@
       } else if (State.currentWeapon === 'smg') {
         if (State.ammo.smg <= 0) {
           showToast("OUT OF SMG AMMO! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Ammo teernu ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4870,6 +4964,7 @@
       } else if (State.currentWeapon === 'shotgun') {
         if (State.ammo.shotgun <= 0) {
           showToast("OUT OF SHOTGUN SHELLS! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Haaa aduta gun eduku ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4893,6 +4988,7 @@
       } else if (State.currentWeapon === 'rifle') {
         if (State.ammo.rifle <= 0) {
           showToast("OUT OF RIFLE AMMO! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Adum teernu ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4908,6 +5004,7 @@
       } else if (State.currentWeapon === 'grenade') {
         if (State.ammo.grenade <= 0) {
           showToast("OUT OF GRENADES! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Allelum grenede ninak ullad alla ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4924,6 +5021,7 @@
       } else if (State.currentWeapon === 'rpg') {
         if (State.ammo.rpg <= 0) {
           showToast("OUT OF ROCKETS! Swapping to Fists");
+          showNarrativeDialog("Game Dev", "Ada gommale ", null, 10000);
           player.setWeapon('fists');
           return;
         }
@@ -4976,17 +5074,22 @@
 
       setTimeout(() => {
         if (option === 4) {
-          // 4th option is the correct answer
+          // 4th option is the correct answer (k = 2) - Developer fails roast!
           try { Sound.playCash(); } catch(e){}
-          showNarrativeDialog("Game Dev", "Aaah my bad  developer mistake , sthalam mari poi", null, 10000);
+          showNarrativeDialog(
+            "Game Dev",
+            "Aaah my bad...! Sthalam mari poi!",
+            "DEVELOPER FAILED • YOU DEFEATED THE EXAM!",
+            10000
+          );
         } else if (option === 3) {
           // 3rd option (k = -5 when k > 0)
           try { Sound.playOof(); } catch(e){}
-          showNarrativeDialog("Game Dev", " Excellent how in the world did u even get that much wrong ", null, 10000);
+          showNarrativeDialog("Game Dev", " Excellent! Ennalum negative engane kiiti ", null, 10000);
         } else {
           // Option 1 or Option 2
           try { Sound.playWhistle(); } catch(e){}
-          showNarrativeDialog("Game Dev", " with great confidence u choose the wrong one", null, 10000);
+          showNarrativeDialog("Game Dev", "Wrong one", null, 10000);
         }
       }, 400);
     }
@@ -5001,8 +5104,26 @@
           setWantedLevel(0);
           addCash(50000);
           Sound.playCash();
-          showToast("🏆 STORYLINE COMPLETED! +$50,000 CASH • RESPECT +");
-          setMission(1, "Freeroam Vice City! Visit any building or hijack planes anytime!", -55, -40);
+          showToast("🏆 BANK HEIST COMPLETE! +$50,000 CASH • RESPECT +");
+          // Progress directly to Mission 5: PIZZA DELIVERY BOY!
+          setTimeout(() => {
+            setMission(5, "PIZZA BOY: Head to Burger Shot plaza (-55, -28) and deliver 3 hot pizzas!", -55, -28);
+          }, 1200);
+        } else if (State.currentMission === 9 && State.dockHeistDone) {
+          // GRAND FINALE WINNER!
+          setWantedLevel(0);
+          addCash(100000);
+          Sound.playCash();
+          showToast("👑 VICE CITY GRAND CHAMPION! 100% STORYLINE COMPLETE! +$100,000 CASH!");
+          setTimeout(() => {
+            showNarrativeDialog(
+              "Game Dev",
+              "Ithu vare kalichathinu oru big salute bro! Game muzhuvan theerthu!",
+              "YOU ARE THE KING OF VICE CITY!",
+              12000
+            );
+            setMission(1, "FREEROAM VICE CITY: You rule the streets! Visit any building or hijack vehicles!", -55, -112);
+          }, 900);
         }
       } else if (z.action === 'heal_player') {
         State.health = 100;
@@ -5052,6 +5173,10 @@
         State.health = Math.min(100, State.health + 20);
         updateHealthUI();
         activateCheckpoint('club_malibu', 'Club Malibu VIP', -55, 135);
+        // Malayalam Developer roast on dancing instead of mission
+        setTimeout(() => {
+          showNarrativeDialog("Game Dev", "Dance kalikkan alla mission cheyyan paranjath!", null, 10000);
+        }, 400);
       } else if (z.action === 'ammu_nation') {
         if (State.cash < 200) {
           showToast("❌ NOT ENOUGH CASH! Need $200 for Ammo Crate");
@@ -5078,12 +5203,87 @@
           setWantedLevel(0);
           showToast("⭐ WANTED STARS CLEARED AT PAY 'N' SPRAY!");
         }
+      } else if (z.action === 'cargo_docks') {
+        if (State.currentMission === 9 && !State.dockHeistDone) {
+          State.dockHeistDone = true;
+          addCash(100000);
+          setWantedLevel(5);
+          Sound.playCash();
+          Sound.updateSiren(true);
+          createExplosion(new THREE.Vector3(105, 3, -180), 8, 0);
+          showToast("💎 $100,000 DIAMONDS LOOTED! 5-STAR HEAT! ESCAPE TO SAFEHOUSE!");
+          setMission(9, "ESCAPE 5-STAR SWAT HEAT & RETURN TO OCEAN SAFEHOUSE (-55, -112) TO WIN!", -55, -112);
+        } else {
+          showToast("⚓ VICE CITY CARGO CONTAINER DOCKS");
+        }
       }
     }
 
     function addCash(amount) {
       State.cash += amount;
       document.getElementById('cash-val').innerText = State.cash.toLocaleString();
+    }
+
+    // --- DEVELOPER BUG GLITCH SURPRISE EASTER EGG ---
+    function triggerDeveloperBugGlitch() {
+      try { Sound.playOof(); } catch(e){}
+      const cv = document.getElementById('canvas-container');
+      if (cv) {
+        cv.style.filter = 'invert(0.9) hue-rotate(180deg) contrast(200%)';
+        cv.style.transform = 'scale(1.02) skewX(2.5deg)';
+      }
+      showToast("⚠️ CRITICAL GLITCH: DEVELOPER_BRAIN_NOT_FOUND.exe (Error 404)");
+
+      // Float / spin character or vehicle for 2.2 seconds!
+      if (State.inVehicle && State.currentVehicle) {
+        State.currentVehicle.group.position.y += 2.5;
+        State.currentVehicle.group.rotation.z = 0.35;
+      } else if (player) {
+        player.group.position.y += 2.5;
+        player.group.rotation.x = 0.4;
+      }
+
+      setTimeout(() => {
+        if (cv) {
+          cv.style.filter = '';
+          cv.style.transform = '';
+        }
+        if (player) {
+          player.group.position.y = 0;
+          player.group.rotation.x = 0;
+        }
+        if (State.inVehicle && State.currentVehicle) {
+          State.currentVehicle.group.position.y = 0.5;
+          State.currentVehicle.group.rotation.z = 0;
+        }
+        addCash(777);
+        Sound.playCash();
+        showToast("🐛 GLITCH FIXED! +$777 BUG BOUNTY CASH REWARD!");
+        showNarrativeDialog(
+          "Game Dev",
+          "Ayyeda... ithu bug alla , ithu feature aanu! Developer code cheyyan marannu poyi!",
+          "Fhaaaaaaa",
+          10000
+        );
+      }, 2200);
+    }
+
+    // --- 5-STAR AUTOPILOT ESCORT DIRECTLY TO VCPD JAIL ---
+    function start5StarJailEscort() {
+      if (State.isEscortingToJail || State.isBusted || State.isDead) return;
+      State.isEscortingToJail = true;
+      State.was5StarEscorted = true;
+      State.escortStartTime = performance.now();
+      showToast("🚨 5-STAR WANTED! AUTOPILOT ARREST: ESCORTING TO VCPD JAIL! 🚨");
+      Sound.updateSiren(true);
+      setTimeout(() => {
+        showNarrativeDialog(
+          "Game Dev",
+          "5-Star aayal pinne Jailil kidakkanam... Seedha jail-lekku auto-convoy!",
+          "AUTOPILOT JAIL ESCORT ACTIVE",
+          10000
+        );
+      }, 400);
     }
 
     function setWantedLevel(stars) {
@@ -5095,6 +5295,11 @@
         else el.classList.remove('active');
       });
       Sound.updateSiren(stars > 0);
+
+      // 5-Star Maximum Overload: Auto-escort straight to VCPD Jail!
+      if (stars >= 5 && !State.isEscortingToJail && !State.isBusted && !State.isDead) {
+        start5StarJailEscort();
+      }
     }
 
     function damagePlayer(amount) {
@@ -5143,6 +5348,11 @@
 
         if (typeof onRespawn === 'function') {
           setTimeout(onRespawn, 500);
+        } else {
+          // Malayalam Developer roast on death
+          setTimeout(() => {
+            showNarrativeDialog("Game Dev", "Ninte oru karyam... hospital bill njan kodukano?", null, 10000);
+          }, 450);
         }
       }, 2500);
     }
@@ -5150,6 +5360,12 @@
     function bustPlayer(onRespawn) {
       if (State.isBusted || State.isDead) return;
       State.isBusted = true;
+      try {
+        if (typeof policeCatchAudio !== 'undefined' && policeCatchAudio) {
+          policeCatchAudio.currentTime = 0;
+          policeCatchAudio.play().catch(e => console.log('[ViceBlocks] Police catch audio error:', e));
+        }
+      } catch(e){}
       try {
         if (Sound && typeof Sound.playSiren === 'function') {
           Sound.playSiren();
@@ -5187,6 +5403,15 @@
 
         if (typeof onRespawn === 'function') {
           setTimeout(onRespawn, 500);
+        } else {
+          // Malayalam Developer roast on arrest
+          setTimeout(() => {
+            const roastMsg = State.was5StarEscorted ?
+              "5-Star aayal pinne Jailil biriyani thinnan aano ithra aathirthi?!" :
+              "Policeinte kayyil poi koduthu... nannayi";
+            State.was5StarEscorted = false;
+            showNarrativeDialog("Game Dev", roastMsg, null, 10000);
+          }, 450);
         }
       }, 2500);
     }
@@ -5198,12 +5423,17 @@
       setTimeout(() => toast.style.opacity = '0', 3200);
     }
 
-    // --- STORYLINE & MISSIONS ---
+    // --- STORYLINE & MISSIONS (FULL 9-MISSION CAMPAIGN) ---
     const Missions = [
       { id: 1, title: "VISIT BURGER SHOT", desc: "Drive from Safehouse to Burger Shot to eat & restore health", tx: -55, tz: -40 },
       { id: 2, title: "AIRPORT INFILTRATION", desc: "Head South to the Airport Runway and steal the Stunt Plane!", tx: 0, tz: 230 },
       { id: 3, title: "BANK VAULT HEIST", desc: "Hit the Vice National Bank and crack the gold vault!", tx: 55, tz: -50 },
-      { id: 4, title: "RETURN TO SAFEHOUSE", desc: "Evade the SWAT Pursuit and return to Ocean View Safehouse to Save!", tx: -55, tz: -112 }
+      { id: 4, title: "RETURN TO SAFEHOUSE", desc: "Evade the SWAT Pursuit and return to Ocean View Safehouse to Save!", tx: -55, tz: -112 },
+      { id: 5, title: "PIZZA DELIVERY BOY", desc: "Ride the Pizza Boy scooter & deliver 3 hot pizzas along Ocean Drive!", tx: -55, tz: -28 },
+      { id: 6, title: "POLICE VIGILANTE", desc: "Take a Police Cruiser/Tank and eliminate 2 rogue criminal vehicles!", tx: 55, tz: 50 },
+      { id: 7, title: "TOP GUN AIR PATROL", desc: "Fly the Stunt Plane through 4 neon sky rings above Vice City skyline!", tx: 0, tz: 210 },
+      { id: 8, title: "MALIBU CLUB DEFENSE", desc: "Defend Club Malibu VIP lounge from the rival syndicate hitmen raid!", tx: -55, tz: 135 },
+      { id: 9, title: "DOCK CONTAINER HEIST", desc: "Crack the cargo diamond container, survive 5-Star SWAT & win the Game!", tx: 105, tz: -180 }
     ];
 
     function setMission(id, desc, tx, tz) {
@@ -5236,7 +5466,7 @@
       // Draw Streets
       miniCtx.strokeStyle = '#322f45';
       miniCtx.lineWidth = 5;
-      miniCtx.beginPath();
+      miniCtx.beginPath(); 
       // Ocean Drive
       miniCtx.moveTo(cx + (-100 - activePos.x) * scale, 0);
       miniCtx.lineTo(cx + (-100 - activePos.x) * scale, h);
@@ -5299,6 +5529,344 @@
       miniCtx.restore();
     }
 
+    // --- AERIAL STUNT RINGS FOR MISSION 7 (TOP GUN) ---
+    const stuntRings = [
+      { id: 1, pos: new THREE.Vector3(0, 42, 140), passed: false },
+      { id: 2, pos: new THREE.Vector3(-45, 48, 30), passed: false },
+      { id: 3, pos: new THREE.Vector3(25, 55, -40), passed: false },
+      { id: 4, pos: new THREE.Vector3(55, 45, -110), passed: false }
+    ];
+    const ringMeshes = [];
+    stuntRings.forEach(sr => {
+      const ringGeo = new THREE.TorusGeometry(8.5, 0.75, 12, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
+      const rm = new THREE.Mesh(ringGeo, ringMat);
+      rm.position.copy(sr.pos);
+      rm.visible = false;
+      scene.add(rm);
+      ringMeshes.push(rm);
+    });
+
+
+    // --- GIANT T-REX DINOSAUR STAMPEDE SYSTEM ---
+    let activeTRex = null;
+    let _trexNextStampedeTimer = null;
+
+    class TRexDinosaur {
+      constructor(zStart = -360, zEnd = 360) {
+        this.group = new THREE.Group();
+        this.speed = 58; // High-velocity thunderous sprint down Central Ave!
+        this.runPhase = 0;
+        this.zStart = zStart;
+        this.zEnd = zEnd;
+        this.direction = (zEnd > zStart) ? 1 : -1;
+        this.soundPlayed = false;
+        this.isDespawned = false;
+
+        this.buildModel();
+
+        // Position in the middle of Central Ave (x = 0)
+        this.group.position.set(0, 0, zStart);
+        // Face the direction of travel
+        this.group.rotation.y = (this.direction > 0) ? 0 : Math.PI;
+
+        scene.add(this.group);
+      }
+
+      buildModel() {
+        const scale = 2.4; // Towering huge prehistoric predator!
+
+        // Torso / Ribcage
+        const bodyGeo = new THREE.BoxGeometry(3.6 * scale, 4.2 * scale, 7.2 * scale);
+        const body = new THREE.Mesh(bodyGeo, M.dinoGreen);
+        body.position.set(0, 6.2 * scale, 0);
+        body.rotation.x = -0.15;
+        this.group.add(body);
+        this.body = body;
+
+        // Pale Belly Plate
+        const bellyGeo = new THREE.BoxGeometry(3.2 * scale, 1.2 * scale, 6.5 * scale);
+        const belly = new THREE.Mesh(bellyGeo, M.dinoBelly);
+        belly.position.set(0, -1.8 * scale, 0.2 * scale);
+        body.add(belly);
+
+        // Spines / Dorsal scales running along the back
+        for (let i = -3; i <= 3; i++) {
+          const spineGeo = new THREE.ConeGeometry(0.35 * scale, 0.9 * scale, 4);
+          const spine = new THREE.Mesh(spineGeo, M.dinoClaw);
+          spine.rotation.x = -0.2;
+          spine.position.set(0, 2.3 * scale, i * 0.9 * scale);
+          body.add(spine);
+        }
+
+        // Neck
+        const neckGeo = new THREE.BoxGeometry(2.6 * scale, 3.2 * scale, 3.4 * scale);
+        const neck = new THREE.Mesh(neckGeo, M.dinoGreen);
+        neck.position.set(0, 7.8 * scale, 4.4 * scale);
+        neck.rotation.x = 0.35;
+        this.group.add(neck);
+
+        // Giant Head
+        this.headGroup = new THREE.Group();
+        this.headGroup.position.set(0, 9.4 * scale, 6.6 * scale);
+
+        // Upper Skull & Snout
+        const skullGeo = new THREE.BoxGeometry(2.8 * scale, 2.6 * scale, 5.2 * scale);
+        const skull = new THREE.Mesh(skullGeo, M.dinoGreen);
+        skull.position.set(0, 0, 1.2 * scale);
+        this.headGroup.add(skull);
+
+        // Ferocious Glowing Red Eyes
+        const eyeGeo = new THREE.BoxGeometry(0.4 * scale, 0.4 * scale, 0.6 * scale);
+        const eyeL = new THREE.Mesh(eyeGeo, M.dinoEye);
+        eyeL.position.set(-1.45 * scale, 0.6 * scale, 0.8 * scale);
+        const eyeR = new THREE.Mesh(eyeGeo, M.dinoEye);
+        eyeR.position.set(1.45 * scale, 0.6 * scale, 0.8 * scale);
+        this.headGroup.add(eyeL, eyeR);
+
+        // Upper Teeth
+        for (let t = -1.8; t <= 1.8; t += 0.6) {
+          const toothL = new THREE.Mesh(new THREE.ConeGeometry(0.14 * scale, 0.65 * scale, 4), M.dinoTeeth);
+          toothL.rotation.x = Math.PI;
+          toothL.position.set(-1.3 * scale, -1.3 * scale, (2.2 + t) * scale);
+
+          const toothR = new THREE.Mesh(new THREE.ConeGeometry(0.14 * scale, 0.65 * scale, 4), M.dinoTeeth);
+          toothR.rotation.x = Math.PI;
+          toothR.position.set(1.3 * scale, -1.3 * scale, (2.2 + t) * scale);
+
+          this.headGroup.add(toothL, toothR);
+        }
+
+        // Lower Jaw (Hinged for snapping/roaring)
+        this.jaw = new THREE.Group();
+        this.jaw.position.set(0, -1.2 * scale, -0.6 * scale);
+        const jawMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4 * scale, 1.1 * scale, 4.8 * scale), M.dinoBelly);
+        jawMesh.position.set(0, 0, 2.2 * scale);
+        this.jaw.add(jawMesh);
+
+        // Lower Teeth
+        for (let t = -1.5; t <= 1.5; t += 0.6) {
+          const lToothL = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.55 * scale, 4), M.dinoTeeth);
+          lToothL.position.set(-1.1 * scale, 0.65 * scale, (2.2 + t) * scale);
+          const lToothR = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.55 * scale, 4), M.dinoTeeth);
+          lToothR.position.set(1.1 * scale, 0.65 * scale, (2.2 + t) * scale);
+          this.jaw.add(lToothL, lToothR);
+        }
+        this.headGroup.add(this.jaw);
+        this.group.add(this.headGroup);
+
+        // Comical Tiny T-Rex Arms
+        const armGeo = new THREE.BoxGeometry(0.5 * scale, 1.4 * scale, 0.6 * scale);
+        this.armL = new THREE.Mesh(armGeo, M.dinoGreen);
+        this.armL.position.set(-2.0 * scale, 5.8 * scale, 3.4 * scale);
+        this.armL.rotation.x = 0.5;
+
+        this.armR = new THREE.Mesh(armGeo, M.dinoGreen);
+        this.armR.position.set(2.0 * scale, 5.8 * scale, 3.4 * scale);
+        this.armR.rotation.x = 0.5;
+        this.group.add(this.armL, this.armR);
+
+        // Massive Hind Legs (Left & Right)
+        this.thighL = new THREE.Group();
+        this.thighL.position.set(-2.4 * scale, 5.8 * scale, -0.8 * scale);
+        const upperLegL = new THREE.Mesh(new THREE.BoxGeometry(1.6 * scale, 4.2 * scale, 2.4 * scale), M.dinoGreen);
+        upperLegL.position.y = -1.8 * scale;
+        this.thighL.add(upperLegL);
+
+        const shinL = new THREE.Mesh(new THREE.BoxGeometry(1.2 * scale, 3.6 * scale, 1.4 * scale), M.dinoGreen);
+        shinL.position.set(0, -4.6 * scale, 0.4 * scale);
+        this.thighL.add(shinL);
+
+        const footL = new THREE.Mesh(new THREE.BoxGeometry(2.2 * scale, 0.9 * scale, 3.4 * scale), M.dinoBelly);
+        footL.position.set(0, -6.1 * scale, 1.2 * scale);
+        this.thighL.add(footL);
+
+        for (let c = -0.7; c <= 0.7; c += 0.7) {
+          const claw = new THREE.Mesh(new THREE.ConeGeometry(0.22 * scale, 0.8 * scale, 4), M.dinoClaw);
+          claw.rotation.x = -Math.PI / 2;
+          claw.position.set(c * scale, -6.1 * scale, 2.9 * scale);
+          this.thighL.add(claw);
+        }
+        this.group.add(this.thighL);
+
+        this.thighR = new THREE.Group();
+        this.thighR.position.set(2.4 * scale, 5.8 * scale, -0.8 * scale);
+        const upperLegR = new THREE.Mesh(new THREE.BoxGeometry(1.6 * scale, 4.2 * scale, 2.4 * scale), M.dinoGreen);
+        upperLegR.position.y = -1.8 * scale;
+        this.thighR.add(upperLegR);
+
+        const shinR = new THREE.Mesh(new THREE.BoxGeometry(1.2 * scale, 3.6 * scale, 1.4 * scale), M.dinoGreen);
+        shinR.position.set(0, -4.6 * scale, 0.4 * scale);
+        this.thighR.add(shinR);
+
+        const footR = new THREE.Mesh(new THREE.BoxGeometry(2.2 * scale, 0.9 * scale, 3.4 * scale), M.dinoBelly);
+        footR.position.set(0, -6.1 * scale, 1.2 * scale);
+        this.thighR.add(footR);
+
+        for (let c = -0.7; c <= 0.7; c += 0.7) {
+          const claw = new THREE.Mesh(new THREE.ConeGeometry(0.22 * scale, 0.8 * scale, 4), M.dinoClaw);
+          claw.rotation.x = -Math.PI / 2;
+          claw.position.set(c * scale, -6.1 * scale, 2.9 * scale);
+          this.thighR.add(claw);
+        }
+        this.group.add(this.thighR);
+
+        // Huge Segmented Tail (Sways side-to-side)
+        this.tail = new THREE.Group();
+        this.tail.position.set(0, 6.2 * scale, -3.6 * scale);
+
+        const tailBase = new THREE.Mesh(new THREE.BoxGeometry(2.8 * scale, 3.2 * scale, 4.5 * scale), M.dinoGreen);
+        tailBase.position.set(0, -0.4 * scale, -2.1 * scale);
+        tailBase.rotation.x = -0.15;
+        this.tail.add(tailBase);
+
+        const tailMid = new THREE.Mesh(new THREE.BoxGeometry(2.0 * scale, 2.2 * scale, 4.8 * scale), M.dinoGreen);
+        tailMid.position.set(0, -0.8 * scale, -6.2 * scale);
+        tailMid.rotation.x = -0.05;
+        this.tail.add(tailMid);
+
+        const tailTip = new THREE.Mesh(new THREE.BoxGeometry(1.2 * scale, 1.4 * scale, 5.2 * scale), M.dinoGreen);
+        tailTip.position.set(0, -0.9 * scale, -10.6 * scale);
+        this.tail.add(tailTip);
+
+        this.group.add(this.tail);
+      }
+
+      update(dt) {
+        if (this.isDespawned) return;
+
+        // Advance straight down Central Avenue (x = 0) at high speed!
+        this.group.position.z += this.direction * this.speed * dt;
+        this.group.position.x = 0;
+
+        // High-speed furious running animation
+        this.runPhase += dt * 14.0;
+        const swing = Math.sin(this.runPhase);
+
+        // Legs pumping furiously
+        this.thighL.rotation.x = swing * 0.85;
+        this.thighR.rotation.x = -swing * 0.85;
+
+        // Arms flailing
+        this.armL.rotation.x = 0.5 + Math.sin(this.runPhase * 1.5) * 0.45;
+        this.armR.rotation.x = 0.5 - Math.sin(this.runPhase * 1.5) * 0.45;
+
+        // Body heavy stomping bob
+        this.group.position.y = Math.abs(swing) * 1.4;
+
+        // Tail balancing sway
+        this.tail.rotation.y = swing * 0.4;
+
+        // Snapping jaws
+        this.jaw.rotation.x = 0.2 + (Math.sin(this.runPhase * 0.7) + 1) * 0.28;
+
+        // Player proximity detection
+        const pPos = (State.inVehicle && State.currentVehicle) ? State.currentVehicle.group.position : player.group.position;
+        const distToPlayer = Math.hypot(this.group.position.x - pPos.x, this.group.position.z - pPos.z);
+
+        // Intense camera ground rumble when T-Rex charges nearby (< 70m)
+        if (distToPlayer < 70) {
+          const intensity = (1 - distToPlayer / 70) * 0.65;
+          camera.position.x += (Math.random() - 0.5) * intensity;
+          camera.position.y += (Math.random() - 0.5) * intensity;
+        }
+
+        // --- PLAY SOUND ONCE WHEN IT RUNS NEAR THE PLAYER ---
+        if (distToPlayer < 45 && !this.soundPlayed) {
+          this.soundPlayed = true;
+          try {
+            if (typeof dinoScreamAudio !== 'undefined' && dinoScreamAudio) {
+              dinoScreamAudio.currentTime = 0;
+              dinoScreamAudio.play().catch(e => console.log('[ViceBlocks] Dino audio play error:', e));
+            }
+          } catch(e){}
+          showToast("🦖 T-REX CHARGING NEARBY! WATCH OUT!");
+        }
+
+        // Trample / Launch vehicles in Central Avenue
+        vehicles.forEach(v => {
+          if (!v || !v.group) return;
+          const d = Math.hypot(this.group.position.x - v.group.position.x, this.group.position.z - v.group.position.z);
+          if (d < 8.5) {
+            v.speed = this.direction * 48;
+            v.group.position.y += 4.5;
+            v.takeDamage(150);
+            createExplosion(v.group.position, 7, 60);
+            Sound.playCrash();
+            showToast("🦖 T-REX SMASHED VEHICLE!");
+          }
+        });
+
+        // Trample NPCs
+        npcs.forEach(npc => {
+          if (!npc || npc.isDead) return;
+          const d = Math.hypot(this.group.position.x - npc.group.position.x, this.group.position.z - npc.group.position.z);
+          if (d < 6.0) {
+            npc.takeDamage(100);
+            Sound.playPunch();
+          }
+        });
+
+        // If player is directly run over
+        if (distToPlayer < 5.5 && !State.isDead) {
+          damagePlayer(25);
+          Sound.playPunch();
+          showToast("🦖 T-REX TRAMPLE DAMAGE! -25 HP!");
+        }
+
+        // Despawn once it has charged through the whole city
+        const hasPassedEnd = (this.direction > 0) ? (this.group.position.z > this.zEnd) : (this.group.position.z < this.zEnd);
+        if (hasPassedEnd) {
+          this.despawn();
+        }
+      }
+
+      despawn() {
+        this.isDespawned = true;
+        scene.remove(this.group);
+        activeTRex = null;
+        showToast("🦖 The Giant T-Rex stampeded out of the city!");
+        // Re-schedules automatically like the developer bug!
+        scheduleNextTRexStampede();
+      }
+    }
+
+    window.triggerTRexStampede = triggerTRexStampede;
+    function triggerTRexStampede() {
+      if (activeTRex) return; // already running
+      const pPos = (State.inVehicle && State.currentVehicle) ? State.currentVehicle.group.position : player.group.position;
+      // Start from opposite side of player along Central Ave
+      const startFromNorth = (pPos.z > 0);
+      const zStart = startFromNorth ? -360 : 360;
+      const zEnd = startFromNorth ? 360 : -360;
+
+      activeTRex = new TRexDinosaur(zStart, zEnd);
+      showToast("🦖 PREHISTORIC ESCAPE! MASSIVE T-REX CHARGING DOWN CENTRAL AVENUE!");
+      showNarrativeDialog("Game Dev", "Jurassic Park ninnu oru T-Rex odi vannittund! Central Avenuennu maari nilkku!", "TREX INCOMING", 8000);
+    }
+
+    function scheduleNextTRexStampede() {
+      clearTimeout(_trexNextStampedeTimer);
+      // Spontaneous surprise interval like the bug: 75 to 110 seconds!
+      const nextDelay = 75000 + Math.random() * 35000;
+      _trexNextStampedeTimer = setTimeout(() => {
+        if (!State.inMenu && !State.isDead && !activeTRex) {
+          triggerTRexStampede();
+        } else {
+          scheduleNextTRexStampede();
+        }
+      }, nextDelay);
+    }
+
+    // Schedule initial surprise T-Rex stampede 45 seconds after game start!
+    setTimeout(() => {
+      if (!State.inMenu && !State.isDead && !activeTRex) {
+        triggerTRexStampede();
+      } else {
+        scheduleNextTRexStampede();
+      }
+    }, 30000);
+
     // --- MAIN GAME LOOP ---
     let lastTime = performance.now();
     let _animErrShown = false;
@@ -5312,13 +5880,219 @@
       const now = performance.now();
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
+      let isMoving = false; // Declared at top of frame to prevent TDZ ReferenceError
 
       const activePos = State.inVehicle ? State.currentVehicle.group.position : player.group.position;
       if (_frameCount === 1) console.log('[F1] step: activePos', activePos);
 
+      // --- OCEAN DROWNING & MALAYALAM ROAST ---
+      if (activePos.x < -240) {
+        if (typeof window._lastWaterRoastTime === 'undefined' || performance.now() - window._lastWaterRoastTime > 18000) {
+          window._lastWaterRoastTime = performance.now();
+          activePos.x = -175;
+          if (player) {
+            player.group.position.x = -175;
+            player.group.position.y = 0;
+            State.health = Math.max(15, State.health - 15);
+            updateHealthUI();
+          }
+          if (State.inVehicle && State.currentVehicle) {
+            State.currentVehicle.group.position.x = -175;
+            State.currentVehicle.speed = 0;
+          }
+          try { Sound.playCrash(); } catch(e){}
+          showToast("🌊 SPLASH! Rescued onto Ocean Beach!");
+          setTimeout(() => {
+            showNarrativeDialog("Game Dev", "Neenthil ariyillel enthina kadalil chaadunne?", null, 10000);
+          }, 350);
+        }
+      }
+
+      // --- AFK / IDLE MALAYALAM ROAST (>35s STATIONARY) ---
+      if (!isMoving && !State.inMenu && !keys.jump && !keys.punch && !keys.forward && !keys.backward) {
+        window._afkIdleTime = (window._afkIdleTime || 0) + dt;
+        if (window._afkIdleTime > 35.0 && !window._hasShownIdleRoast) {
+          window._hasShownIdleRoast = true;
+          showNarrativeDialog("Game Dev", "Urangi poyo? Task cheyyano vendayo?", null, 10000);
+        }
+      } else {
+        window._afkIdleTime = 0;
+        window._hasShownIdleRoast = false;
+      }
+
+      // --- MISSION 5: PIZZA DELIVERY CHECKPOINTS ---
+      if (State.currentMission === 5) {
+        const pStep = State.pizzaStep || 0;
+        if (pStep === 0) {
+          // Checkpoint 0: Pick up pizzas at Burger Shot plaza (-55, -28)
+          if (Math.hypot(activePos.x - (-55), activePos.z - (-28)) < 12) {
+            State.pizzaStep = 1;
+            Sound.playCash();
+            showToast("🍕 PIZZAS LOADED! Deliver 1/3 to North Palms (-100, -80)!");
+            setMission(5, "DELIVER PIZZA 1/3: North Palms (-100, -80)!", -100, -80);
+          }
+        } else if (pStep === 1) {
+          // Customer 1: North Palms (-100, -80)
+          if (Math.hypot(activePos.x - (-100), activePos.z - (-80)) < 10) {
+            State.pizzaStep = 2;
+            addCash(500); Sound.playCash();
+            showToast("🍕 PIZZA 1 DELIVERED! +$500 Tip! Deliver 2/3 to Safehouse (-100, 20)!");
+            setMission(5, "DELIVER PIZZA 2/3: Ocean Safehouse (-100, 20)!", -100, 20);
+          }
+        } else if (pStep === 2) {
+          // Customer 2: Outside Ocean Safehouse (-100, 20)
+          if (Math.hypot(activePos.x - (-100), activePos.z - 20) < 10) {
+            State.pizzaStep = 3;
+            addCash(500); Sound.playCash();
+            showToast("🍕 PIZZA 2 DELIVERED! +$500 Tip! Deliver 3/3 to Club Malibu (-55, 120)!");
+            setMission(5, "DELIVER PIZZA 3/3: Club Malibu entrance (-55, 120)!", -55, 120);
+          }
+        } else if (pStep === 3) {
+          // Customer 3: Club Malibu (-55, 120)
+          if (Math.hypot(activePos.x - (-55), activePos.z - 120) < 10) {
+            State.pizzaStep = 4;
+            addCash(5000); Sound.playCash();
+            showToast("🍕 ALL PIZZAS DELIVERED! +$5,000 Cash! Pizza Boy Master!");
+            showNarrativeDialog("Game Dev", "Pizza boy aayi nannaayi, ini police-ine സഹായിക്ക്!", null, 10000);
+            setTimeout(() => {
+              setMission(6, "VIGILANTE: Steal a Police Cruiser/Tank at VCPD HQ (55, 50) and ram 2 rogue gang cars!", 55, 50);
+            }, 2000);
+          }
+        }
+      }
+
+      // --- MISSION 6: POLICE VIGILANTE MODE ---
+      if (State.currentMission === 6) {
+        if (State.inVehicle && (State.currentVehicle.isPolice || State.currentVehicle.isTank)) {
+          if (!State.vigilanteActive) {
+            State.vigilanteActive = true;
+            State.vigilanteKills = 0;
+            showToast("🚨 VIGILANTE MODE ENGAGED: Ram and destroy 2 rogue cars on the streets!");
+          }
+        }
+      }
+
+      // --- MISSION 7: TOP GUN AIR PATROL (4 SKY RINGS) ---
+      if (State.currentMission === 7) {
+        ringMeshes.forEach(rm => rm.visible = true);
+        if (State.inVehicle && State.currentVehicle && State.currentVehicle.isPlane) {
+          stuntRings.forEach((sr, idx) => {
+            if (!sr.passed && activePos.distanceTo(sr.pos) < 14) {
+              sr.passed = true;
+              ringMeshes[idx].material.color.setHex(0x02b757);
+              Sound.playCash();
+              const passedCount = stuntRings.filter(r => r.passed).length;
+              showToast(`✈ RING ${passedCount}/4 PASSED!`);
+              if (passedCount >= 4) {
+                addCash(20000); Sound.playCash();
+                ringMeshes.forEach(rm => rm.visible = false);
+                showToast("✈ TOP GUN MASTER! All 4 Sky Rings Cleared! +$20,000 Cash!");
+                showNarrativeDialog("Game Dev", "Ippol vimanam parathan padicho? Malibu Clubil attack nadakkunnu!", null, 10000);
+                setTimeout(() => {
+                  setMission(8, "DEFEND CLUB MALIBU (-55, 135): Rival syndicate hitmen are attacking! Eliminate 6 goons!", -55, 135);
+                }, 2000);
+              }
+            }
+          });
+        }
+      } else {
+        ringMeshes.forEach(rm => rm.visible = false);
+      }
+
+      // --- MISSION 8: MALIBU CLUB AMBUSH DEFENSE ---
+      if (State.currentMission === 8) {
+        if (!State.malibuAmbushActive) {
+          if (Math.hypot(activePos.x - (-55), activePos.z - 135) < 35) {
+            State.malibuAmbushActive = true;
+            State.malibuGoonsRemaining = 6;
+            showToast("⚔ SYNDICATE RAID! 6 Hitmen are attacking Club Malibu! Eliminate them!");
+            for (let i = 0; i < 6; i++) {
+              const angle = (i / 6) * Math.PI * 2;
+              const gx = -55 + Math.sin(angle) * 14;
+              const gz = 135 + Math.cos(angle) * 14;
+              const goon = new RobloxNPC(gx, gz);
+              goon.health = 50;
+              goon.isMalibuGoon = true;
+              goon.state = 'panic';
+            }
+          }
+        }
+      }
+
+      // --- 5-STAR AUTOPILOT ESCORT ROUTE TO VCPD JAIL ---
+      const jailPos = { x: 55, z: 33 };
+      if (State.isEscortingToJail) {
+        isMoving = true;
+        // Safety timeout (25 seconds max)
+        if (performance.now() - State.escortStartTime > 25000) {
+          State.isEscortingToJail = false;
+          bustPlayer();
+        } else if (State.inVehicle && State.currentVehicle) {
+          const v = State.currentVehicle;
+          const dx = jailPos.x - v.group.position.x;
+          const dz = jailPos.z - v.group.position.z;
+          const distToJail = Math.hypot(dx, dz);
+          const targetHeading = Math.atan2(dx, dz);
+          let hDiff = targetHeading - v.group.rotation.y;
+          while (hDiff < -Math.PI) hDiff += Math.PI * 2;
+          while (hDiff > Math.PI) hDiff -= Math.PI * 2;
+
+          if (v.isPlane) {
+            // Plane flies straight to jail and descends smoothly
+            v.group.rotation.y += hDiff * Math.min(1.0, dt * 3.2);
+            v.speed = 36;
+            const targetAlt = Math.max(1.8, Math.min(32, distToJail * 0.28));
+            v.altitude += (targetAlt - v.altitude) * Math.min(1.0, dt * 2.2);
+            v.pitch = THREE.MathUtils.lerp(v.pitch, -0.1, 0.06);
+            if (distToJail < 16) {
+              State.isEscortingToJail = false;
+              bustPlayer();
+            }
+          } else {
+            // Ground vehicle drives straight to jail entrance
+            v.group.rotation.y += hDiff * Math.min(1.0, dt * 4.0);
+            v.speed = 28;
+            if (distToJail < 12) {
+              State.isEscortingToJail = false;
+              bustPlayer();
+            }
+          }
+        } else if (player) {
+          // On foot: Character puts hands up in surrender and auto-runs straight to jail
+          const dx = jailPos.x - player.group.position.x;
+          const dz = jailPos.z - player.group.position.z;
+          const distToJail = Math.hypot(dx, dz);
+          const targetHeading = Math.atan2(dx, dz);
+          player.group.rotation.y = targetHeading;
+          const spd = 16 * dt;
+          player.group.position.x += Math.sin(targetHeading) * spd;
+          player.group.position.z += Math.cos(targetHeading) * spd;
+          // Hands up surrender pose
+          player.leftArm.rotation.x = -2.8;
+          player.rightArm.rotation.x = -2.8;
+          // Running legs animation
+          player.animTime = (player.animTime || 0) + dt * 18;
+          const swing = Math.sin(player.animTime) * 1.2;
+          player.leftLeg.rotation.x = swing;
+          player.rightLeg.rotation.x = -swing;
+          if (distToJail < 9) {
+            State.isEscortingToJail = false;
+            bustPlayer();
+          }
+        }
+      }
+
+      // Spontaneous Developer Bug Glitch Easter Egg (Triggers when player hits $5,000 cash!)
+      if (!State.hasTriggeredBugGlitch && State.cash >= 5000 && !State.inMenu && !State.isDead && !State.isBusted) {
+        State.hasTriggeredBugGlitch = true;
+        setTimeout(() => {
+          triggerDeveloperBugGlitch();
+        }, 1200);
+      }
+
       // 1. UPDATE PLAYER ON FOOT (Camera-Relative Smooth 360° Movement)
-      let isMoving = false;
-      if (!State.inVehicle && !State.inMenu) {
+      isMoving = false;
+      if (!State.inVehicle && !State.inMenu && !State.isEscortingToJail) {
         let moveX = 0;
         let moveZ = 0;
 
@@ -5340,13 +6114,16 @@
           // Target heading is camera azimuth + input direction!
           const targetHeading = camOrbitYaw + inputAngle;
 
-          // Smoothly rotate character toward target heading
+          // Smoothly rotate character toward target heading (Frame-rate independent)
           let angleDiff = targetHeading - player.group.rotation.y;
           while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
           while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-          player.group.rotation.y += THREE.MathUtils.clamp(angleDiff, -16 * dt, 16 * dt);
+          const rotStep = angleDiff * (1.0 - Math.exp(-18.0 * dt));
+          player.group.rotation.y += rotStep;
 
-          const currentSpeed = (State.isSprinting ? player.speed * 1.6 : player.speed) * (State.cheatSpeed ? 2.5 : 1.0) * Math.min(1.0, mag);
+          // Smooth analog speed scaling (gentle walk to full run)
+          const analogFactor = Math.min(1.0, mag >= 0.85 ? 1.0 : (mag * 1.15));
+          const currentSpeed = (State.isSprinting ? player.speed * 1.6 : player.speed) * (State.cheatSpeed ? 2.5 : 1.0) * analogFactor;
           const nextX = player.group.position.x + Math.sin(targetHeading) * currentSpeed * dt;
           const nextZ = player.group.position.z + Math.cos(targetHeading) * currentSpeed * dt;
 
@@ -5539,9 +6316,10 @@
         camera.position.set(Math.sin(t) * 90 - 55, 36 + Math.cos(t * 0.7) * 8, Math.cos(t) * 90 - 110);
         camera.lookAt(-55, 6, -110);
       } else {
-        // Smooth Orbit Angle Interpolation
-        camOrbitYaw += (camTargetYaw - camOrbitYaw) * 0.18;
-        camOrbitPitch += (camTargetPitch - camOrbitPitch) * 0.18;
+        // Smooth Orbit Angle Interpolation (Frame-rate independent for 60Hz/90Hz/120Hz screens)
+        const orbitDamp = 1.0 - Math.exp(-14.0 * dt);
+        camOrbitYaw += (camTargetYaw - camOrbitYaw) * orbitDamp;
+        camOrbitPitch += (camTargetPitch - camOrbitPitch) * orbitDamp;
 
         // Free orbit: camera preserves orientation relative to player movement smoothly without snapping
         if (State.inVehicle && State.currentVehicle && camDragPointerId === null && Math.abs(State.currentVehicle.speed) > 4) {
@@ -5549,7 +6327,7 @@
           let vDiff = vHeading - camTargetYaw;
           while (vDiff < -Math.PI) vDiff += Math.PI * 2;
           while (vDiff > Math.PI) vDiff -= Math.PI * 2;
-          camTargetYaw += vDiff * (dt * 1.5);
+          camTargetYaw += vDiff * (1.0 - Math.exp(-3.5 * dt));
         }
 
         if (State.isAiming && !State.inVehicle) {
@@ -5597,7 +6375,8 @@
           const offY = Math.max(1.0, vertHeight);
 
           const desiredCamPos = new THREE.Vector3(activePos.x + offX, activePos.y + offY, activePos.z + offZ);
-          camera.position.lerp(desiredCamPos, 0.25);
+          const camFollowDamp = 1.0 - Math.exp(-15.0 * dt);
+          camera.position.lerp(desiredCamPos, camFollowDamp);
 
           const lookTarget = new THREE.Vector3(
             activePos.x,
@@ -5654,20 +6433,22 @@
         }
       }
 
-      // 7. RENDER MINIMAP & 3D SCENE
-      renderMinimap(activePos);
-      renderer.render(scene, camera);
+      } catch(e) {
+        console.error('[ViceBlocks] animate() gameplay error:', e);
+      }
+
+      // 7. RENDER MINIMAP & 3D SCENE (Guaranteed to run every frame, screen NEVER turns black!)
+      try {
+        const renderPos = (State.inVehicle && State.currentVehicle) ? State.currentVehicle.group.position : (player ? player.group.position : new THREE.Vector3(0,0,0));
+        renderMinimap(renderPos);
+        renderer.render(scene, camera);
+      } catch(renderErr) {
+        console.error('[ViceBlocks] Render catch:', renderErr);
+      }
 
       // Frame 1 debug: log camera & scene info
       if (_frameCount === 1) {
         console.log('[ViceBlocks] Frame 1 — cam:', camera.position, '| scene objs:', scene.children.length, '| canvas:', renderer.domElement.width, 'x', renderer.domElement.height);
-      }
-      } catch(e) {
-        if (!_animErrShown) {
-          _animErrShown = true;
-          console.error('[ViceBlocks] animate() ERROR frame', _frameCount, e);
-          document.body.insertAdjacentHTML('beforeend', `<div style="position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:#c00;color:#fff;padding:20px;border-radius:8px;z-index:99999;font-size:13px;max-width:90vw;max-height:80vh;overflow:auto">animate ERROR frame ${_frameCount}:<br><b>${e.message}</b><br><pre style="white-space:pre-wrap;font-size:11px;margin-top:10px">${e.stack}</pre></div>`);
-        }
       }
     }
 
